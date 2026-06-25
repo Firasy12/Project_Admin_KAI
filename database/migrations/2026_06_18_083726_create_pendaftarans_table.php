@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('pendaftarans', function (Blueprint $table) {
             $table->id();
+            
             // Data Identitas Mahasiswa
             $table->string('nama_mahasiswa');
             $table->string('nim');
@@ -23,7 +24,8 @@ return new class extends Migration
             $table->string('file_proposal');
             
             // Kolom Validasi Alur Sistem (3 Aktor)
-            $table->boolean('is_kuota_tersedia')->default(false); // Diisi oleh SDM
+            // Diubah menjadi nullable() agar tidak langsung bernilai false sebelum diperiksa SDM
+            $table->boolean('is_kuota_tersedia')->nullable(); 
             $table->string('status_penerimaan')->default('Pending'); // Pending, Diterima, Ditolak (Oleh Unit)
             $table->string('status_magang')->default('Belum Mulai'); // Belum Mulai, Berjalan, Selesai (Oleh Unit)
             

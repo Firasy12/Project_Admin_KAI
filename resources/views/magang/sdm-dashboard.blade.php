@@ -3,183 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard E-Magang KAI</title>
+    <title>Dashboard SDM - E-Magang KAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --kai-blue: #223E92;
-            --kai-orange: #ED6B23;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f4f6fa; }
+        :root { --kai-blue: #223E92; --kai-orange: #ED6B23; }
         .bg-kai-blue { background-color: var(--kai-blue) !important; }
-        .text-kai-blue { color: var(--kai-blue) !important; }
-        .border-kai-blue { border-color: var(--kai-blue) !important; }
-        .btn-kai-orange {
-            background-color: var(--kai-orange);
-            color: white;
-            border: none;
-        }
-        .btn-kai-orange:hover {
-            background-color: #d65a1a;
-            color: white;
-        }
-        .card-stats {
-            border-left: 5px solid var(--kai-blue);
-            transition: transform 0.2s;
-        }
-        .card-stats:hover { transform: translateY(-3px); }
+        .bg-kai-orange { background-color: var(--kai-orange) !important; }
+        .card-stat { border: none; border-radius: 16px; transition: transform 0.2s ease; }
+        .card-stat:hover { transform: translateY(-3px); }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-kai-blue shadow-sm mb-4">
+    <nav class="navbar navbar-dark bg-kai-blue shadow-sm mb-4 py-3">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="{{ route('magang.index') }}">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Kereta_Api_Indonesia_Logo_%282020%29.svg" alt="Logo KAI" height="40" class="me-3 bg-white p-1 rounded">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="{{ asset('images/logo-kai.png') }}" alt="Logo KAI" height="38" class="bg-white p-1 rounded me-3 shadow-sm">
                 <div>
-                    <span class="fw-bold tracking-wide">E-MAGANG KAI</span>
-                    <small class="d-block fs-7 fw-light" style="font-size: 0.65rem;">Sistem Monitoring Seleksi - Divre III</small>
+                    <span class="fw-bold fs-5 d-block">E-MAGANG KAI</span>
+                    <small style="font-size: 0.7rem;" class="text-white-50">Human Capital / SDM - Divisi Regional III</small>
                 </div>
             </a>
+            <span class="badge bg-white text-kai-blue fw-bold px-3 py-2 rounded-pill">Aktor: SDM</span>
         </div>
     </nav>
 
     <div class="container">
-        <div class="row mb-4">
+        @if(session('success'))
+            <div class="alert alert-success border-0 shadow-sm mb-4"><i class="fa-solid fa-circle-check me-2"></i>{{ session('success') }}</div>
+        @endif
+
+        <div class="row g-3 mb-4">
             <div class="col-md-4">
-                <div class="card shadow-sm card-stats h-100">
-                    <div class="card-body d-flex align-items-center justify-content-between">
+                <div class="card card-stat bg-kai-blue text-white p-4 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-muted text-uppercase small">Sisa Kuota Aktif</h6>
-                            <h3 class="fw-bold m-0 text-kai-blue">{{ $sisaKuota }} Mhs</h3>
+                            <h6 class="text-white-50 small font-bold text-uppercase mb-1">Maksimal Kuota</h6>
+                            <h2 class="fw-bold mb-0">{{ $totalKuota }} <span class="fs-5 fw-normal">Orang</span></h2>
                         </div>
-                        <i class="fa-solid fa-users-check fa-2x text-muted opacity-50"></i>
+                        <i class="fa-solid fa-users fa-2x opacity-25"></i>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card shadow-sm card-stats h-100" style="border-left-color: var(--kai-orange);">
-                    <div class="card-body d-flex align-items-center justify-content-between">
+                <div class="card card-stat bg-success text-white p-4 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-muted text-uppercase small">Batas Maksimal Kuota</h6>
-                            <h3 class="fw-bold m-0 text-dark">{{ $totalKuota }} Peserta</h3>
+                            <h6 class="text-white-50 small font-bold text-uppercase mb-1">Kuota Terisi Active</h6>
+                            <h2 class="fw-bold mb-0">{{ $totalKuota - $sisaKuota }} <span class="fs-5 fw-normal">Orang</span></h2>
                         </div>
-                        <i class="fa-solid fa-sliders fa-2x text-muted opacity-50"></i>
+                        <i class="fa-solid fa-user-check fa-2x opacity-25"></i>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 d-flex align-items-center justify-content-end">
-                <a href="{{ route('magang.create') }}" class="btn btn-kai-orange btn-lg shadow-sm w-100 py-3 fw-bold">
-                    <i class="fa-solid fa-user-plus me-2"></i> Tambah Pendaftar Baru
-                </a>
+            <div class="col-md-4">
+                <div class="card card-stat bg-kai-orange text-white p-4 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 small font-bold text-uppercase mb-1">Sisa Slot Kuota</h6>
+                            <h2 class="fw-bold mb-0">{{ $sisaKuota }} <span class="fs-5 fw-normal">Slot</span></h2>
+                        </div>
+                        <i class="fa-solid fa-pie-chart fa-2x opacity-25"></i>
+                    </div>
+                </div>
             </div>
         </div>
 
-        @if(session('success'))
-            <div class="alert alert-success border-0 shadow-sm d-flex align-items-center mb-4">
-                <i class="fa-solid fa-circle-check me-2 fs-5"></i> {{ session('success') }}
-            </div>
-        @endif
-        @if(session('error'))
-            <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center mb-4">
-                <i class="fa-solid fa-triangle-exclamation me-2 fs-5"></i> {{ session('error') }}
-            </div>
-        @endif
-
-        <div class="card border-0 shadow-sm rounded-3 overflow-hidden mb-5">
-            <div class="card-header bg-white py-3 border-bottom d-flex align-items-center">
-                <i class="fa-solid fa-table-list text-kai-blue me-2"></i>
-                <h5 class="m-0 fw-bold text-secondary">Tabel Proses Tahapan Seleksi (Sesuai Flowchart)</h5>
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                <h5 class="m-0 fw-bold text-secondary"><i class="fa-solid fa-folder-open text-kai-blue me-2"></i>Berkas Masuk Menunggu Validasi</h5>
+                <span class="badge bg-danger rounded-pill px-3 py-2">{{ $pendaftar->count() }} Berkas</span>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0" style="min-width: 900px;">
-                        <thead class="table-light text-uppercase fs-7">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
                             <tr>
-                                <th class="ps-4 py-3 text-secondary">Data Mahasiswa</th>
-                                <th class="py-3 text-secondary text-center">Berkas Proposal</th>
-                                <th class="py-3 text-secondary text-center">Validasi Kuota</th>
-                                <th class="py-3 text-secondary text-center">Status Kelulusan</th>
-                                <th class="py-3 text-secondary text-center">Aksi Tahapan Seleksi</th>
-                                <th class="pe-4 py-3 text-secondary text-end">Aksi CRUD</th>
+                                <th class="ps-4">Data Mahasiswa</th>
+                                <th>Kontak Informasi</th>
+                                <th class="text-center">Dokumen</th>
+                                <th class="text-center">Posisi Alur</th>
+                                <th class="text-center">Aksi Pengecekan</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($pendaftar as $p)
                             <tr>
                                 <td class="ps-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="rounded-circle bg-kai-blue text-white d-flex align-items-center justify-content-center me-3" style="width: 42px; height: 42px;">
-                                            <i class="fa-solid fa-graduation-cap"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="fw-bold m-0 text-dark">{{ $p->nama_mahasiswa }}</h6>
-                                            <small class="text-muted">{{ $p->nim }} — {{ $p->universitas }}</small>
-                                        </div>
-                                    </div>
+                                    <h6 class="fw-bold text-dark mb-0">{{ $p->nama_mahasiswa }}</h6>
+                                    <small class="text-muted">{{ $p->nim }} — <strong>{{ $p->universitas }}</strong></small>
+                                    <div style="font-size: 0.75rem;" class="text-secondary">{{ $p->jurusan }}</div>
+                                </td>
+                                <td>
+                                    <div class="small text-secondary"><i class="fa-solid fa-envelope me-1 text-muted"></i>{{ $p->email }}</div>
+                                    <div class="small text-secondary"><i class="fa-solid fa-phone me-1 text-muted"></i>{{ $p->no_hp }}</div>
                                 </td>
                                 <td class="text-center">
                                     <a href="{{ asset('uploads/' . $p->file_proposal) }}" target="_blank" class="btn btn-sm btn-outline-danger px-3 rounded-pill">
-                                        <i class="fa-solid fa-file-pdf me-1"></i> Lihat PDF
+                                        <i class="fa-solid fa-file-pdf me-1"></i> Buka Proposal
                                     </a>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge rounded-pill px-3 py-2 {{ $p->is_kuota_tersedia ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }}">
-                                        {{ $p->is_kuota_tersedia ? 'Tersedia' : 'Penuh' }}
-                                    </span>
+                                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold" style="font-size: 0.7rem;">MEJA SDM</span>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge rounded-pill px-3 py-2 text-uppercase {{ $p->status_penerimaan == 'Diterima' ? 'bg-success text-white' : ($p->status_penerimaan == 'Ditolak' ? 'bg-danger text-white' : 'bg-warning text-dark') }}">
-                                        {{ $p->status_penerimaan }}
-                                    </span>
-                                    @if($p->status_penerimaan == 'Diterima')
-                                        <div class="small text-muted mt-1" style="font-size: 0.75rem;">Magang: <span class="fw-bold text-primary">{{ $p->status_magang }}</span></div>
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    @if($p->status_penerimaan == 'Pending')
-                                        <div class="btn-group shadow-sm" role="group">
-                                            <form action="{{ route('magang.seleksi', [$p->id, 'lolos']) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm btn-success rounded-start-pill px-3"><i class="fa-solid fa-check me-1"></i> Lolos</button>
-                                            </form>
-                                            <form action="{{ route('magang.seleksi', [$p->id, 'tolak']) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm btn-danger rounded-end-pill px-3"><i class="fa-solid fa-xmark me-1"></i> Tolak</button>
-                                            </form>
-                                        </div>
-                                    @elseif($p->status_penerimaan == 'Diterima' && $p->status_magang == 'Berjalan')
-                                        <a href="{{ route('magang.cetak', [$p->id, 'balasan']) }}" target="_blank" class="btn btn-sm btn-info text-white me-1 rounded-pill px-3">
-                                            <i class="fa-solid fa-envelope-open-text me-1"></i> Cetak Surat Balasan
-                                        </a>
-                                        <form action="{{ route('magang.selesai', $p->id) }}" method="POST" class="d-inline">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <form action="{{ route('sdm.oper', $p->id) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-dark rounded-pill px-3"><i class="fa-solid fa-flag-checkered me-1"></i> Selesai Magang</button>
+                                            <button type="submit" class="btn btn-sm btn-success rounded-pill px-3" {{ $sisaKuota <= 0 ? 'disabled' : '' }}><i class="fa-solid fa-check me-1"></i>Kuota Ada</button>
                                         </form>
-                                    @elseif($p->status_magang == 'Selesai')
-                                        <a href="{{ route('magang.cetak', [$p->id, 'sertifikat']) }}" target="_blank" class="btn btn-sm btn-warning text-dark fw-bold rounded-pill px-3 shadow-sm">
-                                            <i class="fa-solid fa-award me-1"></i> Cetak Sertifikat
-                                        </a>
-                                    @else
-                                        <a href="{{ route('magang.cetak', [$p->id, 'penolakan']) }}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill px-3">
-                                            <i class="fa-solid fa-ban me-1"></i> Cetak Surat Tolak
-                                        </a>
-                                    @endif
-                                </td>
-                                <td class="pe-4 text-end">
-                                    <a href="{{ route('magang.edit', $p->id) }}" class="btn btn-sm btn-light border text-secondary me-1"><i class="fa-solid fa-pen-to-square"></i></a>
-                                    <form action="{{ route('magang.destroy', $p->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data ini dari sistem?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-light border text-danger"><i class="fa-solid fa-trash-can"></i></button>
-                                    </form>
+                                        <form action="{{ route('sdm.tolak', $p->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-danger rounded-pill px-3"><i class="fa-solid fa-ban me-1"></i>Tolak</button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="text-center py-5 text-muted">
-                                    <i class="fa-solid fa-folder-open fa-3x mb-3 opacity-25"></i>
-                                    <p class="m-0">Belum ada mahasiswa yang terdaftar di sistem monitoring.</p>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fa-solid fa-circle-check fa-3x text-success mb-2 opacity-50"></i>
+                                    <h6 class="fw-bold">Semua Bersih! Tidak Ada Dokumen Tertahan di SDM</h6>
                                 </td>
                             </tr>
                             @endforelse
