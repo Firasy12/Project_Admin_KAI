@@ -27,7 +27,7 @@
                     <small style="font-size: 0.7rem;" class="text-white-50">User: Unit Kerja Lapangan / Pembimbing</small>
                 </div>
             </a>
-            <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill"><i class="fa-solid fa-briefcase me-1"></i>Aktor: UNIT WORK</span>
+            <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill"><i class="fa-solid fa-briefcase me-1"></i>Aktor: UNIT KERJA</span>
         </div>
     </nav>
 
@@ -78,13 +78,13 @@
                                 <td class="text-center py-3">
                                     @if($p->status_penerimaan == 'Pending' && $p->posisi_berkas == 'UNIT')
                                         <div class="d-flex justify-content-center gap-2">
-                                            <form action="{{ route('unit.seleksi', [$p->id, 'Diterima']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin MENERIMA mahasiswa ini untuk magang?')">
+                                            <form action="{{ route('unit.seleksi', [$p->id, 'lolos']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin MENERIMA mahasiswa ini untuk magang?')">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 fw-bold shadow-sm">
                                                     <i class="fa-solid fa-user-check me-1"></i>Terima Magang
                                                 </button>
                                             </form>
-                                            <form action="{{ route('unit.seleksi', [$p->id, 'Ditolak']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin MENOLAK berkas permohonan magang mahasiswa ini?')">
+                                            <form action="{{ route('unit.seleksi', [$p->id, 'gugur']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin MENOLAK berkas permohonan magang mahasiswa ini?')">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold">
                                                     <i class="fa-solid fa-user-xmark me-1"></i>Tolak
