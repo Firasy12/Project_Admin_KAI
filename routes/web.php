@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MagangController;
+use App\Http\Controllers\UnitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,3 +102,21 @@ Route::post('/selesai/{id}',
 Route::get('/cetak-dokumen/{id}/{jenis}',
 [MagangController::class,'cetakDokumen'])
 ->name('cetak.dokumen');
+
+use App\Http\Controllers\SDMController;
+
+Route::get('/sdm/dashboard',[SDMController::class,'dashboard'])
+    ->name('sdm.dashboard');
+
+Route::get('/sdm/pengajuan', [SDMController::class, 'pengajuan'])
+    ->name('sdm.pengajuan');
+
+Route::get('/sdm/pengajuan/{pengajuan}', [SDMController::class, 'show'])
+    ->name('sdm.pengajuan.show');
+
+Route::prefix('unit')->group(function () {
+
+Route::get('/dashboard', [UnitController::class,'dashboard'])
+    ->name('unit.dashboard');
+
+});
