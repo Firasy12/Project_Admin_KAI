@@ -135,7 +135,7 @@ href="{{ asset('css/unit-dashboard.css') }}">
 
         <div class="page-title">
 
-            <h2>Selamat Datang, Unit Sistem Informasi</h2>
+            <h2 id="greeting">Selamat Datang, Unit Sistem Informasi</h2>
 
             <p>Kelola pengajuan magang dengan mudah</p>
 
