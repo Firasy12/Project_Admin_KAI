@@ -62,7 +62,7 @@
                     </div>
                     
                     <div class="d-flex justify-content-between">
-                        <a href="{{ route('magang.index') }}" class="btn btn-secondary">Kembali</a>
+                        <a href="{{ url()->previous() }}" class="btn btn-secondary">Kembali</a>
                         <button type="submit" class="btn btn-warning text-white">Simpan Perubahan</button>
                     </div>
                 </form>
