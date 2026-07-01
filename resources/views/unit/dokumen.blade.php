@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pengajuan Masuk Unit - E-Magang KAI</title>
+    <title>Dokumen - Admin Unit</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
 </head>
 <body class="flex h-screen overflow-hidden text-gray-800 bg-[#f4f6f9]">
 
-    {{-- SIDEBAR LENGKAP --}}
+    {{-- SIDEBAR --}}
 {{-- SIDEBAR PINTAR (Otomatis Aktif Sesuai Halaman) --}}
     <aside class="w-64 bg-white border-r border-gray-100 flex flex-col shrink-0 z-20">
         <div class="pt-8 pb-6 flex flex-col items-center justify-center px-4">
@@ -95,68 +95,47 @@
 
     {{-- MAIN CONTENT --}}
     <main class="flex-1 flex flex-col overflow-hidden">
-        
         <header class="h-24 flex items-center justify-between px-8 shrink-0">
             <div>
-                <h2 class="text-2xl font-bold text-gray-800">Pengajuan Masuk Unit</h2>
-                <p class="text-sm text-gray-500 mt-1">Daftar mahasiswa yang telah lolos seleksi SDM</p>
+                <h2 class="text-2xl font-bold text-gray-800">Dokumen & Templat</h2>
+                <p class="text-sm text-gray-500 mt-1">Unduh format dokumen resmi yang dibutuhkan selama proses magang</p>
             </div>
-            <div class="flex items-center space-x-4">
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm border border-blue-200">AU</div>
-            </div>
+            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm border border-blue-200">AU</div>
         </header>
 
         <div class="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-[#1a3668] text-white text-xs font-semibold">
-                        <tr>
-                            <th class="px-6 py-3 rounded-tl-lg">Nama</th>
-                            <th class="px-6 py-3">Universitas</th>
-                            <th class="px-6 py-3">Jurusan</th>
-                            <th class="px-6 py-3">Posisi</th>
-                            <th class="px-6 py-3 text-center">Status</th>
-                            <th class="px-6 py-3 text-center rounded-tr-lg">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm text-gray-600 divide-y divide-gray-100">
-                        @if(isset($pengajuan) && count($pengajuan) > 0)
-                            @foreach($pengajuan as $item)
-                            <tr class="hover:bg-gray-50/50 transition-colors">
-                                <td class="px-6 py-4 font-bold text-gray-900">{{ $item->nama }}</td>
-                                <td class="px-6 py-4">{{ $item->universitas }}</td>
-                                <td class="px-6 py-4">{{ $item->jurusan }}</td>
-                                <td class="px-6 py-4">{{ $item->unit_tujuan ?? 'Sistem Informasi' }}</td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="bg-yellow-100 text-yellow-800 text-[11px] font-bold px-3 py-1 rounded-sm">Perlu Review</span>
-                                </td>
-                                <td class="px-6 py-4 text-center space-x-2 whitespace-nowrap">
-                                    {{-- FORM MENGGUNAKAN URL LENGKAP --}}
-                                    <form action="{{ url('/unit/pengajuan/update/' . $item->id) }}" method="POST" class="inline-block">
-                                        @csrf
-                                        <button type="submit" name="status" value="Diterima_Unit" class="border border-green-500 text-green-600 hover:bg-green-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">Terima</button>
-                                        <button type="submit" name="status" value="Ditolak" class="border border-red-500 text-red-600 hover:bg-red-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">Tolak</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="6" class="px-6 py-10 text-center text-gray-400">
-                                    <i class="fa-solid fa-folder-open text-3xl mb-2 text-gray-300"></i>
-                                    <p>Belum ada pengajuan masuk dari SDM.</p>
-                                </td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
-                {{-- PAGINATION (Agar Error hasPages() tidak muncul) --}}
-                @if(isset($pengajuan) && $pengajuan instanceof \Illuminate\Pagination\LengthAwarePaginator && $pengajuan->hasPages())
-                    <div class="p-4 border-t border-gray-100">
-                        {{ $pengajuan->links() }}
+                {{-- KOTAK DOKUMEN 1 --}}
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+                    <div class="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-3xl mb-4">
+                        <i class="fa-solid fa-file-pdf"></i>
                     </div>
-                @endif
+                    <h5 class="font-bold text-gray-800 mb-1">Form Penilaian Magang</h5>
+                    <p class="text-xs text-gray-500 mb-4">Format PDF penilaian kinerja mahasiswa magang di unit.</p>
+                    <button class="mt-auto w-full bg-[#1a3668] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-800 transition-colors">Unduh Dokumen</button>
+                </div>
+
+                {{-- KOTAK DOKUMEN 2 --}}
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-4">
+                        <i class="fa-solid fa-file-word"></i>
+                    </div>
+                    <h5 class="font-bold text-gray-800 mb-1">SOP Penerimaan Magang</h5>
+                    <p class="text-xs text-gray-500 mb-4">Panduan standar operasional untuk admin unit.</p>
+                    <button class="mt-auto w-full bg-[#1a3668] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-800 transition-colors">Unduh Dokumen</button>
+                </div>
+
+                {{-- KOTAK DOKUMEN 3 --}}
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+                    <div class="w-16 h-16 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-3xl mb-4">
+                        <i class="fa-solid fa-file-excel"></i>
+                    </div>
+                    <h5 class="font-bold text-gray-800 mb-1">Rekapitulasi Kehadiran</h5>
+                    <p class="text-xs text-gray-500 mb-4">Format Excel untuk absensi harian mahasiswa.</p>
+                    <button class="mt-auto w-full bg-[#1a3668] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-800 transition-colors">Unduh Dokumen</button>
+                </div>
+
             </div>
         </div>
     </main>

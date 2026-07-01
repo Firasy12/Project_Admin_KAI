@@ -17,8 +17,9 @@
 </head>
 <body class="flex h-screen overflow-hidden text-gray-800 bg-[#f4f6f9]">
 
-    {{-- SIDEBAR UNIT --}}
-    <aside class="w-64 bg-white border-r border-gray-100 flex flex-col hidden md:flex shrink-0 z-20">
+    {{-- SIDEBAR --}}
+{{-- SIDEBAR PINTAR (Otomatis Aktif Sesuai Halaman) --}}
+    <aside class="w-64 bg-white border-r border-gray-100 flex flex-col shrink-0 z-20">
         <div class="pt-8 pb-6 flex flex-col items-center justify-center px-4">
             <img src="{{ asset('images/logo-kai.png') }}" alt="Logo KAI" class="h-10 mb-2">
             <p class="text-[10px] text-gray-500 text-center font-medium leading-tight">
@@ -32,33 +33,73 @@
             </div>
             
             <ul class="space-y-1">
+                {{-- Dashboard --}}
                 <li>
-                    <a href="{{ url('/unit/dashboard') }}" class="flex items-center px-6 py-2.5 text-gray-900 font-bold bg-blue-50/50 border-r-4 border-blue-600">
-                        <i class="fa-solid fa-house w-6 text-center text-blue-700"></i>
-                        <span class="ml-2 text-sm text-blue-700">Dashboard</span>
+                    <a href="{{ url('/unit/dashboard') }}" class="flex items-center px-6 py-2.5 transition-colors {{ Request::is('unit/dashboard') ? 'text-gray-900 font-bold bg-blue-50/50 border-l-4 border-blue-600' : 'text-gray-500 hover:text-gray-900 font-medium' }}">
+                        <i class="fa-solid fa-house w-6 text-center {{ Request::is('unit/dashboard') ? 'text-blue-700' : '' }}"></i>
+                        <span class="ml-2 text-sm {{ Request::is('unit/dashboard') ? 'text-blue-700' : '' }}">Dashboard</span>
                     </a>
                 </li>
-                <li><a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-file-lines w-6 text-center"></i><span class="ml-2 text-sm">Pengajuan Masuk</span></a></li>
-                <li><a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-users w-6 text-center"></i><span class="ml-2 text-sm">Review Pengajuan</span></a></li>
-                <li><a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-clock-rotate-left w-6 text-center"></i><span class="ml-2 text-sm">Riwayat Review</span></a></li>
-                <li><a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-chart-line w-6 text-center"></i><span class="ml-2 text-sm">Monitoring Status</span></a></li>
-                <li><a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-bell w-6 text-center"></i><span class="ml-2 text-sm">Notifikasi</span></a></li>
-                <li><a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-folder-open w-6 text-center"></i><span class="ml-2 text-sm">Dokumen</span></a></li>
-                <li><a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-user w-6 text-center"></i><span class="ml-2 text-sm">Profil</span></a></li>
+                {{-- Pengajuan Masuk --}}
+                <li>
+                    <a href="{{ url('/unit/pengajuan-masuk') }}" class="flex items-center px-6 py-2.5 transition-colors {{ Request::is('unit/pengajuan-masuk') ? 'text-gray-900 font-bold bg-blue-50/50 border-l-4 border-blue-600' : 'text-gray-500 hover:text-gray-900 font-medium' }}">
+                        <i class="fa-solid fa-file-lines w-6 text-center {{ Request::is('unit/pengajuan-masuk') ? 'text-blue-700' : '' }}"></i>
+                        <span class="ml-2 text-sm {{ Request::is('unit/pengajuan-masuk') ? 'text-blue-700' : '' }}">Pengajuan Masuk</span>
+                    </a>
+                </li>
+                {{-- Review Pengajuan --}}
+                <li>
+                    <a href="{{ url('/unit/review-pengajuan') }}" class="flex items-center px-6 py-2.5 transition-colors {{ Request::is('unit/review-pengajuan') ? 'text-gray-900 font-bold bg-blue-50/50 border-l-4 border-blue-600' : 'text-gray-500 hover:text-gray-900 font-medium' }}">
+                        <i class="fa-solid fa-users w-6 text-center {{ Request::is('unit/review-pengajuan') ? 'text-blue-700' : '' }}"></i>
+                        <span class="ml-2 text-sm {{ Request::is('unit/review-pengajuan') ? 'text-blue-700' : '' }}">Review Pengajuan</span>
+                    </a>
+                </li>
+                {{-- Riwayat Review --}}
+                <li>
+                    <a href="{{ url('/unit/riwayat-review') }}" class="flex items-center px-6 py-2.5 transition-colors {{ Request::is('unit/riwayat-review') ? 'text-gray-900 font-bold bg-blue-50/50 border-l-4 border-blue-600' : 'text-gray-500 hover:text-gray-900 font-medium' }}">
+                        <i class="fa-solid fa-clock-rotate-left w-6 text-center {{ Request::is('unit/riwayat-review') ? 'text-blue-700' : '' }}"></i>
+                        <span class="ml-2 text-sm {{ Request::is('unit/riwayat-review') ? 'text-blue-700' : '' }}">Riwayat Review</span>
+                    </a>
+                </li>
+                {{-- Monitoring Status --}}
+                <li>
+                    <a href="{{ url('/unit/monitoring') }}" class="flex items-center px-6 py-2.5 transition-colors {{ Request::is('unit/monitoring') ? 'text-gray-900 font-bold bg-blue-50/50 border-l-4 border-blue-600' : 'text-gray-500 hover:text-gray-900 font-medium' }}">
+                        <i class="fa-solid fa-chart-line w-6 text-center {{ Request::is('unit/monitoring') ? 'text-blue-700' : '' }}"></i>
+                        <span class="ml-2 text-sm {{ Request::is('unit/monitoring') ? 'text-blue-700' : '' }}">Monitoring Status</span>
+                    </a>
+                </li>
+                {{-- Notifikasi --}}
+                <li>
+                    <a href="{{ url('/unit/notifikasi') }}" class="flex items-center px-6 py-2.5 transition-colors {{ Request::is('unit/notifikasi') ? 'text-gray-900 font-bold bg-blue-50/50 border-l-4 border-blue-600' : 'text-gray-500 hover:text-gray-900 font-medium' }}">
+                        <i class="fa-solid fa-bell w-6 text-center {{ Request::is('unit/notifikasi') ? 'text-blue-700' : '' }}"></i>
+                        <span class="ml-2 text-sm {{ Request::is('unit/notifikasi') ? 'text-blue-700' : '' }}">Notifikasi</span>
+                    </a>
+                </li>
+                {{-- Dokumen --}}
+                <li>
+                    <a href="{{ url('/unit/dokumen') }}" class="flex items-center px-6 py-2.5 transition-colors {{ Request::is('unit/dokumen') ? 'text-gray-900 font-bold bg-blue-50/50 border-l-4 border-blue-600' : 'text-gray-500 hover:text-gray-900 font-medium' }}">
+                        <i class="fa-solid fa-folder-open w-6 text-center {{ Request::is('unit/dokumen') ? 'text-blue-700' : '' }}"></i>
+                        <span class="ml-2 text-sm {{ Request::is('unit/dokumen') ? 'text-blue-700' : '' }}">Dokumen</span>
+                    </a>
+                </li>
+                {{-- Profil --}}
+                <li>
+                    <a href="{{ url('/unit/profil') }}" class="flex items-center px-6 py-2.5 transition-colors {{ Request::is('unit/profil') ? 'text-gray-900 font-bold bg-blue-50/50 border-l-4 border-blue-600' : 'text-gray-500 hover:text-gray-900 font-medium' }}">
+                        <i class="fa-solid fa-user w-6 text-center {{ Request::is('unit/profil') ? 'text-blue-700' : '' }}"></i>
+                        <span class="ml-2 text-sm {{ Request::is('unit/profil') ? 'text-blue-700' : '' }}">Profil</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     </aside>
 
-    {{-- MAIN CONTENT --}}
+    {{-- MAIN CONTENT DASHBOARD --}}
     <main class="flex-1 flex flex-col overflow-hidden">
-        
-        {{-- Header --}}
         <header class="h-24 flex items-center justify-between px-8 shrink-0">
             <div>
                 <h2 class="text-2xl font-bold text-gray-800">Selamat Datang, Unit Sistem Informasi</h2>
                 <p class="text-sm text-gray-500 mt-1">kelola pengajuan magang dengan mudah</p>
             </div>
-
             <div class="flex items-center space-x-4">
                 <button class="relative text-gray-400 hover:text-gray-600 transition-colors p-2">
                     <i class="fa-solid fa-bell text-xl"></i>
@@ -76,10 +117,9 @@
             </div>
         </header>
 
-        {{-- Scrollable Content --}}
         <div class="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
             
-            {{-- KOTAK STATISTIK DINAMIS --}}
+            {{-- KOTAK STATISTIK --}}
             <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
                 <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-blue-500 p-6 flex flex-col items-center justify-center text-center">
                     <h6 class="text-[11px] font-bold text-blue-600 uppercase tracking-wide mb-2">Tugas Masuk</h6>
@@ -103,7 +143,7 @@
                 </div>
             </div>
 
-            {{-- TABEL MAHASISWA MAGANG DINAMIS --}}
+            {{-- INI DIA TABEL YANG KEMARIN SAYA HILANGKAN (SUDAH DIKEMBALIKAN) --}}
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8 p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h5 class="text-lg font-bold text-gray-800">Daftar Mahasiswa Magang</h5>
@@ -125,8 +165,6 @@
                             </tr>
                         </thead>
                         <tbody class="text-sm text-gray-600 divide-y divide-gray-100">
-                            
-                            {{-- Looping Data Asli dari Database --}}
                             @if(isset($pengajuan_baru) && count($pengajuan_baru) > 0)
                                 @foreach($pengajuan_baru as $item)
                                 <tr class="hover:bg-gray-50/50 transition-colors">
@@ -135,13 +173,13 @@
                                     <td class="px-6 py-4">{{ $item->jurusan }}</td>
                                     <td class="px-6 py-4">{{ $item->unit_tujuan ?? 'Sistem Informasi' }}</td>
                                     <td class="px-6 py-4 text-center">
-                                        <span class="bg-yellow-100 text-yellow-800 text-[11px] font-bold px-3 py-1 rounded-sm">
-                                            Perlu Review
-                                        </span>
+                                        <span class="bg-yellow-100 text-yellow-800 text-[11px] font-bold px-3 py-1 rounded-sm">Perlu Review</span>
                                     </td>
                                     <td class="px-6 py-4 text-center space-x-2 whitespace-nowrap">
-                                        <button class="border border-green-500 text-green-600 hover:bg-green-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">Terima</button>
-                                        <button class="border border-red-500 text-red-600 hover:bg-red-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">Tolak</button>
+                                        <form action="{{ url('/unit/pengajuan/update/' . $item->id) }}" method="POST" class="inline-block">
+                                            <button type="submit" name="status" value="Diterima_Unit" class="border border-green-500 text-green-600 hover:bg-green-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">Terima</button>
+                                            <button type="submit" name="status" value="Ditolak" class="border border-red-500 text-red-600 hover:bg-red-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">Tolak</button>
+                                        </form>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -153,7 +191,6 @@
                                     </td>
                                 </tr>
                             @endif
-
                         </tbody>
                     </table>
                 </div>
@@ -161,7 +198,6 @@
 
             {{-- WIDGET BAWAH --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {{-- Status Unit --}}
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h5 class="text-lg font-bold text-gray-800 mb-4">Status Unit Anda</h5>
                     <div class="flex items-center gap-6">
@@ -176,8 +212,6 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- Aktivitas Terbaru --}}
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h5 class="text-lg font-bold text-gray-800 mb-4">Aktivitas Terbaru</h5>
                     <div class="space-y-4">
@@ -194,7 +228,6 @@
                                 <i class="fa-solid fa-check-circle text-green-500 mt-1"></i>
                                 <div>
                                     <p class="text-sm font-semibold text-gray-800">Semua tugas telah diselesaikan</p>
-                                    <span class="text-[10px] text-gray-400">Saat ini</span>
                                 </div>
                             </div>
                         @endif

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pengajuan Masuk Unit - E-Magang KAI</title>
+    <title>Riwayat Review - Admin Unit</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -95,11 +95,10 @@
 
     {{-- MAIN CONTENT --}}
     <main class="flex-1 flex flex-col overflow-hidden">
-        
         <header class="h-24 flex items-center justify-between px-8 shrink-0">
             <div>
-                <h2 class="text-2xl font-bold text-gray-800">Pengajuan Masuk Unit</h2>
-                <p class="text-sm text-gray-500 mt-1">Daftar mahasiswa yang telah lolos seleksi SDM</p>
+                <h2 class="text-2xl font-bold text-gray-800">Riwayat Review</h2>
+                <p class="text-sm text-gray-500 mt-1">Daftar keputusan mahasiswa yang telah selesai direview</p>
             </div>
             <div class="flex items-center space-x-4">
                 <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm border border-blue-200">AU</div>
@@ -108,55 +107,54 @@
 
         <div class="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-[#1a3668] text-white text-xs font-semibold">
-                        <tr>
-                            <th class="px-6 py-3 rounded-tl-lg">Nama</th>
-                            <th class="px-6 py-3">Universitas</th>
-                            <th class="px-6 py-3">Jurusan</th>
-                            <th class="px-6 py-3">Posisi</th>
-                            <th class="px-6 py-3 text-center">Status</th>
-                            <th class="px-6 py-3 text-center rounded-tr-lg">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm text-gray-600 divide-y divide-gray-100">
-                        @if(isset($pengajuan) && count($pengajuan) > 0)
-                            @foreach($pengajuan as $item)
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-[#1a3668] text-white text-xs font-semibold">
+                                <th class="px-6 py-4 rounded-tl-lg">Nama</th>
+                                <th class="px-6 py-4">Universitas</th>
+                                <th class="px-6 py-4">Jurusan</th>
+                                <th class="px-6 py-4 text-center">Posisi</th>
+                                <th class="px-6 py-4 text-center rounded-tr-lg">Status Akhir</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm text-gray-600 divide-y divide-gray-100">
+                            @forelse($pengajuan as $item)
                             <tr class="hover:bg-gray-50/50 transition-colors">
                                 <td class="px-6 py-4 font-bold text-gray-900">{{ $item->nama }}</td>
                                 <td class="px-6 py-4">{{ $item->universitas }}</td>
                                 <td class="px-6 py-4">{{ $item->jurusan }}</td>
-                                <td class="px-6 py-4">{{ $item->unit_tujuan ?? 'Sistem Informasi' }}</td>
+                                <td class="px-6 py-4 text-center">{{ $item->unit_tujuan ?? 'Sistem Informasi' }}</td>
                                 <td class="px-6 py-4 text-center">
-                                    <span class="bg-yellow-100 text-yellow-800 text-[11px] font-bold px-3 py-1 rounded-sm">Perlu Review</span>
-                                </td>
-                                <td class="px-6 py-4 text-center space-x-2 whitespace-nowrap">
-                                    {{-- FORM MENGGUNAKAN URL LENGKAP --}}
-                                    <form action="{{ url('/unit/pengajuan/update/' . $item->id) }}" method="POST" class="inline-block">
-                                        @csrf
-                                        <button type="submit" name="status" value="Diterima_Unit" class="border border-green-500 text-green-600 hover:bg-green-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">Terima</button>
-                                        <button type="submit" name="status" value="Ditolak" class="border border-red-500 text-red-600 hover:bg-red-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">Tolak</button>
-                                    </form>
+                                    @if($item->status == 'Lulus_Magang')
+                                        <span class="bg-green-100 text-green-800 text-[11px] font-bold px-3 py-1.5 rounded-sm">
+                                            <i class="fa-solid fa-check mr-1"></i> Lulus Seleksi
+                                        </span>
+                                    @else
+                                        <span class="bg-red-100 text-red-800 text-[11px] font-bold px-3 py-1.5 rounded-sm">
+                                            <i class="fa-solid fa-xmark mr-1"></i> Ditolak
+                                        </span>
+                                    @endif
                                 </td>
                             </tr>
-                            @endforeach
-                        @else
+                            @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-10 text-center text-gray-400">
-                                    <i class="fa-solid fa-folder-open text-3xl mb-2 text-gray-300"></i>
-                                    <p>Belum ada pengajuan masuk dari SDM.</p>
+                                <td colspan="5" class="px-6 py-10 text-center text-gray-400">
+                                    <i class="fa-solid fa-box-open text-3xl mb-2 text-gray-300"></i>
+                                    <p>Belum ada riwayat review mahasiswa.</p>
                                 </td>
                             </tr>
-                        @endif
-                    </tbody>
-                </table>
-                
-                {{-- PAGINATION (Agar Error hasPages() tidak muncul) --}}
-                @if(isset($pengajuan) && $pengajuan instanceof \Illuminate\Pagination\LengthAwarePaginator && $pengajuan->hasPages())
-                    <div class="p-4 border-t border-gray-100">
-                        {{ $pengajuan->links() }}
-                    </div>
-                @endif
+                            @endforelse
+                        </tbody>
+                    </table>
+
+                    {{-- PAGINATION --}}
+                    @if(isset($pengajuan) && $pengajuan instanceof \Illuminate\Pagination\LengthAwarePaginator && $pengajuan->hasPages())
+                        <div class="p-4 border-t border-gray-100">
+                            {{ $pengajuan->links() }}
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </main>

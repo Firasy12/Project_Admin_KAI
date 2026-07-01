@@ -82,13 +82,36 @@ Route::prefix('unit')->group(function () {
     Route::get('/dashboard', [UnitController::class, 'dashboard'])
         ->name('unit.dashboard');
 
-    Route::post('/seleksi/{id}/{status}', [MagangController::class, 'prosesSeleksi'])
+    // Halaman "Pengajuan Masuk"
+    Route::get('/pengajuan-masuk', [UnitController::class, 'pengajuanMasuk'])
+        ->name('unit.pengajuan');
+
+    // Aksi tombol Terima / Tolak
+    Route::post('/pengajuan/{id}/seleksi/{keputusan}', [UnitController::class, 'seleksiUnit'])
         ->name('unit.seleksi');
 
-    Route::post('/selesai/{id}', [MagangController::class, 'selesaiMagang'])
+    // Aksi menandai magang selesai
+    Route::post('/pengajuan/{id}/selesai', [UnitController::class, 'selesaikanMagang'])
         ->name('unit.selesai');
 
-    Route::get('/pengajuan-masuk', [App\Http\Controllers\UnitController::class, 'pengajuanMasuk']); // Tambahkan baris ini
+    Route::get('/review-pengajuan', [UnitController::class, 'reviewPengajuan'])->name('review'); 
+    
+    // Aksi Unit (Ini sudah ada di kodemu sebelumnya, biarkan saja)
+    Route::post('/pengajuan/update/{id}', [UnitController::class, 'updateStatus'])->name('update.status');
+
+    // Tambahkan di bawah rute review-pengajuan yang tadi
+    Route::get('/riwayat-review', [App\Http\Controllers\UnitController::class, 'riwayatReview'])->name('riwayat');
+
+    // Tambahkan di bawah rute riwayat-review
+    Route::get('/monitoring', [App\Http\Controllers\UnitController::class, 'monitoring'])->name('monitoring');   
+
+    // Tambahkan di bawah rute monitoring
+    Route::get('/notifikasi', [App\Http\Controllers\UnitController::class, 'notifikasi'])->name('notifikasi');
+
+    // Tambahkan di bawah rute notifikasi
+    Route::get('/dokumen', [App\Http\Controllers\UnitController::class, 'dokumen'])->name('dokumen');
+    
+    Route::get('/profil', [App\Http\Controllers\UnitController::class, 'profil'])->name('profil');
 
 });
 
@@ -101,7 +124,7 @@ Route::prefix('unit')->group(function () {
 Route::get('/cetak-dokumen/{id}/{jenis}', [MagangController::class, 'cetakDokumen'])
     ->name('cetak.dokumen');
 
-    Route::get('/dashboard-sdm', function () {
+Route::get('/dashboard-sdm', function () {
     return view('dashboard');
 });
 
@@ -110,12 +133,7 @@ Route::post('/sdm/pengajuan/{id}/proses', [PengajuanController::class, 'prosesSd
 Route::get('/sdm/pengajuan/{id}/edit', [SDMController::class, 'edit'])->name('sdm.pengajuan.edit');
 Route::put('/sdm/pengajuan/{id}/update', [App\Http\Controllers\SDMController::class, 'update'])->name('magang.update');
 
-// Rute untuk aksi Admin Unit
-Route::post('/unit/pengajuan/{id}/seleksi/{keputusan}', [UnitController::class, 'seleksiUnit'])->name('unit.seleksi');
-Route::post('/unit/pengajuan/{id}/selesai', [UnitController::class, 'selesaikanMagang'])->name('unit.selesai');
-
 // Route Menu Sidebar SDM
-// Contoh di web.php
 Route::get('/sdm/dashboard', [App\Http\Controllers\SDMController::class, 'index'])->name('sdm.dashboard');
 
 Route::get('/sdm/pengajuan-masuk', [App\Http\Controllers\SDMController::class, 'pengajuanMasuk'])->name('sdm.pengajuan');
@@ -132,5 +150,3 @@ Route::get('/sdm/monitoring', [App\Http\Controllers\SDMController::class, 'monit
 Route::get('/sdm/notifikasi', [App\Http\Controllers\SDMController::class, 'notifikasi']);
 Route::get('/sdm/dokumen', [App\Http\Controllers\SDMController::class, 'dokumen']);
 Route::get('/sdm/profil', [App\Http\Controllers\SDMController::class, 'profil']);
-
-Route::get('/unit/pengajuan-masuk', [App\Http\Controllers\UnitController::class, 'pengajuanMasuk']);
