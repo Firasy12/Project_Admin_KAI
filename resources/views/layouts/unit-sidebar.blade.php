@@ -1,119 +1,35 @@
-<div class="sidebar">
-
-    <div class="logo">
-
-        <img src="{{ asset('images/logo-kai.png') }}">
-
-        <h4>Sistem Informasi Magang</h4>
-
-        <small>PT Kereta Api Indonesia</small>
-
+{{-- Sidebar Admin Unit --}}
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <img src="{{ asset('images/logo-kai.png') }}" alt="KAI" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+            <span class="sidebar-logo-fallback" style="display:none;">KAI</span>
+        </div>
+        <div class="sidebar-title">Sistem Informasi<br>Magang</div>
+        <div class="sidebar-subtitle">PT Kereta Api Indonesia</div>
     </div>
 
-    <h6 class="sidebar-title">
+    <div class="sidebar-section-label">Admin Unit</div>
 
-        ADMIN UNIT
-
-    </h6>
-
-    <ul>
-
-        <li>
-
-            <a href="{{ route('unit.dashboard') }}">
-
-                <i class="fas fa-home"></i>
-
-                Dashboard
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="#">
-
-                <i class="fas fa-file"></i>
-
-                Pengajuan Masuk
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="#">
-
-                <i class="fas fa-users"></i>
-
-                Review Pengajuan
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="#">
-
-                <i class="fas fa-history"></i>
-
-                Riwayat Review
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="#">
-
-                <i class="fas fa-briefcase"></i>
-
-                Monitoring Status
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="#">
-
-                <i class="fas fa-bell"></i>
-
-                Notifikasi
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="#">
-
-                <i class="fas fa-folder"></i>
-
-                Dokumen
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="#">
-
-                <i class="fas fa-user"></i>
-
-                Profil
-
-            </a>
-
-        </li>
-
-    </ul>
-
-</div>
+    <nav class="sidebar-nav">
+        <a href="{{ route('unit.dashboard') }}" class="nav-item {{ request()->routeIs('unit.dashboard') ? 'active' : '' }}">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="{{ route('unit.pengajuan') }}" class="nav-item {{ request()->routeIs('unit.pengajuan*') ? 'active' : '' }}">
+            <i class="fas fa-file-import"></i>
+            <span>Pengajuan Masuk</span>
+            @if(isset($pengajuanCount) && $pengajuanCount > 0)
+                <span class="nav-badge">{{ $pengajuanCount }}</span>
+            @endif
+        </a>
+        <a href="{{ route('unit.review') }}" class="nav-item {{ request()->routeIs('unit.review*') ? 'active' : '' }}">
+            <i class="fas fa-clipboard-check"></i>
+            <span>Review Pengajuan</span>
+        </a>
+        <a href="{{ route('unit.riwayat') }}" class="nav-item {{ request()->routeIs('unit.riwayat*') ? 'active' : '' }}">
+            <i class="fas fa-history"></i>
+            <span>Riwayat</span>
+        </a>
+    </nav>
+</aside>

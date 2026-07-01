@@ -1,450 +1,297 @@
-@extends('layouts.sdm')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin SDM - E-Magang KAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-gray-800 bg-[#f4f6f9]">
 
-@section('title','Dashboard SDM')
+    {{-- SIDEBAR --}}
+    <aside class="w-64 bg-white border-r border-gray-100 flex flex-col hidden md:flex shrink-0 z-20">
+        <div class="pt-8 pb-6 flex flex-col items-center justify-center px-4">
+            <img src="{{ asset('images/logo-kai.png') }}" alt="Logo KAI" class="h-10 mb-2">
+            <p class="text-[10px] text-gray-500 text-center font-medium leading-tight">
+                SISTEM INFORMASI MAGANG<br>PT KERETA API INDONESIA
+            </p>
+        </div>
 
-@section('content')
+        <nav class="flex-1 overflow-y-auto py-2 custom-scrollbar">
+            <div class="px-6 mb-3">
+                <p class="text-[11px] font-bold text-orange-500 uppercase tracking-wider">Admin SDM</p>
+            </div>
+            
+            <ul class="space-y-1">
+                <li>
+                    <a href="{{ url('/sdm/dashboard') }}" class="flex items-center px-6 py-2.5 text-gray-900 font-bold bg-blue-50/50 border-r-4 border-blue-600">
+                        <i class="fa-solid fa-house w-6 text-center text-blue-700"></i>
+                        <span class="ml-2 text-sm text-blue-700">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url('/sdm/pengajuan-masuk') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-file-lines w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Pengajuan Masuk</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-users w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Review Pengajuan</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-clock-rotate-left w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Riwayat Review</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-chart-line w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Monitoring Status</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-bell w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Notifikasi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-folder-open w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Dokumen</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-user w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Profil</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
 
-<div class="wrapper">
-
-    {{-- Sidebar --}}
-<aside class="sidebar">
-
-    <div class="logo-area">
-
-        <img src="{{ asset('images/logo-kai.png') }}" class="logo">
-
-        <h5>Sistem Informasi Magang</h5>
-
-        <small>PT Kereta Api Indonesia</small>
-
-    </div>
-
-    <span class="menu-label">
-
-        ADMIN SDM
-
-    </span>
-
-    <ul class="menu">
-
-        <li class="active">
-            <i class="fa-solid fa-house"></i>
-            Dashboard
-        </li>
-
-        <li>
-            <i class="fa-solid fa-file-lines"></i>
-            Pengajuan Magang
-        </li>
-
-        <li>
-            <i class="fa-solid fa-users"></i>
-            Review Berkas
-        </li>
-
-        <li>
-            <i class="fa-solid fa-location-dot"></i>
-            Disposisi ke Unit
-        </li>
-
-        <li>
-            <i class="fa-solid fa-chart-line"></i>
-            Monitoring Status
-        </li>
-
-        <li>
-            <i class="fa-solid fa-bell"></i>
-            Notifikasi
-        </li>
-
-        <li>
-            <i class="fa-solid fa-folder-open"></i>
-            Dokumen
-        </li>
-
-        <li>
-            <i class="fa-solid fa-file"></i>
-            Laporan
-        </li>
-
-    </ul>
-
-</aside>
-
-    {{-- Main --}}
-    <main class="content">
-
+    {{-- MAIN CONTENT --}}
+    <main class="flex-1 flex flex-col overflow-hidden">
+        
         {{-- Header --}}
-<div class="topbar">
-
-    <div>
-
-        <h2>
-
-            Selamat Datang, Admin SDM
-
-        </h2>
-
-        <span>
-
-            Kelola pengajuan magang dengan mudah
-
-        </span>
-
-    </div>
-
-    <div class="right-menu">
-
-        <div class="notification">
-
-            <i class="fa-solid fa-bell"></i>
-
-            <span class="badge-notif">
-
-                1
-
-            </span>
-
-        </div>
-
-        <div class="profile-card">
-
-            <img src="{{ asset('images/avatar.png') }}">
-
+        <header class="h-24 flex items-center justify-between px-8 shrink-0">
             <div>
-
-                <b>Admin SDM</b>
-
-                <small>SDM PT KAI</small>
-
+                <h2 class="text-2xl font-bold text-gray-800">Selamat Datang, Admin SDM</h2>
+                <p class="text-sm text-gray-500 mt-1">kelola pengajuan magang dengan mudah</p>
             </div>
 
-        </div>
+            <div class="flex items-center space-x-4">
+                <button class="relative text-gray-400 hover:text-gray-600 transition-colors p-2">
+                    <i class="fa-solid fa-bell text-xl"></i>
+                </button>
 
-    </div>
+                <div class="flex items-center bg-white border border-gray-100 shadow-sm rounded-full pl-4 pr-1 py-1 cursor-pointer">
+                    <div class="flex flex-col text-right mr-3">
+                        <span class="text-sm font-bold text-gray-800 leading-tight">Admin SDM</span>
+                        <span class="text-[10px] text-gray-500 leading-tight">SDM PT KAI</span>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm">
+                        AS
+                    </div>
+                </div>
+            </div>
+        </header>
 
-</div>
+        {{-- Scrollable Content --}}
+        <div class="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
+            
+            @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 flex items-center">
+                <i class="fa-solid fa-circle-check mr-2"></i> {{ session('success') }}
+            </div>
+            @endif
 
-        {{-- Statistik --}}
-        <div class="row mt-4">
-
-            <div class="col-lg-3">
-
-                <div class="stat-card">
-
-                    <small>Menunggu Verifikasi</small>
-
-                    <h2>{{ $menunggu }}</h2>
-
+            {{-- KOTAK STATISTIK DINAMIS (Akan memunculkan angka 0 jika tabel kosong, atau sesuai isi tabel) --}}
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-orange-400 p-6 flex flex-col items-center justify-center text-center">
+                    <h6 class="text-[11px] font-bold text-orange-500 uppercase tracking-wide mb-2">Pengajuan Masuk</h6>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countMasuk ?? 0 }}</span>
                 </div>
 
-            </div>
-
-            <div class="col-lg-3">
-
-                <div class="stat-card">
-
-                    <small>Pengajuan</small>
-
-                    <h2>{{ $review }}</h2>
-
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-purple-400 p-6 flex flex-col items-center justify-center text-center">
+                    <h6 class="text-[11px] font-bold text-purple-500 uppercase tracking-wide mb-2">Sedang Riview</h6>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countReview ?? 0 }}</span>
                 </div>
 
-            </div>
-
-            <div class="col-lg-3">
-
-                <div class="stat-card">
-
-                    <small>Perlu Disposisi</small>
-
-                    <h2>{{ $diterima }}</h2>
-
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-green-400 p-6 flex flex-col items-center justify-center text-center">
+                    <h6 class="text-[11px] font-bold text-green-500 uppercase tracking-wide mb-2">Diterima</h6>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countDiterima ?? 0 }}</span>
                 </div>
 
-            </div>
-
-            <div class="col-lg-3">
-
-                <div class="stat-card">
-
-                    <small>Unit Mereview</small>
-
-                    <h2>{{ $ditolak }}</h2>
-
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-red-400 p-6 flex flex-col items-center justify-center text-center">
+                    <h6 class="text-[11px] font-bold text-red-500 uppercase tracking-wide mb-2">Ditolak</h6>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countDitolak ?? 0 }}</span>
                 </div>
 
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-teal-400 p-6 flex flex-col items-center justify-center text-center">
+                    <h6 class="text-[11px] font-bold text-teal-500 uppercase tracking-wide mb-2">Selesai</h6>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countSelesai ?? 0 }}</span>
+                </div>
             </div>
 
-        </div>
+            {{-- TABEL PENGUAJUAN --}}
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h5 class="text-lg font-bold text-gray-800">Pengajuan Terbaru</h5>
+                    <a href="{{ url('/sdm/pengajuan-masuk') }}" class="text-xs font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded transition-colors">Lihat Semua</a>
+                </div>
 
-        {{-- Pengajuan Terbaru --}}
-        <div class="card dashboard-card mt-4">
-
-            <div class="card-header d-flex justify-content-between align-items-center">
-
-                <h5 class="mb-0">
-
-                    Pengajuan Terbaru
-
-                </h5>
-
-                <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">
-
-                    Lihat Semua
-
-                </a>
-
-            </div>
-
-            <div class="card-body p-0">
-
-                <div class="table-responsive">
-
-                    <table class="table table-bordered align-middle mb-0">
-
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
                         <thead>
-
-                            <tr>
-
-                                <th>Nama</th>
-
-                                <th>Universitas</th>
-
-                                <th>Jurusan</th>
-
-                                <th>Unit Tujuan</th>
-
-                                <th>Tanggal</th>
-
-                                <th>Aksi</th>
-
+                            <tr class="bg-[#1a3668] text-white text-xs font-semibold">
+                                <th class="px-6 py-3 font-semibold rounded-tl-lg">Nama</th>
+                                <th class="px-6 py-3 font-semibold">Universitas</th>
+                                <th class="px-6 py-3 font-semibold">Jurusan</th>
+                                <th class="px-6 py-3 font-semibold">Unit Tujuan</th>
+                                <th class="px-6 py-3 font-semibold">Tanggal</th>
+                                <th class="px-6 py-3 font-semibold text-center rounded-tr-lg">Aksi</th>
                             </tr>
-
                         </thead>
-
-                        <tbody>
-
-@foreach($pengajuan as $item)
-
-<tr>
-
-    <td>{{ $item->nama }}</td>
-
-    <td>{{ $item->universitas }}</td>
-
-    <td>{{ $item->jurusan }}</td>
-
-    <td>{{ $item->unit_tujuan }}</td>
-
-    <td>{{ $item->tanggal_pengajuan }}</td>
-
-    <td>
-
-        <a href="#" class="btn btn-primary btn-sm">
-
-            <i class="fa fa-eye"></i>
-
-        </a>
-
-        <a href="#" class="btn btn-warning btn-sm">
-
-            <i class="fa fa-pen"></i>
-
-        </a>
-
-        <a href="#" class="btn btn-danger btn-sm">
-
-            <i class="fa fa-trash"></i>
-
-        </a>
-
-    </td>
-
-</tr>
-
-@endforeach
-
-</tbody>
-
+                        <tbody class="text-sm text-gray-600 divide-y divide-gray-100">
+                            @if(isset($pengajuan) && count($pengajuan) > 0)
+                                @foreach($pengajuan as $item)
+                                    <tr class="hover:bg-gray-50/50">
+                                        <td class="px-6 py-4 font-medium text-gray-900">{{ $item->nama }}</td>
+                                        <td class="px-6 py-4">{{ $item->universitas }}</td>
+                                        <td class="px-6 py-4">{{ $item->jurusan }}</td>
+                                        <td class="px-6 py-4">{{ $item->unit_tujuan ?? 'Belum Ditentukan' }}</td>
+                                        <td class="px-6 py-4 text-gray-500">{{ $item->created_at->format('Y-m-d H:i:s') }}</td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center justify-center gap-3">
+                                                <a href="{{ url('/sdm/pengajuan/'.$item->id.'/edit') }}" class="text-blue-900 hover:text-blue-700" title="Edit">
+                                                    <i class="fa-regular fa-pen-to-square"></i>
+                                                </a>
+                                                <form action="{{ route('sdm.pengajuan.destroy', $item->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Hapus permanen data pendaftaran ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-blue-900 hover:text-red-600" title="Hapus">
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-gray-400">Belum ada data pendaftar di database.</td>
+                                </tr>
+                            @endif
+                        </tbody>
                     </table>
-
                 </div>
-
             </div>
 
-        </div>
-
-        <div class="row mt-4">
-
-    <!-- Ringkasan Status -->
-
-    <div class="col-lg-5">
-
-        <div class="card dashboard-card">
-
-            <div class="card-header">
-
-                Ringkasan Status
-
-            </div>
-
-            <div class="card-body">
-
-                <canvas id="statusChart" height="240"></canvas>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Aktivitas -->
-
-    <div class="col-lg-7">
-
-        <div class="card dashboard-card">
-
-            <div class="card-header">
-
-                Aktivitas Terbaru
-
-            </div>
-
-            <div class="card-body">
-
-                <div class="activity-item">
-
-                    <i class="fa-solid fa-file-lines"></i>
-
-                    <div>
-
-                        <b>Pengajuan Baru</b>
-
-                        <p>
-                            Nizam Kori mengajukan magang
-                        </p>
-
-                        <small>2 menit lalu</small>
-
+            {{-- GRAFIK & AKTIVITAS --}}
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <div class="lg:col-span-5 bg-white rounded-xl border border-gray-100 p-6 shadow-sm flex flex-col">
+                    <h5 class="text-base font-bold text-gray-800 mb-4">Ringkasan Status</h5>
+                    <div class="flex-1 flex items-center justify-center min-h-[220px]">
+                        <canvas id="statusChart"></canvas>
                     </div>
-
                 </div>
 
-                <div class="activity-item">
-
-                    <i class="fa-solid fa-paper-plane"></i>
-
-                    <div>
-
-                        <b>Disposisi Unit</b>
-
-                        <p>
-                            Berkas dikirim ke Sistem Informasi
-                        </p>
-
-                        <small>10 menit lalu</small>
-
+                <div class="lg:col-span-7 bg-white rounded-xl border border-gray-100 p-6 shadow-sm flex flex-col">
+                    <h5 class="text-base font-bold text-gray-800 mb-4">Aktivitas Terbaru</h5>
+                    <div class="space-y-4 flex-1 overflow-y-auto custom-scrollbar max-h-[240px] pr-2">
+                        @if(isset($aktivitasTerbaru) && count($aktivitasTerbaru) > 0)
+                            @foreach($aktivitasTerbaru as $akt)
+                                <div class="flex gap-3 items-start border-b border-gray-50 pb-3 last:border-0 last:pb-0">
+                                    <div class="bg-blue-50 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-user-plus text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-sm font-bold text-gray-900 block">Pendaftaran / Update Baru</span>
+                                        <span class="text-xs text-gray-600 block mt-0.5">Mahasiswa atas nama <strong>{{ $akt->nama_mahasiswa ?? $akt->nama }}</strong> telah masuk/diperbarui di sistem.</span>
+                                        <span class="text-[10px] text-gray-400 block mt-1"><i class="fa-regular fa-clock mr-1"></i>{{ $akt->updated_at->diffForHumans() }}</span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <p class="text-sm text-gray-400 text-center py-8">Belum ada aktivitas rekam data terbaru dari pendaftar.</p>
+                        @endif
                     </div>
-
                 </div>
-
-                <div class="activity-item">
-
-                    <i class="fa-solid fa-circle-check"></i>
-
-                    <div>
-
-                        <b>Diterima</b>
-
-                        <p>
-                            Muhammad Fikri diterima
-                        </p>
-
-                        <small>30 menit lalu</small>
-
-                    </div>
-
-                </div>
-
-                <div class="activity-item">
-
-                    <i class="fa-solid fa-user-clock"></i>
-
-                    <div>
-
-                        <b>Menunggu Review</b>
-
-                        <p>
-                            17 mahasiswa masih diproses
-                        </p>
-
-                        <small>1 jam lalu</small>
-
-                    </div>
-
-                </div>
-
             </div>
 
         </div>
-
-    </div>
-
-</div>
-
-<div class="row mt-4">
-
-    <div class="col-lg-6">
-
-        <div class="info-box">
-
-            <i class="fa-solid fa-bullhorn"></i>
-
-            <div>
-
-                <h6>Informasi</h6>
-
-                <span>
-
-                    Pastikan semua berkas mahasiswa telah diverifikasi
-                    sebelum didisposisikan ke unit.
-
-                </span>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-lg-6">
-
-        <div class="info-box warning">
-
-            <i class="fa-solid fa-bell"></i>
-
-            <div>
-
-                <h6>Pengingat</h6>
-
-                <span>
-
-                    Masih ada 17 pengajuan yang belum
-                    didisposisikan.
-
-                </span>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
     </main>
 
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            
+            // Variabel angka di-inject dari Controller Laravel (default ke 0 jika kosong)
+            const dataMasuk = {{ $countMasuk ?? 0 }};
+            const dataReview = {{ $countReview ?? 0 }};
+            const dataDiterima = {{ $countDiterima ?? 0 }};
+            const dataDitolak = {{ $countDitolak ?? 0 }};
+            const dataSelesai = {{ $countSelesai ?? 0 }};
 
-@endsection
+            // Jika semua data 0, tampilkan 1 donut abu-abu agar chart tidak blank
+            const totalData = dataMasuk + dataReview + dataDiterima + dataDitolak + dataSelesai;
+            
+            if(totalData === 0) {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Belum Ada Data'],
+                        datasets: [{
+                            data: [1],
+                            backgroundColor: ['#e2e8f0'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right' } } }
+                });
+            } else {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Masuk', 'Review', 'Diterima', 'Ditolak', 'Selesai'],
+                        datasets: [{
+                            data: [dataMasuk, dataReview, dataDiterima, dataDitolak, dataSelesai],
+                            backgroundColor: ['#f97316', '#a855f7', '#22c55e', '#ef4444', '#14b8a6'],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '75%',
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: { usePointStyle: true, padding: 15, font: { size: 11 } }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

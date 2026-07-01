@@ -59,6 +59,7 @@ class MagangController extends Controller
         $pendaftaran->status_penerimaan = 'Pending';   
         $pendaftaran->status_magang     = 'Belum Mulai';
         $pendaftaran->save();
+
         Pengajuan::create([
 
     'nama' => $request->nama_mahasiswa,

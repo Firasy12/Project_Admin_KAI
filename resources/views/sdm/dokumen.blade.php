@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pengajuan Masuk - E-Magang KAI</title>
+    <title>Dokumen - E-Magang KAI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -38,11 +38,10 @@
                         <span class="ml-2 text-sm">Dashboard</span>
                     </a>
                 </li>
-                {{-- MENU AKTIF UNTUK PENGAJUAN MASUK --}}
                 <li>
-                    <a href="{{ url('/sdm/pengajuan-masuk') }}" class="flex items-center px-6 py-2.5 text-gray-900 font-bold bg-blue-50/50 border-r-4 border-blue-600">
-                        <i class="fa-solid fa-file-lines w-6 text-center text-blue-700"></i>
-                        <span class="ml-2 text-sm text-blue-700">Pengajuan Masuk</span>
+                    <a href="{{ url('/sdm/pengajuan-masuk') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-file-lines w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Pengajuan Masuk</span>
                     </a>
                 </li>
                 <li>
@@ -69,10 +68,11 @@
                         <span class="ml-2 text-sm">Notifikasi</span>
                     </a>
                 </li>
+                {{-- MENU AKTIF UNTUK DOKUMEN --}}
                 <li>
-                    <a href="{{ url('/sdm/dokumen') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
-                        <i class="fa-solid fa-folder-open w-6 text-center"></i>
-                        <span class="ml-2 text-sm">Dokumen</span>
+                    <a href="{{ url('/sdm/dokumen') }}" class="flex items-center px-6 py-2.5 text-gray-900 font-bold bg-cyan-50/50 border-r-4 border-cyan-600">
+                        <i class="fa-solid fa-folder-open w-6 text-center text-cyan-700"></i>
+                        <span class="ml-2 text-sm text-cyan-700">Dokumen</span>
                     </a>
                 </li>
                 <li>
@@ -91,12 +91,12 @@
         {{-- Header --}}
         <header class="h-24 flex items-center justify-between px-8 shrink-0">
             <div>
-                <h2 class="text-2xl font-bold text-gray-800">Pengajuan Masuk</h2>
-                <p class="text-sm text-gray-500 mt-1">Kelola seluruh data pengajuan mahasiswa.</p>
+                <h2 class="text-2xl font-bold text-gray-800">Arsip Dokumen</h2>
+                <p class="text-sm text-gray-500 mt-1">Kelola dan unduh seluruh berkas persyaratan pendaftar magang.</p>
             </div>
 
             <div class="flex items-center space-x-4">
-                <button class="relative text-gray-400 hover:text-gray-600 transition-colors p-2">
+                <button class="relative text-gray-400 hover:text-cyan-600 transition-colors p-2">
                     <i class="fa-solid fa-bell text-xl"></i>
                 </button>
                 <div class="flex items-center bg-white border border-gray-100 shadow-sm rounded-full pl-4 pr-1 py-1 cursor-pointer">
@@ -112,80 +112,55 @@
         {{-- Scrollable Content --}}
         <div class="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
             
-            {{-- KOTAK STATISTIK --}}
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-orange-400 p-6 flex flex-col items-center justify-center text-center">
-                    <h6 class="text-[11px] font-bold text-orange-500 uppercase tracking-wide mb-2">Menunggu</h6>
-                    <span class="text-4xl font-bold text-gray-800">{{ \App\Models\Pengajuan::where('status', 'Menunggu')->count() }}</span>
-                </div>
-                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-purple-400 p-6 flex flex-col items-center justify-center text-center">
-                    <h6 class="text-[11px] font-bold text-purple-500 uppercase tracking-wide mb-2">Review</h6>
-                    <span class="text-4xl font-bold text-gray-800">{{ \App\Models\Pengajuan::where('status', 'Review')->count() }}</span>
-                </div>
-                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-green-400 p-6 flex flex-col items-center justify-center text-center">
-                    <h6 class="text-[11px] font-bold text-green-500 uppercase tracking-wide mb-2">Diterima</h6>
-                    <span class="text-4xl font-bold text-gray-800">{{ \App\Models\Pengajuan::where('status', 'Diterima')->count() }}</span>
-                </div>
-                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-red-400 p-6 flex flex-col items-center justify-center text-center">
-                    <h6 class="text-[11px] font-bold text-red-500 uppercase tracking-wide mb-2">Ditolak</h6>
-                    <span class="text-4xl font-bold text-gray-800">{{ \App\Models\Pengajuan::where('status', 'Ditolak')->count() }}</span>
-                </div>
-            </div>
-
-            {{-- TABEL PENGAJUAN --}}
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8 p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6 w-full">
                 <div class="flex justify-between items-center mb-6">
-                    <h5 class="text-lg font-bold text-gray-800">Daftar Pengajuan</h5>
-                    <button class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded text-sm font-medium transition-colors">
-                        <i class="fa fa-plus mr-2"></i>Tambah Pengajuan
-                    </button>
+                    <h5 class="text-lg font-bold text-gray-800">Daftar Berkas Mahasiswa</h5>
+                    <div class="relative">
+                        <input type="text" placeholder="Cari nama/universitas..." class="bg-gray-50 border border-gray-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-64 pl-10 p-2">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400"></i>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-[#1a3668] text-white text-xs font-semibold">
-                                <th class="px-6 py-3 font-semibold rounded-tl-lg">No</th>
-                                <th class="px-6 py-3 font-semibold">Nama</th>
-                                <th class="px-6 py-3 font-semibold">Universitas</th>
-                                <th class="px-6 py-3 font-semibold">Jurusan</th>
-                                <th class="px-6 py-3 font-semibold">Unit Tujuan</th>
-                                <th class="px-6 py-3 font-semibold text-center">Status</th>
-                                <th class="px-6 py-3 font-semibold text-center rounded-tr-lg">Aksi</th>
+                            <tr class="bg-cyan-50 text-cyan-900 text-xs font-semibold border-b border-cyan-100">
+                                <th class="px-6 py-3 rounded-tl-lg">No</th>
+                                <th class="px-6 py-3">Nama Pendaftar</th>
+                                <th class="px-6 py-3">Universitas</th>
+                                <th class="px-6 py-3 text-center">Proposal Pengajuan</th>
+                                <th class="px-6 py-3 text-center rounded-tr-lg">Aksi Lainnya</th>
                             </tr>
                         </thead>
                         <tbody class="text-sm text-gray-600 divide-y divide-gray-100">
-                            @if(isset($pengajuan) && count($pengajuan) > 0)
-                                @foreach($pengajuan as $item)
-                                    <tr class="hover:bg-gray-50/50">
+                            @if(isset($dokumen) && count($dokumen) > 0)
+                                @foreach($dokumen as $item)
+                                    <tr class="hover:bg-gray-50/50 transition-colors">
                                         <td class="px-6 py-4">{{ $loop->iteration }}</td>
-                                        <td class="px-6 py-4 font-medium text-gray-900">{{ $item->nama }}</td>
+                                        <td class="px-6 py-4 font-bold text-gray-900">{{ $item->nama }}</td>
                                         <td class="px-6 py-4">{{ $item->universitas }}</td>
-                                        <td class="px-6 py-4">{{ $item->jurusan }}</td>
-                                        <td class="px-6 py-4">{{ $item->unit_tujuan ?? 'Belum Ditentukan' }}</td>
                                         <td class="px-6 py-4 text-center">
-                                            @if($item->status == 'Menunggu')
-                                                <span class="bg-orange-100 text-orange-800 text-xs font-bold px-3 py-1 rounded-full">Menunggu</span>
-                                            @elseif($item->status == 'Review')
-                                                <span class="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full">Review</span>
-                                            @elseif($item->status == 'Diterima')
-                                                <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full">Diterima</span>
-                                            @elseif($item->status == 'Ditolak')
-                                                <span class="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full">Ditolak</span>
+                                            @if($item->proposal)
+                                                <a href="#" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg text-xs font-semibold transition-colors border border-red-100">
+                                                    <i class="fa-solid fa-file-pdf mr-1.5 text-red-500"></i> Lihat PDF
+                                                </a>
                                             @else
-                                                <span class="bg-gray-100 text-gray-800 text-xs font-bold px-3 py-1 rounded-full">{{ $item->status }}</span>
+                                                <span class="text-xs text-gray-400 italic">Belum diunggah</span>
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 text-center">
-                                            <a href="#" class="bg-[#1a3668] hover:bg-blue-800 text-white text-xs px-4 py-2 rounded transition-colors">
-                                                Lihat
-                                            </a>
+                                            <button class="text-cyan-600 hover:text-cyan-800 bg-cyan-50 hover:bg-cyan-100 p-2 rounded transition-colors" title="Download Semua Berkas">
+                                                <i class="fa-solid fa-cloud-arrow-down"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="7" class="px-6 py-8 text-center text-gray-400">Belum ada data pengajuan.</td>
+                                    <td colspan="5" class="px-6 py-8 text-center text-gray-400">
+                                        <i class="fa-solid fa-folder-open text-3xl mb-2 text-gray-300"></i>
+                                        <p>Belum ada dokumen yang diunggah.</p>
+                                    </td>
                                 </tr>
                             @endif
                         </tbody>
@@ -193,9 +168,9 @@
                 </div>
 
                 {{-- Pagination --}}
-                @if(isset($pengajuan) && method_exists($pengajuan, 'links'))
+                @if(isset($dokumen) && method_exists($dokumen, 'links'))
                 <div class="mt-4">
-                    {{ $pengajuan->links() }}
+                    {{ $dokumen->links() }}
                 </div>
                 @endif
 

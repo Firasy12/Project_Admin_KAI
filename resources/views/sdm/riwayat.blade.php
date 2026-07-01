@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pengajuan Masuk - E-Magang KAI</title>
+    <title>Riwayat Review - E-Magang KAI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -38,11 +38,10 @@
                         <span class="ml-2 text-sm">Dashboard</span>
                     </a>
                 </li>
-                {{-- MENU AKTIF UNTUK PENGAJUAN MASUK --}}
                 <li>
-                    <a href="{{ url('/sdm/pengajuan-masuk') }}" class="flex items-center px-6 py-2.5 text-gray-900 font-bold bg-blue-50/50 border-r-4 border-blue-600">
-                        <i class="fa-solid fa-file-lines w-6 text-center text-blue-700"></i>
-                        <span class="ml-2 text-sm text-blue-700">Pengajuan Masuk</span>
+                    <a href="{{ url('/sdm/pengajuan-masuk') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-file-lines w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Pengajuan Masuk</span>
                     </a>
                 </li>
                 <li>
@@ -51,10 +50,11 @@
                         <span class="ml-2 text-sm">Review Pengajuan</span>
                     </a>
                 </li>
+                {{-- MENU AKTIF UNTUK RIWAYAT REVIEW --}}
                 <li>
-                    <a href="{{ url('/sdm/riwayat-review') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
-                        <i class="fa-solid fa-clock-rotate-left w-6 text-center"></i>
-                        <span class="ml-2 text-sm">Riwayat Review</span>
+                    <a href="{{ url('/sdm/riwayat-review') }}" class="flex items-center px-6 py-2.5 text-gray-900 font-bold bg-teal-50/50 border-r-4 border-teal-600">
+                        <i class="fa-solid fa-clock-rotate-left w-6 text-center text-teal-700"></i>
+                        <span class="ml-2 text-sm text-teal-700">Riwayat Review</span>
                     </a>
                 </li>
                 <li>
@@ -91,8 +91,8 @@
         {{-- Header --}}
         <header class="h-24 flex items-center justify-between px-8 shrink-0">
             <div>
-                <h2 class="text-2xl font-bold text-gray-800">Pengajuan Masuk</h2>
-                <p class="text-sm text-gray-500 mt-1">Kelola seluruh data pengajuan mahasiswa.</p>
+                <h2 class="text-2xl font-bold text-gray-800">Riwayat Review</h2>
+                <p class="text-sm text-gray-500 mt-1">Daftar keputusan pengajuan magang yang telah selesai dievaluasi.</p>
             </div>
 
             <div class="flex items-center space-x-4">
@@ -112,80 +112,59 @@
         {{-- Scrollable Content --}}
         <div class="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
             
-            {{-- KOTAK STATISTIK --}}
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-orange-400 p-6 flex flex-col items-center justify-center text-center">
-                    <h6 class="text-[11px] font-bold text-orange-500 uppercase tracking-wide mb-2">Menunggu</h6>
-                    <span class="text-4xl font-bold text-gray-800">{{ \App\Models\Pengajuan::where('status', 'Menunggu')->count() }}</span>
-                </div>
-                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-purple-400 p-6 flex flex-col items-center justify-center text-center">
-                    <h6 class="text-[11px] font-bold text-purple-500 uppercase tracking-wide mb-2">Review</h6>
-                    <span class="text-4xl font-bold text-gray-800">{{ \App\Models\Pengajuan::where('status', 'Review')->count() }}</span>
-                </div>
-                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-green-400 p-6 flex flex-col items-center justify-center text-center">
-                    <h6 class="text-[11px] font-bold text-green-500 uppercase tracking-wide mb-2">Diterima</h6>
-                    <span class="text-4xl font-bold text-gray-800">{{ \App\Models\Pengajuan::where('status', 'Diterima')->count() }}</span>
-                </div>
-                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-red-400 p-6 flex flex-col items-center justify-center text-center">
-                    <h6 class="text-[11px] font-bold text-red-500 uppercase tracking-wide mb-2">Ditolak</h6>
-                    <span class="text-4xl font-bold text-gray-800">{{ \App\Models\Pengajuan::where('status', 'Ditolak')->count() }}</span>
-                </div>
-            </div>
-
-            {{-- TABEL PENGAJUAN --}}
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8 p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <h5 class="text-lg font-bold text-gray-800">Daftar Pengajuan</h5>
-                    <button class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded text-sm font-medium transition-colors">
-                        <i class="fa fa-plus mr-2"></i>Tambah Pengajuan
+                    <h5 class="text-lg font-bold text-gray-800">Riwayat Keputusan</h5>
+                    <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded transition-colors">
+                        <i class="fa-solid fa-filter mr-1"></i> Filter
                     </button>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-[#1a3668] text-white text-xs font-semibold">
-                                <th class="px-6 py-3 font-semibold rounded-tl-lg">No</th>
-                                <th class="px-6 py-3 font-semibold">Nama</th>
-                                <th class="px-6 py-3 font-semibold">Universitas</th>
-                                <th class="px-6 py-3 font-semibold">Jurusan</th>
-                                <th class="px-6 py-3 font-semibold">Unit Tujuan</th>
-                                <th class="px-6 py-3 font-semibold text-center">Status</th>
-                                <th class="px-6 py-3 font-semibold text-center rounded-tr-lg">Aksi</th>
+                            <tr class="bg-teal-50 text-teal-900 text-xs font-semibold border-b border-teal-100">
+                                <th class="px-6 py-3 rounded-tl-lg">No</th>
+                                <th class="px-6 py-3">Data Pendaftar</th>
+                                <th class="px-6 py-3">Tanggal Review</th>
+                                <th class="px-6 py-3 text-center">Keputusan</th>
+                                <th class="px-6 py-3 text-center rounded-tr-lg">Detail</th>
                             </tr>
                         </thead>
                         <tbody class="text-sm text-gray-600 divide-y divide-gray-100">
-                            @if(isset($pengajuan) && count($pengajuan) > 0)
-                                @foreach($pengajuan as $item)
+                            @if(isset($riwayat) && count($riwayat) > 0)
+                                @foreach($riwayat as $item)
                                     <tr class="hover:bg-gray-50/50">
                                         <td class="px-6 py-4">{{ $loop->iteration }}</td>
-                                        <td class="px-6 py-4 font-medium text-gray-900">{{ $item->nama }}</td>
-                                        <td class="px-6 py-4">{{ $item->universitas }}</td>
-                                        <td class="px-6 py-4">{{ $item->jurusan }}</td>
-                                        <td class="px-6 py-4">{{ $item->unit_tujuan ?? 'Belum Ditentukan' }}</td>
-                                        <td class="px-6 py-4 text-center">
-                                            @if($item->status == 'Menunggu')
-                                                <span class="bg-orange-100 text-orange-800 text-xs font-bold px-3 py-1 rounded-full">Menunggu</span>
-                                            @elseif($item->status == 'Review')
-                                                <span class="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full">Review</span>
-                                            @elseif($item->status == 'Diterima')
-                                                <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full">Diterima</span>
-                                            @elseif($item->status == 'Ditolak')
-                                                <span class="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full">Ditolak</span>
-                                            @else
-                                                <span class="bg-gray-100 text-gray-800 text-xs font-bold px-3 py-1 rounded-full">{{ $item->status }}</span>
-                                            @endif
+                                        <td class="px-6 py-4">
+                                            <p class="font-bold text-gray-900">{{ $item->nama }}</p>
+                                            <p class="text-xs text-gray-500">{{ $item->universitas }} - {{ $item->jurusan }}</p>
+                                        </td>
+                                        <td class="px-6 py-4 text-gray-500 text-xs">
+                                            {{ $item->updated_at->format('d M Y - H:i') }}
                                         </td>
                                         <td class="px-6 py-4 text-center">
-                                            <a href="#" class="bg-[#1a3668] hover:bg-blue-800 text-white text-xs px-4 py-2 rounded transition-colors">
-                                                Lihat
+    @if($item->status == 'Diterima')
+        <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full"><i class="fa-solid fa-check mr-1"></i> Memenuhi Syarat</span>
+    @elseif($item->status == 'Ditolak')
+        <span class="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full"><i class="fa-solid fa-xmark mr-1"></i> Ditolak</span>
+    @else
+        <span class="bg-gray-100 text-gray-800 text-xs font-bold px-3 py-1 rounded-full">{{ $item->status }}</span>
+    @endif
+</td>
+                                        <td class="px-6 py-4 text-center">
+                                            <a href="#" class="text-teal-600 hover:text-teal-800 font-medium text-xs">
+                                                Lihat Berkas
                                             </a>
                                         </td>
                                     </tr>
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="7" class="px-6 py-8 text-center text-gray-400">Belum ada data pengajuan.</td>
+                                    <td colspan="5" class="px-6 py-8 text-center text-gray-400">
+                                        <i class="fa-solid fa-folder-open text-3xl mb-2 text-gray-300"></i>
+                                        <p>Belum ada riwayat review pengajuan.</p>
+                                    </td>
                                 </tr>
                             @endif
                         </tbody>
@@ -193,9 +172,9 @@
                 </div>
 
                 {{-- Pagination --}}
-                @if(isset($pengajuan) && method_exists($pengajuan, 'links'))
+                @if(isset($riwayat) && method_exists($riwayat, 'links'))
                 <div class="mt-4">
-                    {{ $pengajuan->links() }}
+                    {{ $riwayat->links() }}
                 </div>
                 @endif
 

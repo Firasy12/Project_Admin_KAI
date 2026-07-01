@@ -3,140 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard SDM - E-Magang KAI</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Dashboard Admin SDM - E-Magang KAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f4f6fa; }
-        :root { --kai-blue: #223E92; --kai-orange: #ED6B23; }
-        .bg-kai-blue { background-color: var(--kai-blue) !important; }
-        .bg-kai-orange { background-color: var(--kai-orange) !important; }
-        .card-stat { border: none; border-radius: 16px; transition: transform 0.2s ease; }
-        .card-stat:hover { transform: translateY(-3px); }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
     </style>
 </head>
-<body>
+<body class="flex h-screen overflow-hidden text-gray-800 bg-[#f4f6f9]">
 
-    <nav class="navbar navbar-dark bg-kai-blue shadow-sm mb-4 py-3">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="{{ asset('images/logo-kai.png') }}" alt="Logo KAI" height="38" class="bg-white p-1 rounded me-3 shadow-sm">
-                <div>
-                    <span class="fw-bold fs-5 d-block">E-MAGANG KAI</span>
-                    <small style="font-size: 0.7rem;" class="text-white-50">Human Capital / SDM - Divisi Regional III</small>
-                </div>
-            </a>
-            <span class="badge bg-white text-kai-blue fw-bold px-3 py-2 rounded-pill">Aktor: SDM</span>
-        </div>
-    </nav>
-
-    <div class="container">
-        @if(session('success'))
-            <div class="alert alert-success border-0 shadow-sm mb-4"><i class="fa-solid fa-circle-check me-2"></i>{{ session('success') }}</div>
-        @endif
-
-        <div class="row g-3 mb-4">
-            <div class="col-md-4">
-                <div class="card card-stat bg-kai-blue text-white p-4 shadow-sm">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50 small font-bold text-uppercase mb-1">Maksimal Kuota</h6>
-                            <h2 class="fw-bold mb-0">{{ $totalKuota }} <span class="fs-5 fw-normal">Orang</span></h2>
-                        </div>
-                        <i class="fa-solid fa-users fa-2x opacity-25"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card card-stat bg-success text-white p-4 shadow-sm">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50 small font-bold text-uppercase mb-1">Kuota Terisi Active</h6>
-                            <h2 class="fw-bold mb-0">{{ $totalKuota - $sisaKuota }} <span class="fs-5 fw-normal">Orang</span></h2>
-                        </div>
-                        <i class="fa-solid fa-user-check fa-2x opacity-25"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card card-stat bg-kai-orange text-white p-4 shadow-sm">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50 small font-bold text-uppercase mb-1">Sisa Slot Kuota</h6>
-                            <h2 class="fw-bold mb-0">{{ $sisaKuota }} <span class="fs-5 fw-normal">Slot</span></h2>
-                        </div>
-                        <i class="fa-solid fa-pie-chart fa-2x opacity-25"></i>
-                    </div>
-                </div>
-            </div>
+    {{-- [POIN 1] SIDEBAR - LINK MENU BISA DIKLIK --}}
+    <aside class="w-64 bg-white border-r border-gray-100 flex flex-col hidden md:flex shrink-0 z-20">
+        <div class="pt-8 pb-6 flex flex-col items-center justify-center px-4">
+            <img src="{{ asset('images/logo-kai.png') }}" alt="Logo KAI" class="h-10 mb-2" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Logo_PT_Kereta_Api_Indonesia_%28Persero%29_2020.svg/1024px-Logo_PT_Kereta_Api_Indonesia_%28Persero%29_2020.svg.png';">
+            <p class="text-[10px] text-gray-500 text-center font-medium leading-tight">
+                SISTEM INFORMASI MAGANG<br>PT KERETA API INDONESIA
+            </p>
         </div>
 
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
-                <h5 class="m-0 fw-bold text-secondary"><i class="fa-solid fa-folder-open text-kai-blue me-2"></i>Berkas Masuk Menunggu Validasi</h5>
-                <span class="badge bg-danger rounded-pill px-3 py-2">{{ $pendaftar->count() }} Berkas</span>
+        <nav class="flex-1 overflow-y-auto py-2 custom-scrollbar">
+            <div class="px-6 mb-3">
+                <p class="text-[11px] font-bold text-orange-500 uppercase tracking-wider">Admin SDM</p>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="ps-4">Data Mahasiswa</th>
-                                <th>Kontak Informasi</th>
-                                <th class="text-center">Dokumen</th>
-                                <th class="text-center">Posisi Alur</th>
-                                <th class="text-center">Aksi Pengecekan</th>
+            
+            <ul class="space-y-1">
+                <li>
+                    <a href="{{ url('/sdm/dashboard') }}" class="flex items-center px-6 py-2.5 text-gray-900 font-bold bg-blue-50/50 border-r-4 border-blue-600">
+                        <i class="fa-solid fa-house w-6 text-center text-blue-700"></i>
+                        <span class="ml-2 text-sm text-blue-700">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url('/sdm/pengajuan-masuk') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-file-lines w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Pengajuan Masuk</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-users w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Review Pengajuan</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-clock-rotate-left w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Riwayat Review</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-chart-line w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Monitoring Status</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-bell w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Notifikasi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-folder-open w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Dokumen</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                        <i class="fa-solid fa-user w-6 text-center"></i>
+                        <span class="ml-2 text-sm">Profil</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    {{-- Main Content Area --}}
+    <main class="flex-1 flex flex-col overflow-hidden">
+        
+        {{-- Header --}}
+        <header class="h-24 flex items-center justify-between px-8 shrink-0">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800">Selamat Datang, Admin SDM</h2>
+                <p class="text-sm text-gray-500 mt-1">kelola pengajuan magang dengan mudah</p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <button class="relative text-gray-400 hover:text-gray-600 transition-colors p-2">
+                    <i class="fa-solid fa-bell text-xl"></i>
+                </button>
+
+                <div class="flex items-center bg-white border border-gray-100 shadow-sm rounded-full pl-4 pr-1 py-1 cursor-pointer">
+                    <div class="flex flex-col text-right mr-3">
+                        <span class="text-sm font-bold text-gray-800 leading-tight">Admin SDM</span>
+                        <span class="text-[10px] text-gray-500 leading-tight">SDM PT KAI</span>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm">
+                        AS
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        {{-- Scrollable Content --}}
+        <div class="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
+            
+            @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 flex items-center">
+                <i class="fa-solid fa-circle-check mr-2"></i> {{ session('success') }}
+            </div>
+            @endif
+
+            {{-- [POIN 2] KOTAK STATISTIK - OTOMATIS MENDETEKSI DATA CONTROLLER --}}
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-orange-400 p-6 flex flex-col items-center justify-center text-center">
+                    <h6 class="text-[11px] font-bold text-orange-500 uppercase tracking-wide mb-2">Pengajuan Masuk</h6>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countMasuk }}</span>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-purple-400 p-6 flex flex-col items-center justify-center text-center">
+                    <h6 class="text-[11px] font-bold text-purple-500 uppercase tracking-wide mb-2">Sedang Riview</h6>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countReview }}</span>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-green-400 p-6 flex flex-col items-center justify-center text-center">
+                    <h6 class="text-[11px] font-bold text-green-500 uppercase tracking-wide mb-2">Diterima</h6>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countDiterima }}</span>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-red-400 p-6 flex flex-col items-center justify-center text-center">
+                    <h6 class="text-[11px] font-bold text-red-500 uppercase tracking-wide mb-2">Ditolak</h6>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countDitolak }}</span>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-teal-400 p-6 flex flex-col items-center justify-center text-center">
+                    <h6 class="text-[11px] font-bold text-teal-500 uppercase tracking-wide mb-2">Selesai</h6>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countSelesai }}</span>
+                </div>
+            </div>
+
+            {{-- [POIN 3] TABEL PENGUAJUAN - EDIT & DELETE BERFUNGSI --}}
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h5 class="text-lg font-bold text-gray-800">Pengajuan Terbaru</h5>
+                    <a href="#" class="text-xs font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded transition-colors">Lihat Semua</a>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-[#1a3668] text-white text-xs font-semibold">
+                                <th class="px-6 py-3 font-semibold rounded-tl-lg">Nama</th>
+                                <th class="px-6 py-3 font-semibold">Universitas</th>
+                                <th class="px-6 py-3 font-semibold">Jurusan</th>
+                                <th class="px-6 py-3 font-semibold">Unit Tujuan</th>
+                                <th class="px-6 py-3 font-semibold">Tanggal</th>
+                                <th class="px-6 py-3 font-semibold text-center rounded-tr-lg">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @forelse($pendaftar as $p)
-                            <tr>
-                                <td class="ps-4">
-                                    <h6 class="fw-bold text-dark mb-0">{{ $p->nama_mahasiswa }}</h6>
-                                    <small class="text-muted">{{ $p->nim }} — <strong>{{ $p->universitas }}</strong></small>
-                                    <div style="font-size: 0.75rem;" class="text-secondary">{{ $p->jurusan }}</div>
-                                </td>
-                                <td>
-                                    <div class="small text-secondary"><i class="fa-solid fa-envelope me-1 text-muted"></i>{{ $p->email }}</div>
-                                    <div class="small text-secondary"><i class="fa-solid fa-phone me-1 text-muted"></i>{{ $p->no_hp }}</div>
-                                </td>
-                                <td class="text-center">
-                                    <a href="{{ asset('uploads/' . $p->file_proposal) }}" target="_blank" class="btn btn-sm btn-outline-danger px-3 rounded-pill">
-                                        <i class="fa-solid fa-file-pdf me-1"></i> Buka Proposal
-                                    </a>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold" style="font-size: 0.7rem;">MEJA SDM</span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <form action="{{ route('sdm.oper', $p->id) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-sm btn-success rounded-pill px-3" {{ $sisaKuota <= 0 ? 'disabled' : '' }}><i class="fa-solid fa-check me-1"></i>Kuota Ada</button>
-                                        </form>
-                                        <form action="{{ route('sdm.tolak', $p->id) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-sm btn-danger rounded-pill px-3"><i class="fa-solid fa-ban me-1"></i>Tolak</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tbody class="text-sm text-gray-600 divide-y divide-gray-100">
+                            @forelse($pengajuan as $item)
+                                <tr class="hover:bg-gray-50/50">
+                                    <td class="px-6 py-4 font-medium text-gray-900">{{ $item->nama_mahasiswa ?? $item->nama }}</td>
+                                    <td class="px-6 py-4">{{ $item->universitas }}</td>
+                                    <td class="px-6 py-4">{{ $item->jurusan }}</td>
+                                    <td class="px-6 py-4">{{ $item->unit_tujuan ?? 'Belum Ditentukan' }}</td>
+                                    <td class="px-6 py-4 text-gray-500">{{ $item->created_at->format('Y-m-d H:i') }}</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center justify-center gap-3">
+                                            <a href="{{ route('sdm.pengajuan.edit', $item->id) }}" class="text-blue-900 hover:text-blue-700" title="Edit">
+                                                <i class="fa-regular fa-pen-to-square"></i>
+                                            </a>
+                                            <form action="{{ route('sdm.pengajuan.destroy', $item->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Hapus permanen data pendaftaran ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-blue-900 hover:text-red-600" title="Hapus">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
                             @empty
-                            <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
-                                    <i class="fa-solid fa-circle-check fa-3x text-success mb-2 opacity-50"></i>
-                                    <h6 class="fw-bold">Semua Bersih! Tidak Ada Dokumen Tertahan di SDM</h6>
-                                </td>
-                            </tr>
-                            @endforelse
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-gray-400">Belum ada data pendaftar di database.</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            {{-- Grafik & Aktivitas Sejajar --}}
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-5 bg-white rounded-xl border border-gray-100 p-6 shadow-sm flex flex-col">
+                    <h5 class="text-base font-bold text-gray-800 mb-4">Ringkasan Status</h5>
+                    <div class="flex-1 flex items-center justify-center min-h-[220px]">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 bg-white rounded-xl border border-gray-100 p-6 shadow-sm flex flex-col">
+                    <h5 class="text-base font-bold text-gray-800 mb-4">Aktivitas Terbaru</h5>
+                    <div class="space-y-4 flex-1 overflow-y-auto custom-scrollbar max-h-[240px] pr-2">
+                        @forelse($aktivitasTerbaru as $akt)
+                            <div class="flex gap-3 items-start border-b border-gray-50 pb-3 last:border-0 last:pb-0">
+                                <div class="bg-blue-50 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                                    <i class="fa-solid fa-file-invoice text-xs"></i>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-bold text-gray-900 block">Pendaftaran / Update Masuk</span>
+                                    <span class="text-xs text-gray-600 block mt-0.5">Berkas atas nama <strong>{{ $akt->nama_mahasiswa ?? $akt->nama }}</strong> telah masuk ke sistem.</span>
+                                    <span class="text-[10px] text-gray-400 block mt-1"><i class="fa-regular fa-clock mr-1"></i>{{ $akt->updated_at->diffForHumans() }}</span>
+                                </div>
+                            </div>
+                        @empty
+                            <p class="text-sm text-gray-400 text-center py-8">Belum ada aktivitas rekam data terbaru.</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
         </div>
-    </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            
+            // Mengambil variabel angka asli hasil hitungan dari Controller
+            const dataMasuk = {{ $countMasuk }};
+            const dataReview = {{ $countReview }};
+            const dataDiterima = {{ $countDiterima }};
+            const dataDitolak = {{ $countDitolak }};
+            const dataSelesai = {{ $countSelesai }};
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Masuk', 'Review', 'Diterima', 'Ditolak', 'Selesai'],
+                    datasets: [{
+                        data: [dataMasuk, dataReview, dataDiterima, dataDitolak, dataSelesai],
+                        backgroundColor: ['#f97316', '#a855f7', '#22c55e', '#ef4444', '#14b8a6'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15,
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
