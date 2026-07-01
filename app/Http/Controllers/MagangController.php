@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pendaftaran;
+use App\Models\Pengajuan;
 
 class MagangController extends Controller
 {
@@ -58,6 +59,30 @@ class MagangController extends Controller
         $pendaftaran->status_penerimaan = 'Pending';   
         $pendaftaran->status_magang     = 'Belum Mulai';
         $pendaftaran->save();
+
+        Pengajuan::create([
+
+    'nama' => $request->nama_mahasiswa,
+
+    'nim' => $request->nim,
+
+    'universitas' => $request->universitas,
+
+    'jurusan' => $request->jurusan,
+
+    'email' => $request->email,
+
+    'no_hp' => $request->no_hp,
+
+    'proposal' => $fileName,
+
+    'tanggal_pengajuan' => now(),
+
+    'unit_tujuan' => 'Belum Ditentukan',
+
+    'status' => 'Menunggu Verifikasi SDM',
+
+]);
 
         // 3. DIALIRKAN KEMBALI KE DASHBOARD MAHASISWA (Sesuai Alur yang Kamu Minta)
         return redirect()->route('mahasiswa.dashboard')->with('success', 'Proposal Berhasil Dikirim! Berkas Anda saat ini telah diterima oleh unit SDM untuk pengecekan kuota.');
