@@ -142,7 +142,16 @@
                             </label>
                         </div>
                     </div>
+<<<<<<< HEAD
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url()->previous() }}" class="btn btn-secondary">Kembali</a>
+                        <button type="submit" class="btn btn-warning text-white">Simpan Perubahan</button>
+                    </div>
+                </form>
+=======
                 </div>
+>>>>>>> 51936d2fedfe22b8fff49dee4345e2bcc143498d
             </div>
 
             {{-- Tombol Aksi --}}
