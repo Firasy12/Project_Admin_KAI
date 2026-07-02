@@ -128,4 +128,34 @@ public function profil() {
     return view('sdm.profil');
 } 
 
+public function prosesReview(Request $request, $id) 
+{
+    $pengajuan = Pengajuan::findOrFail($id);
+    $keputusan = $request->keputusan; // Akan berisi "Disposisi", "Revisi", atau "Ditolak"
+
+    if ($keputusan == 'Disposisi') {
+        $pengajuan->status = 'Diterima'; // Diteruskan ke Unit
+    } elseif ($keputusan == 'Revisi') {
+        $pengajuan->status = 'Revisi'; // Butuh perbaikan berkas
+    } elseif ($keputusan == 'Ditolak') {
+        $pengajuan->status = 'Ditolak_SDM'; // Gagal tahap SDM
+    }
+
+    $pengajuan->save();
+    return back()->with('success', 'Keputusan review berhasil disimpan!');
+}
+
+// Fungsi untuk mengubah status pengajuan dari halaman Pengajuan Masuk SDM
+    public function updateStatusSDM(Request $request, $id) 
+    {
+        // Cari data mahasiswa berdasarkan ID
+        $pengajuan = \App\Models\Pengajuan::findOrFail($id);
+        
+        // Update status sesuai dengan tombol yang ditekan
+        $pengajuan->status = $request->status;
+        $pengajuan->save();
+        
+        return back()->with('success', 'Status pengajuan berhasil diubah menjadi: ' . $request->status);
+    }
+
 }

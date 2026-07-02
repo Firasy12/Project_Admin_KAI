@@ -157,16 +157,15 @@
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-[#1a3668] text-white text-xs font-semibold">
-                                <th class="px-6 py-3 font-semibold rounded-tl-lg">Nama</th>
-                                <th class="px-6 py-3 font-semibold">Universitas</th>
-                                <th class="px-6 py-3 font-semibold">Jurusan</th>
-                                <th class="px-6 py-3 font-semibold">Unit Tujuan</th>
-                                <th class="px-6 py-3 font-semibold">Tanggal</th>
-                                <th class="px-6 py-3 font-semibold text-center rounded-tr-lg">Aksi</th>
-                            </tr>
-                        </thead>
+                        <thead class="bg-[#1a3668] text-white text-xs font-semibold">
+    <tr>
+        <th class="px-6 py-3 rounded-tl-lg">Nama</th>
+        <th class="px-6 py-3">Universitas</th>
+        <th class="px-6 py-3">Jurusan</th>
+        <th class="px-6 py-3">Unit Tujuan</th>
+        <th class="px-6 py-3 rounded-tr-lg">Tanggal</th> {{-- Sudut lengkung dipindah ke sini --}}
+    </tr>
+</thead>
                         <tbody class="text-sm text-gray-600 divide-y divide-gray-100">
                             @if(isset($pengajuan) && count($pengajuan) > 0)
                                 @foreach($pengajuan as $item)
@@ -176,18 +175,6 @@
                                         <td class="px-6 py-4">{{ $item->jurusan }}</td>
                                         <td class="px-6 py-4">{{ $item->unit_tujuan ?? 'Belum Ditentukan' }}</td>
                                         <td class="px-6 py-4 text-gray-500">{{ $item->created_at->format('Y-m-d H:i:s') }}</td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center justify-center gap-3">
-                                                <a href="{{ url('/sdm/pengajuan/'.$item->id.'/edit') }}" class="text-blue-900 hover:text-blue-700" title="Edit">
-                                                    <i class="fa-regular fa-pen-to-square"></i>
-                                                </a>
-                                                <form action="{{ route('sdm.pengajuan.destroy', $item->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Hapus permanen data pendaftaran ini?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-blue-900 hover:text-red-600" title="Hapus">
-                                                        <i class="fa-solid fa-trash-can"></i>
-                                                    </button>
-                                                </form>
                                             </div>
                                         </td>
                                     </tr>

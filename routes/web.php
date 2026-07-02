@@ -68,6 +68,8 @@ Route::prefix('sdm')->group(function () {
 
     Route::post('/tolak/{id}', [MagangController::class, 'tolakKuota'])
         ->name('sdm.tolak');
+    
+    Route::post('/pengajuan/{id}/update-status', [App\Http\Controllers\SdmController::class, 'updateStatusSDM']);
 
 });
 

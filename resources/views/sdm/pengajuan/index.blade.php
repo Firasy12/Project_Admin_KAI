@@ -136,9 +136,6 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8 p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h5 class="text-lg font-bold text-gray-800">Daftar Pengajuan</h5>
-                    <button class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded text-sm font-medium transition-colors">
-                        <i class="fa fa-plus mr-2"></i>Tambah Pengajuan
-                    </button>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -176,11 +173,31 @@
                                                 <span class="bg-gray-100 text-gray-800 text-xs font-bold px-3 py-1 rounded-full">{{ $item->status }}</span>
                                             @endif
                                         </td>
-                                        <td class="px-6 py-4 text-center">
-                                            <a href="#" class="bg-[#1a3668] hover:bg-blue-800 text-white text-xs px-4 py-2 rounded transition-colors">
-                                                Lihat
-                                            </a>
-                                        </td>
+                                        <td class="px-6 py-4 text-center whitespace-nowrap">
+    <form action="{{ url('/sdm/pengajuan/'.$item->id.'/update-status') }}" method="POST" class="flex gap-1 justify-center">
+        @csrf
+        
+        {{-- Tombol Menunggu --}}
+        <button type="submit" name="status" value="Menunggu" class="bg-orange-400 hover:bg-orange-500 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-colors">
+            Menunggu
+        </button>
+        
+        {{-- Tombol Review --}}
+        <button type="submit" name="status" value="Review" class="bg-purple-500 hover:bg-purple-600 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-colors">
+            Review
+        </button>
+
+        {{-- Tombol Diterima (Teruskan ke Unit) --}}
+        <button type="submit" name="status" value="Diterima" class="bg-green-600 hover:bg-green-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-colors">
+            Terima
+        </button>
+
+        {{-- Tombol Ditolak --}}
+        <button type="submit" name="status" value="Ditolak" class="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-colors">
+            Tolak
+        </button>
+    </form>
+</td>
                                     </tr>
                                 @endforeach
                             @else

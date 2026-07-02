@@ -123,55 +123,78 @@
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-purple-50 text-purple-900 text-xs font-semibold border-b border-purple-100">
-                                <th class="px-6 py-3 rounded-tl-lg">No</th>
-                                <th class="px-6 py-3">Data Pendaftar</th>
-                                <th class="px-6 py-3">Berkas</th>
-                                <th class="px-6 py-3 text-center">Status saat ini</th>
-                                <th class="px-6 py-3 text-center rounded-tr-lg">Aksi Review</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-sm text-gray-600 divide-y divide-gray-100">
-                            @if(isset($pengajuan) && count($pengajuan) > 0)
-                                @foreach($pengajuan as $item)
-                                    <tr class="hover:bg-gray-50/50">
-                                        <td class="px-6 py-4">{{ $loop->iteration }}</td>
-                                        <td class="px-6 py-4">
-                                            <p class="font-bold text-gray-900">{{ $item->nama }}</p>
-                                            <p class="text-xs text-gray-500">{{ $item->universitas }} - {{ $item->jurusan }}</p>
-                                        </td>
-                                        <td class="px-6 py-4">
-    <a href="#" class="text-blue-600 hover:underline text-xs">
-        <i class="fa-solid fa-file-pdf mr-1"></i>Proposal Pengajuan
-    </a>
-</td>
-                                        <td class="px-6 py-4 text-center">
-                                            @if($item->status == 'Menunggu')
-                                                <span class="bg-orange-100 text-orange-800 text-[10px] font-bold px-2 py-1 rounded">Menunggu</span>
-                                            @else
-                                                <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-1 rounded">{{ $item->status }}</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-6 py-4 text-center">
-                                            <a href="#" class="bg-purple-600 hover:bg-purple-700 text-white text-xs px-4 py-2 rounded shadow transition-colors inline-block">
-                                                <i class="fa-solid fa-magnifying-glass-chart mr-1"></i> Proses Review
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="5" class="px-6 py-8 text-center text-gray-400">
-                                        <i class="fa-solid fa-inbox text-3xl mb-2 text-gray-300"></i>
-                                        <p>Belum ada pengajuan yang perlu di-review.</p>
-                                    </td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
+    <table class="w-full text-left border-collapse">
+        <thead>
+            <tr class="bg-purple-50 text-purple-900 text-xs font-semibold">
+                <th class="px-6 py-4 rounded-tl-lg">No</th>
+                <th class="px-6 py-4">Data Pendaftar</th>
+                <th class="px-6 py-4 text-center">Berkas</th>
+                <th class="px-6 py-4 text-center">Status saat ini</th>
+                <th class="px-6 py-4 text-center rounded-tr-lg">Aksi Review</th>
+            </tr>
+        </thead>
+        <tbody class="text-sm text-gray-600 divide-y divide-gray-100">
+            @forelse($pengajuan ?? [] as $index => $item)
+            <tr class="hover:bg-gray-50/50 transition-colors">
+                <td class="px-6 py-4">{{ $loop->iteration }}</td>
+                <td class="px-6 py-4">
+                    <p class="font-bold text-gray-900">{{ $item->nama }}</p>
+                    <p class="text-xs text-gray-500">{{ $item->universitas }} | {{ $item->jurusan }}</p>
+                </td>
+                
+                {{-- 1. BAGIAN BERKAS (LENGKAP/TIDAK LENGKAP) --}}
+                <td class="px-6 py-4 text-center">
+                    {{-- Ganti 'is_berkas_lengkap' sesuai nama kolom di database kamu --}}
+                    @if(isset($item->is_berkas_lengkap) && $item->is_berkas_lengkap == false)
+                        <span class="bg-red-50 text-red-600 border border-red-200 text-[11px] font-bold px-3 py-1.5 rounded-full">
+                            <i class="fa-solid fa-xmark mr-1"></i> Tidak Lengkap
+                        </span>
+                    @else
+                        <span class="bg-green-50 text-green-600 border border-green-200 text-[11px] font-bold px-3 py-1.5 rounded-full">
+                            <i class="fa-solid fa-check mr-1"></i> Lengkap
+                        </span>
+                    @endif
+                </td>
+                
+                <td class="px-6 py-4 text-center">
+                    <span class="bg-yellow-100 text-yellow-800 text-[11px] font-bold px-3 py-1 rounded-sm">Menunggu Review</span>
+                </td>
+                
+                {{-- 2. BAGIAN AKSI REVIEW (DISPOSISI, REVISI, DITOLAK) --}}
+                <td class="px-6 py-4 text-center whitespace-nowrap">
+                    <form action="{{ url('/sdm/pengajuan/'.$item->id.'/review') }}" method="POST" class="inline-block">
+                        @csrf
+                        
+                        {{-- Tombol Disposisi (Teruskan ke Unit) --}}
+                        <button type="submit" name="keputusan" value="Disposisi" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-xs font-bold transition-colors mr-1">
+                            Disposisi
+                        </button>
+                        
+                        {{-- Tombol Revisi (Dikembalikan ke Mahasiswa) --}}
+                        <button type="submit" name="keputusan" value="Revisi" class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded text-xs font-bold transition-colors mr-1">
+                            Revisi
+                        </button>
+
+                        {{-- Tombol Ditolak --}}
+                        <button type="submit" name="keputusan" value="Ditolak" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-xs font-bold transition-colors">
+                            Tolak
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="5" class="px-6 py-12 text-center text-gray-400">
+                    <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-solid fa-inbox text-2xl text-gray-300"></i>
+                    </div>
+                    <p>Belum ada pengajuan yang perlu di-review.</p>
+                </td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
                 {{-- Pagination --}}
                 @if(isset($pengajuan) && method_exists($pengajuan, 'links'))
