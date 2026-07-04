@@ -46,12 +46,6 @@
                 </li>
                 <li>
                     <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
-                        <i class="fa-solid fa-users w-6 text-center"></i>
-                        <span class="ml-2 text-sm">Review Pengajuan</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
                         <i class="fa-solid fa-clock-rotate-left w-6 text-center"></i>
                         <span class="ml-2 text-sm">Riwayat Review</span>
                     </a>
@@ -78,6 +72,11 @@
                     <a href="#" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
                         <i class="fa-solid fa-user w-6 text-center"></i>
                         <span class="ml-2 text-sm">Profil</span>
+                    </a>
+                </li>
+                <li class="mt-2 border-t border-gray-100 pt-2">
+                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 font-medium transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-6 text-center"></i><span class="ml-2 text-sm">Logout</span>
                     </a>
                 </li>
             </ul>

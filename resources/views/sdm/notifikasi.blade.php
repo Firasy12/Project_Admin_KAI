@@ -40,7 +40,6 @@
             <ul class="space-y-1">
                 <li><a href="{{ url('/sdm/dashboard') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-house w-6 text-center"></i><span class="ml-2 text-sm">Dashboard</span></a></li>
                 <li><a href="{{ url('/sdm/pengajuan-masuk') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-file-lines w-6 text-center"></i><span class="ml-2 text-sm">Pengajuan Masuk</span></a></li>
-                <li><a href="{{ url('/sdm/review-pengajuan') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-users w-6 text-center"></i><span class="ml-2 text-sm">Review Pengajuan</span></a></li>
                 <li><a href="{{ url('/sdm/riwayat-review') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-clock-rotate-left w-6 text-center"></i><span class="ml-2 text-sm">Riwayat Review</span></a></li>
                 <li><a href="{{ url('/sdm/monitoring') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-chart-line w-6 text-center"></i><span class="ml-2 text-sm">Monitoring Status</span></a></li>
                 
@@ -54,6 +53,11 @@
                 
                 <li><a href="{{ url('/sdm/dokumen') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-folder-open w-6 text-center"></i><span class="ml-2 text-sm">Dokumen</span></a></li>
                 <li><a href="{{ url('/sdm/profil') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-user w-6 text-center"></i><span class="ml-2 text-sm">Profil</span></a></li>
+                <li class="mt-2 border-t border-gray-100 pt-2">
+                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 font-medium transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-6 text-center"></i><span class="ml-2 text-sm">Logout</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     </aside>
@@ -71,7 +75,9 @@
             <div class="flex items-center space-x-4">
                 <button class="relative text-gray-400 hover:text-amber-600 transition-colors p-2">
                     <i class="fa-solid fa-bell text-xl"></i>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    @if(isset($jumlahBaru) && $jumlahBaru > 0)
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    @endif
                 </button>
                 <div class="flex items-center bg-white border border-gray-100 shadow-sm rounded-full pl-4 pr-1 py-1 cursor-pointer">
                     <div class="flex flex-col text-right mr-3">
@@ -89,7 +95,6 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6 w-full">
                 <div class="flex justify-between items-center mb-6">
                     <h5 class="text-lg font-bold text-gray-800">Semua Pemberitahuan</h5>
-                    <button class="text-sm text-blue-600 hover:text-blue-800 font-medium">Tandai semua sudah dibaca</button>
                 </div>
 
                 <div class="space-y-3" id="daftar-notifikasi">
@@ -129,11 +134,9 @@
                                 $pesan = 'Berkas pengajuan <span class="font-semibold text-gray-700">' . $item->nama . '</span> sedang dalam tahap evaluasi.';
                             }
 
-                            // Jika urutan data lebih dari 4, otomatis sembunyikan untuk tombol "Muat Lebih Banyak"
-                            $classSembunyi = $loop->iteration > 4 ? 'hidden notif-tambahan' : '';
                         @endphp
 
-                        <div class="flex gap-4 p-4 rounded-xl border border-gray-100 {{ $bgColor }} {{ $classSembunyi }} transition cursor-pointer relative overflow-hidden">
+                        <div class="flex gap-4 p-4 rounded-xl border border-gray-100 {{ $bgColor }} transition cursor-pointer relative overflow-hidden">
                             {!! $garisSamping !!}
                             <div class="w-10 h-10 rounded-full {{ $iconBg }} flex items-center justify-center shrink-0">
                                 <i class="{{ $icon }}"></i>
@@ -156,68 +159,15 @@
 
                 </div>
 
-                {{-- Area Tombol Muat & Sembunyikan --}}
-                @if(isset($notifikasi) && count($notifikasi) > 4)
-                <div class="mt-6 flex justify-center gap-3" id="area-tombol">
-                    {{-- Tombol Muat Lebih Banyak --}}
-                    <button id="btn-muat" onclick="muatNotifikasi()" class="text-sm text-gray-600 hover:text-gray-900 font-bold bg-gray-50 hover:bg-gray-100 px-6 py-2.5 rounded-lg border border-gray-200 transition-colors inline-flex items-center justify-center w-52">
-                        Muat Lebih Banyak
-                    </button>
-                    
-                    {{-- Tombol Tampilkan Lebih Sedikit (Awalnya Sembunyi) --}}
-                    <button id="btn-sedikit" onclick="sembunyikanNotifikasi()" class="hidden text-sm text-gray-600 hover:text-gray-900 font-bold bg-gray-50 hover:bg-gray-100 px-6 py-2.5 rounded-lg border border-gray-200 transition-colors inline-flex items-center justify-center w-52">
-                        Tampilkan Lebih Sedikit
-                    </button>
+                {{-- Pagination --}}
+                @if($notifikasi->hasPages())
+                <div class="mt-6">
+                    {{ $notifikasi->links() }}
                 </div>
                 @endif
             </div>
 
         </div>
     </main>
-
-    {{-- Script untuk mengontrol kedua tombol --}}
-    <script>
-        function muatNotifikasi() {
-            const btnMuat = document.getElementById('btn-muat');
-            const btnSedikit = document.getElementById('btn-sedikit');
-            const itemSembunyi = document.querySelectorAll('.notif-tambahan');
-            
-            if(!btnMuat) return;
-
-            const teksAsli = btnMuat.innerHTML;
-            btnMuat.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Memuat...';
-            btnMuat.classList.add('cursor-not-allowed', 'opacity-70');
-            btnMuat.disabled = true;
-
-            setTimeout(() => {
-                itemSembunyi.forEach(item => {
-                    item.classList.remove('hidden');
-                    item.classList.add('fade-in');
-                });
-                
-                btnMuat.classList.add('hidden');
-                
-                btnMuat.innerHTML = 'Muat Lebih Banyak';
-                btnMuat.classList.remove('cursor-not-allowed', 'opacity-70');
-                btnMuat.disabled = false;
-                
-                btnSedikit.classList.remove('hidden');
-            }, 600);
-        }
-
-        function sembunyikanNotifikasi() {
-            const btnMuat = document.getElementById('btn-muat');
-            const btnSedikit = document.getElementById('btn-sedikit');
-            const itemSembunyi = document.querySelectorAll('.notif-tambahan');
-
-            itemSembunyi.forEach(item => {
-                item.classList.add('hidden');
-                item.classList.remove('fade-in');
-            });
-
-            btnSedikit.classList.add('hidden');
-            btnMuat.classList.remove('hidden');
-        }
-    </script>
 </body>
 </html>

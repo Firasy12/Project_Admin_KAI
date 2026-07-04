@@ -89,6 +89,11 @@
                         <span class="ml-2 text-sm {{ Request::is('unit/profil') ? 'text-blue-700' : '' }}">Profil</span>
                     </a>
                 </li>
+                <li class="mt-2 border-t border-gray-100 pt-2">
+                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 font-medium transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-6 text-center"></i><span class="ml-2 text-sm">Logout</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     </aside>
@@ -108,6 +113,13 @@
 
         <div class="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="flex justify-between items-center px-6 pt-6">
+                    <h5 class="text-lg font-bold text-gray-800">Daftar Pengajuan</h5>
+                    <form method="GET" action="{{ url()->current() }}" class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama/NIM/universitas..." class="bg-gray-50 border border-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 pl-9 p-2">
+                    </form>
+                </div>
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-[#1a3668] text-white text-xs font-semibold">
                         <tr>
@@ -128,15 +140,14 @@
                                 <td class="px-6 py-4">{{ $item->jurusan }}</td>
                                 <td class="px-6 py-4">{{ $item->unit_tujuan ?? 'Sistem Informasi' }}</td>
                                 <td class="px-6 py-4 text-center">
-                                    <span class="bg-yellow-100 text-yellow-800 text-[11px] font-bold px-3 py-1 rounded-sm">Perlu Review</span>
+                                    <span class="bg-yellow-100 text-yellow-800 text-[11px] font-bold px-3 py-1 rounded-sm">Menunggu Review</span>
                                 </td>
-                                <td class="px-6 py-4 text-center space-x-2 whitespace-nowrap">
-                                    {{-- FORM MENGGUNAKAN URL LENGKAP --}}
-                                    <form action="{{ url('/unit/pengajuan/update/' . $item->id) }}" method="POST" class="inline-block">
-                                        @csrf
-                                        <button type="submit" name="status" value="Diterima_Unit" class="border border-green-500 text-green-600 hover:bg-green-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">Terima</button>
-                                        <button type="submit" name="status" value="Ditolak" class="border border-red-500 text-red-600 hover:bg-red-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">Tolak</button>
-                                    </form>
+                                <td class="px-6 py-4 text-center whitespace-nowrap">
+                                    {{-- Keputusan (Lulus/Tolak) diambil di halaman Review Pengajuan, --}}
+                                    {{-- jadi di sini cukup arahkan ke sana. --}}
+                                    <a href="{{ route('unit.review') }}" class="border border-[#1a3668] text-[#1a3668] hover:bg-blue-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">
+                                        <i class="fa-solid fa-clipboard-check mr-1"></i> Review
+                                    </a>
                                 </td>
                             </tr>
                             @endforeach

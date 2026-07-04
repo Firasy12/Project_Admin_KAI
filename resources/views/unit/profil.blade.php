@@ -89,6 +89,11 @@
                         <span class="ml-2 text-sm {{ Request::is('unit/profil') ? 'text-blue-700' : '' }}">Profil</span>
                     </a>
                 </li>
+                <li class="mt-2 border-t border-gray-100 pt-2">
+                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 font-medium transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-6 text-center"></i><span class="ml-2 text-sm">Logout</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     </aside>
@@ -99,9 +104,6 @@
             <div>
                 <h2 class="text-2xl font-bold text-gray-800">Profil Pengguna</h2>
                 <p class="text-sm text-gray-500 mt-1">Kelola informasi akun dan kata sandi Anda</p>
-            </div>
-            <div class="flex space-x-4">
-                <a href="{{ url('/logout') }}" class="bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition-colors"><i class="fa-solid fa-right-from-bracket mr-2"></i>Logout</a>
             </div>
         </header>
 

@@ -45,12 +45,6 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url('/sdm/review-pengajuan') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
-                        <i class="fa-solid fa-users w-6 text-center"></i>
-                        <span class="ml-2 text-sm">Review Pengajuan</span>
-                    </a>
-                </li>
-                <li>
                     <a href="{{ url('/sdm/riwayat-review') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
                         <i class="fa-solid fa-clock-rotate-left w-6 text-center"></i>
                         <span class="ml-2 text-sm">Riwayat Review</span>
@@ -79,6 +73,11 @@
                     <a href="{{ url('/sdm/profil') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
                         <i class="fa-solid fa-user w-6 text-center"></i>
                         <span class="ml-2 text-sm">Profil</span>
+                    </a>
+                </li>
+                <li class="mt-2 border-t border-gray-100 pt-2">
+                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 font-medium transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-6 text-center"></i><span class="ml-2 text-sm">Logout</span>
                     </a>
                 </li>
             </ul>
@@ -115,10 +114,11 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6 w-full">
                 <div class="flex justify-between items-center mb-6">
                     <h5 class="text-lg font-bold text-gray-800">Daftar Berkas Mahasiswa</h5>
-                    <div class="relative">
-                        <input type="text" placeholder="Cari nama/universitas..." class="bg-gray-50 border border-gray-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-64 pl-10 p-2">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400"></i>
-                    </div>
+                    <form method="GET" action="{{ url()->current() }}" class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama/NIM/universitas..." class="bg-gray-50 border border-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 pl-9 p-2">
+                    </form>
+                </div>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -140,8 +140,8 @@
                                         <td class="px-6 py-4 font-bold text-gray-900">{{ $item->nama }}</td>
                                         <td class="px-6 py-4">{{ $item->universitas }}</td>
                                         <td class="px-6 py-4 text-center">
-                                            @if($item->proposal)
-                                                <a href="#" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg text-xs font-semibold transition-colors border border-red-100">
+                                            @if($item->proposal_url)
+                                                <a href="{{ $item->proposal_url }}" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg text-xs font-semibold transition-colors border border-red-100">
                                                     <i class="fa-solid fa-file-pdf mr-1.5 text-red-500"></i> Lihat PDF
                                                 </a>
                                             @else
@@ -149,9 +149,9 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 text-center">
-                                            <button class="text-cyan-600 hover:text-cyan-800 bg-cyan-50 hover:bg-cyan-100 p-2 rounded transition-colors" title="Download Semua Berkas">
-                                                <i class="fa-solid fa-cloud-arrow-down"></i>
-                                            </button>
+                                            <a href="{{ route('sdm.dokumen.show', $item->id) }}" class="inline-flex items-center px-3 py-1.5 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 rounded-lg text-xs font-semibold transition-colors border border-cyan-100" title="Lihat semua berkas">
+                                                <i class="fa-solid fa-eye mr-1.5"></i> Lihat Dokumen
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

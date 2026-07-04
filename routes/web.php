@@ -5,150 +5,106 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MagangController;
 use App\Http\Controllers\SDMController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\PengajuanController;
 
 /*
 |--------------------------------------------------------------------------
-| LOGIN
+| LOGIN  (login beneran ke backend FastAPI lewat AuthController)
 |--------------------------------------------------------------------------
 */
 
 Route::get('/', [AuthController::class, 'index'])->name('login');
-
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| SUPER ADMIN
+| SUPER ADMIN  (role backend: superuser)
 |--------------------------------------------------------------------------
 */
 
-Route::get('/superadmin/dashboard', [AuthController::class, 'dashboardSuperAdmin'])
-    ->name('superadmin.dashboard');
+Route::middleware('backend.auth:superuser')->group(function () {
+    Route::get('/superadmin/dashboard', [AuthController::class, 'dashboardSuperAdmin'])
+        ->name('superadmin.dashboard');
+});
 
 /*
 |--------------------------------------------------------------------------
 | MAHASISWA
+| CATATAN: backend belum punya login untuk role mahasiswa -- alur
+| pendaftaran mahasiswa pakai endpoint publik /pendaftaran/step1..5
+| tanpa JWT. Route di bawah ini masih pakai controller lama
+| (MagangController) yang nyimpan ke DB lokal Laravel, BELUM
+| disambungkan ke backend. Perlu didiskusikan dulu alurnya kalau
+| mau dipindah ke API pendaftaran.
 |--------------------------------------------------------------------------
 */
 
 Route::prefix('mahasiswa')->group(function () {
-
-    Route::get('/dashboard', [MagangController::class, 'dashboardMahasiswa'])
-        ->name('mahasiswa.dashboard');
-
-    Route::get('/daftar', [MagangController::class, 'create'])
-        ->name('mahasiswa.daftar');
-
-    Route::post('/daftar/proses', [MagangController::class, 'store'])
-        ->name('mahasiswa.store');
-
+    Route::get('/dashboard', [MagangController::class, 'dashboardMahasiswa'])->name('mahasiswa.dashboard');
+    Route::get('/daftar', [MagangController::class, 'create'])->name('mahasiswa.daftar');
+    Route::post('/daftar/proses', [MagangController::class, 'store'])->name('mahasiswa.store');
 });
 
 /*
 |--------------------------------------------------------------------------
-| SDM
+| SDM  (role backend: sdm)
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('sdm')->group(function () {
+Route::prefix('sdm')->middleware('backend.auth:sdm')->group(function () {
+    Route::get('/dashboard', [SDMController::class, 'dashboard'])->name('sdm.dashboard');
 
-    Route::get('/dashboard', [SDMController::class, 'dashboard'])
-        ->name('sdm.dashboard');
+    Route::get('/pengajuan-masuk', [SDMController::class, 'pengajuanMasuk'])->name('sdm.pengajuan');
+    Route::get('/riwayat-review', [SDMController::class, 'riwayatReview'])->name('sdm.riwayat');
+    Route::get('/monitoring', [SDMController::class, 'monitoring'])->name('sdm.monitoring');
+    Route::get('/notifikasi', [SDMController::class, 'notifikasi'])->name('sdm.notifikasi');
+    Route::get('/dokumen', [SDMController::class, 'dokumen'])->name('sdm.dokumen');
+    Route::get('/profil', [SDMController::class, 'profil'])->name('sdm.profil');
 
-    Route::get('/pengajuan', [SDMController::class, 'pengajuan'])
-        ->name('sdm.pengajuan');
-
-    Route::get('/pengajuan/{pengajuan}', [SDMController::class, 'show'])
-        ->name('sdm.pengajuan.show');
-
-    Route::post('/oper/{id}', [MagangController::class, 'operKeUnit'])
-        ->name('sdm.oper');
-
-    Route::post('/tolak/{id}', [MagangController::class, 'tolakKuota'])
-        ->name('sdm.tolak');
-    
-    Route::post('/pengajuan/{id}/update-status', [App\Http\Controllers\SdmController::class, 'updateStatusSDM']);
-
+    Route::get('/pengajuan/{id}/edit', [SDMController::class, 'edit'])->name('sdm.pengajuan.edit');
+    Route::put('/pengajuan/{id}/update', [SDMController::class, 'update'])->name('sdm.pengajuan.update');
+    Route::put('/pengajuan/{id}/update-legacy', [SDMController::class, 'update'])->name('magang.update');
+    Route::delete('/pengajuan/{id}', [SDMController::class, 'destroy'])->name('sdm.pengajuan.destroy');
+    Route::post('/pengajuan/{id}/proses', [PengajuanController::class, 'prosesSdm'])->name('sdm.pengajuan.proses');
+    Route::post('/pengajuan/{id}/aksi/{aksi}', [SDMController::class, 'aksiCepat'])->name('sdm.pengajuan.aksi');
+    // Tombol quick-status di tabel "Pengajuan Masuk"
+    Route::post('/pengajuan/{id}/update-status', [SDMController::class, 'aksiCepatLegacy'])->name('sdm.pengajuan.update-status');
+    Route::get('/dokumen/{id}/unduh-semua', [SDMController::class, 'dokumenUnduhSemua'])->name('sdm.dokumen.unduh-semua');
+    Route::get('/dokumen/{id}', [SDMController::class, 'dokumenShow'])->name('sdm.dokumen.show');
+    Route::get('/pengajuan/{id}', [SDMController::class, 'show'])->name('sdm.pengajuan.show');
 });
 
 /*
 |--------------------------------------------------------------------------
-| UNIT
+| UNIT  (role backend: unit)
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('unit')->group(function () {
+Route::prefix('unit')->middleware('backend.auth:unit')->group(function () {
+    Route::get('/dashboard', [UnitController::class, 'dashboard'])->name('unit.dashboard');
+    Route::get('/pengajuan-masuk', [UnitController::class, 'pengajuanMasuk'])->name('unit.pengajuan');
+    Route::get('/review-pengajuan', [UnitController::class, 'reviewPengajuan'])->name('unit.review');
+    Route::get('/riwayat-review', [UnitController::class, 'riwayatReview'])->name('unit.riwayat');
+    Route::get('/monitoring', [UnitController::class, 'monitoring'])->name('unit.monitoring');
+    Route::get('/notifikasi', [UnitController::class, 'notifikasi'])->name('unit.notifikasi');
+    Route::get('/dokumen', [UnitController::class, 'dokumen'])->name('unit.dokumen');
+    Route::get('/dokumen/{id}', [UnitController::class, 'dokumenShow'])->name('unit.dokumen.show');
+    Route::get('/dokumen/{id}/unduh-semua', [UnitController::class, 'dokumenUnduhSemua'])->name('unit.dokumen.unduh-semua');
+    Route::get('/profil', [UnitController::class, 'profil'])->name('unit.profil');
 
-    Route::get('/dashboard', [UnitController::class, 'dashboard'])
-        ->name('unit.dashboard');
-
-    // Halaman "Pengajuan Masuk"
-    Route::get('/pengajuan-masuk', [UnitController::class, 'pengajuanMasuk'])
-        ->name('unit.pengajuan');
-
-    // Aksi tombol Terima / Tolak
-    Route::post('/pengajuan/{id}/seleksi/{keputusan}', [UnitController::class, 'seleksiUnit'])
-        ->name('unit.seleksi');
-
-    // Aksi menandai magang selesai
-    Route::post('/pengajuan/{id}/selesai', [UnitController::class, 'selesaikanMagang'])
-        ->name('unit.selesai');
-
-    Route::get('/review-pengajuan', [UnitController::class, 'reviewPengajuan'])->name('review'); 
-    
-    // Aksi Unit (Ini sudah ada di kodemu sebelumnya, biarkan saja)
-    Route::post('/pengajuan/update/{id}', [UnitController::class, 'updateStatus'])->name('update.status');
-
-    // Tambahkan di bawah rute review-pengajuan yang tadi
-    Route::get('/riwayat-review', [App\Http\Controllers\UnitController::class, 'riwayatReview'])->name('riwayat');
-
-    // Tambahkan di bawah rute riwayat-review
-    Route::get('/monitoring', [App\Http\Controllers\UnitController::class, 'monitoring'])->name('monitoring');   
-
-    // Tambahkan di bawah rute monitoring
-    Route::get('/notifikasi', [App\Http\Controllers\UnitController::class, 'notifikasi'])->name('notifikasi');
-
-    // Tambahkan di bawah rute notifikasi
-    Route::get('/dokumen', [App\Http\Controllers\UnitController::class, 'dokumen'])->name('dokumen');
-    
-    Route::get('/profil', [App\Http\Controllers\UnitController::class, 'profil'])->name('profil');
-
+    Route::post('/pengajuan/{id}/seleksi/{keputusan}', [UnitController::class, 'seleksiUnit'])->name('unit.seleksi');
+    Route::post('/pengajuan/{id}/selesai', [UnitController::class, 'selesaikanMagang'])->name('unit.selesai');
+    // Tombol quick-status di tabel "Pengajuan Masuk" & dashboard Unit
+    Route::post('/pengajuan/update/{id}', [UnitController::class, 'updateStatus'])->name('unit.update.status');
 });
 
 /*
 |--------------------------------------------------------------------------
 | CETAK DOKUMEN
+| Masih dari alur lama (MagangController + DB lokal) -- belum disentuh.
 |--------------------------------------------------------------------------
 */
 
 Route::get('/cetak-dokumen/{id}/{jenis}', [MagangController::class, 'cetakDokumen'])
     ->name('cetak.dokumen');
-
-Route::get('/dashboard-sdm', function () {
-    return view('dashboard');
-});
-
-// Rute untuk Admin SDM memproses berkas
-Route::post('/sdm/pengajuan/{id}/proses', [PengajuanController::class, 'prosesSdm'])->name('sdm.pengajuan.proses');
-Route::get('/sdm/pengajuan/{id}/edit', [SDMController::class, 'edit'])->name('sdm.pengajuan.edit');
-Route::put('/sdm/pengajuan/{id}/update', [App\Http\Controllers\SDMController::class, 'update'])->name('magang.update');
-
-// Route Menu Sidebar SDM
-Route::get('/sdm/dashboard', [App\Http\Controllers\SDMController::class, 'index'])->name('sdm.dashboard');
-
-Route::get('/sdm/pengajuan-masuk', [App\Http\Controllers\SDMController::class, 'pengajuanMasuk'])->name('sdm.pengajuan');
-// (Buat route menu lainnya mengikuti pola di atas...)
-
-// Route Aksi Tabel (Edit & Delete)
-Route::get('/sdm/pengajuan/{id}/edit', [SdmController::class, 'edit'])->name('sdm.pengajuan.edit');
-Route::delete('/sdm/pengajuan/{id}', [SdmController::class, 'destroy'])->name('sdm.pengajuan.destroy');
-
-Route::get('/sdm/pengajuan-masuk', [App\Http\Controllers\SDMController::class, 'pengajuanMasuk']);
-Route::get('/sdm/review-pengajuan', [App\Http\Controllers\SDMController::class, 'reviewPengajuan']);
-Route::get('/sdm/riwayat-review', [App\Http\Controllers\SDMController::class, 'riwayatReview']);
-Route::get('/sdm/monitoring', [App\Http\Controllers\SDMController::class, 'monitoring']);
-Route::get('/sdm/notifikasi', [App\Http\Controllers\SDMController::class, 'notifikasi']);
-Route::get('/sdm/dokumen', [App\Http\Controllers\SDMController::class, 'dokumen']);
-Route::get('/sdm/profil', [App\Http\Controllers\SDMController::class, 'profil']);

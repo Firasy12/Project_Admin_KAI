@@ -89,6 +89,11 @@
                         <span class="ml-2 text-sm {{ Request::is('unit/profil') ? 'text-blue-700' : '' }}">Profil</span>
                     </a>
                 </li>
+                <li class="mt-2 border-t border-gray-100 pt-2">
+                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 font-medium transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-6 text-center"></i><span class="ml-2 text-sm">Logout</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     </aside>
@@ -131,15 +136,15 @@
                 </div>
                 <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-green-400 p-6 flex flex-col items-center justify-center text-center">
                     <h6 class="text-[11px] font-bold text-green-500 uppercase tracking-wide mb-2">Diterima</h6>
-                    <span class="text-4xl font-bold text-gray-800">0</span>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countDiterima ?? 0 }}</span>
                 </div>
                 <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-red-400 p-6 flex flex-col items-center justify-center text-center">
                     <h6 class="text-[11px] font-bold text-red-500 uppercase tracking-wide mb-2">Ditolak</h6>
-                    <span class="text-4xl font-bold text-gray-800">0</span>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countDitolak ?? 0 }}</span>
                 </div>
                 <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-teal-400 p-6 flex flex-col items-center justify-center text-center">
                     <h6 class="text-[11px] font-bold text-teal-500 uppercase tracking-wide mb-2">Selesai</h6>
-                    <span class="text-4xl font-bold text-gray-800">0</span>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countSelesai ?? 0 }}</span>
                 </div>
             </div>
 
@@ -173,13 +178,13 @@
                                     <td class="px-6 py-4">{{ $item->jurusan }}</td>
                                     <td class="px-6 py-4">{{ $item->unit_tujuan ?? 'Sistem Informasi' }}</td>
                                     <td class="px-6 py-4 text-center">
-                                        <span class="bg-yellow-100 text-yellow-800 text-[11px] font-bold px-3 py-1 rounded-sm">Perlu Review</span>
+                                        <span class="bg-yellow-100 text-yellow-800 text-[11px] font-bold px-3 py-1 rounded-sm">Menunggu Review</span>
                                     </td>
-                                    <td class="px-6 py-4 text-center space-x-2 whitespace-nowrap">
-                                        <form action="{{ url('/unit/pengajuan/update/' . $item->id) }}" method="POST" class="inline-block">
-                                            <button type="submit" name="status" value="Diterima_Unit" class="border border-green-500 text-green-600 hover:bg-green-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">Terima</button>
-                                            <button type="submit" name="status" value="Ditolak" class="border border-red-500 text-red-600 hover:bg-red-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">Tolak</button>
-                                        </form>
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        {{-- Keputusan (Lulus/Tolak) diambil di halaman Review Pengajuan. --}}
+                                        <a href="{{ route('unit.review') }}" class="border border-[#1a3668] text-[#1a3668] hover:bg-blue-50 px-4 py-1.5 rounded text-xs font-bold transition-colors">
+                                            <i class="fa-solid fa-clipboard-check mr-1"></i> Review
+                                        </a>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -207,7 +212,7 @@
                                 <span class="w-3 h-3 rounded-full bg-blue-600 mr-2"></span> Menunggu Review ({{ $jumlah_masuk ?? 0 }})
                             </div>
                             <div class="flex items-center text-sm text-gray-600">
-                                <span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span> Sudah Diproses (0)
+                                <span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span> Sudah Diproses ({{ ($countDiterima ?? 0) + ($countDitolak ?? 0) }})
                             </div>
                         </div>
                     </div>

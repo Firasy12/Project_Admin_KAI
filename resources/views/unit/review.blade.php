@@ -89,6 +89,11 @@
                         <span class="ml-2 text-sm {{ Request::is('unit/profil') ? 'text-blue-700' : '' }}">Profil</span>
                     </a>
                 </li>
+                <li class="mt-2 border-t border-gray-100 pt-2">
+                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 font-medium transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-6 text-center"></i><span class="ml-2 text-sm">Logout</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     </aside>
@@ -109,7 +114,10 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50/50">
                     <h5 class="text-lg font-bold text-gray-800">Daftar Proses Review</h5>
-                    <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-3 py-1 rounded-full">{{ count($pengajuan ?? []) }} Menunggu Keputusan</span>
+                    <form method="GET" action="{{ url()->current() }}" class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama/NIM/universitas..." class="bg-gray-50 border border-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 pl-9 p-2">
+                    </form>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -131,10 +139,16 @@
                                 <td class="px-6 py-4">{{ $item->universitas }}</td>
                                 <td class="px-6 py-4">{{ $item->jurusan }}</td>
                                 <td class="px-6 py-4 text-center">
-                                    <button class="text-blue-600 hover:text-blue-800 text-xs font-bold underline"><i class="fa-solid fa-download mr-1"></i> Lihat CV</button>
+                                    <a href="{{ route('unit.dokumen.show', $item->id) }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 text-xs font-bold underline">
+                                        <i class="fa-solid fa-folder-open mr-1"></i> Lihat Dokumen
+                                    </a>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <span class="bg-blue-100 text-blue-800 text-[11px] font-bold px-3 py-1 rounded-sm">Sedang Direview</span>
+                                    @if($item->status_raw === 'perlu_perbaikan')
+                                        <span class="bg-orange-100 text-orange-800 text-[11px] font-bold px-3 py-1 rounded-sm">Perlu Perbaikan</span>
+                                    @else
+                                        <span class="bg-blue-100 text-blue-800 text-[11px] font-bold px-3 py-1 rounded-sm">Menunggu Review</span>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 text-center space-x-2 whitespace-nowrap">
                                     {{-- Tombol Lulus --}}

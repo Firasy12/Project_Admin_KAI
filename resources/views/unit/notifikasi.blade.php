@@ -89,6 +89,11 @@
                         <span class="ml-2 text-sm {{ Request::is('unit/profil') ? 'text-blue-700' : '' }}">Profil</span>
                     </a>
                 </li>
+                <li class="mt-2 border-t border-gray-100 pt-2">
+                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 font-medium transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-6 text-center"></i><span class="ml-2 text-sm">Logout</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     </aside>
@@ -101,7 +106,12 @@
                 <p class="text-sm text-gray-500 mt-1">Pembaruan sistem dan pemberitahuan terkait pengajuan magang</p>
             </div>
             <div class="flex items-center space-x-4">
-                <button class="text-blue-600 text-sm font-bold hover:underline transition-colors"><i class="fa-solid fa-check-double mr-1"></i> Tandai semua dibaca</button>
+                <button class="relative text-blue-600 text-sm font-bold hover:underline transition-colors">
+                    <i class="fa-solid fa-bell mr-1"></i>
+                    @if(isset($jumlah_masuk) && $jumlah_masuk > 0)
+                        <span class="absolute -top-1 -right-2 w-2 h-2 rounded-full bg-red-500"></span>
+                    @endif
+                </button>
             </div>
         </header>
 
@@ -124,33 +134,33 @@
                 {{-- DAFTAR NOTIFIKASI --}}
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden divide-y divide-gray-50">
                     @forelse($notifikasi as $item)
-                        <div class="p-5 flex items-start gap-4 hover:bg-gray-50 transition-colors {{ $item->status == 'Diterima' ? 'bg-blue-50/30' : '' }}">
+                        <div class="p-5 flex items-start gap-4 hover:bg-gray-50 transition-colors {{ $item->status_raw === 'disposisi' ? 'bg-blue-50/30' : '' }}">
                             
                             {{-- Ikon Notifikasi Berdasarkan Status --}}
                             <div class="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center 
-                                @if($item->status == 'Diterima') bg-blue-100 text-blue-600
-                                @elseif($item->status == 'Diterima_Unit') bg-yellow-100 text-yellow-600
-                                @elseif($item->status == 'Lulus_Magang') bg-green-100 text-green-600
-                                @elseif($item->status == 'Ditolak_Unit') bg-red-100 text-red-600
+                                @if($item->status_raw === 'disposisi') bg-blue-100 text-blue-600
+                                @elseif($item->status_raw === 'perlu_perbaikan') bg-amber-100 text-amber-600
+                                @elseif($item->status_raw === 'diterima') bg-green-100 text-green-600
+                                @elseif($item->status_raw === 'ditolak') bg-red-100 text-red-600
                                 @else bg-gray-100 text-gray-600 @endif">
                                 
-                                @if($item->status == 'Diterima') <i class="fa-solid fa-user-plus"></i>
-                                @elseif($item->status == 'Diterima_Unit') <i class="fa-solid fa-spinner"></i>
-                                @elseif($item->status == 'Lulus_Magang') <i class="fa-solid fa-check"></i>
-                                @elseif($item->status == 'Ditolak_Unit') <i class="fa-solid fa-xmark"></i>
+                                @if($item->status_raw === 'disposisi') <i class="fa-solid fa-user-plus"></i>
+                                @elseif($item->status_raw === 'perlu_perbaikan') <i class="fa-solid fa-rotate-left"></i>
+                                @elseif($item->status_raw === 'diterima') <i class="fa-solid fa-check"></i>
+                                @elseif($item->status_raw === 'ditolak') <i class="fa-solid fa-xmark"></i>
                                 @else <i class="fa-solid fa-info"></i> @endif
                             </div>
 
                             {{-- Pesan Notifikasi --}}
                             <div class="flex-1">
                                 <p class="text-sm text-gray-800">
-                                    @if($item->status == 'Diterima')
+                                    @if($item->status_raw === 'disposisi')
                                         Pengajuan magang baru atas nama <span class="font-bold">{{ $item->nama }}</span> ({{ $item->universitas }}) telah diteruskan oleh SDM.
-                                    @elseif($item->status == 'Diterima_Unit')
-                                        Anda baru saja menerima pengajuan <span class="font-bold">{{ $item->nama }}</span>. Silakan proses di tahap Review.
-                                    @elseif($item->status == 'Lulus_Magang')
-                                        Anda telah menyetujui (meluluskan) magang untuk <span class="font-bold">{{ $item->nama }}</span>.
-                                    @elseif($item->status == 'Ditolak_Unit')
+                                    @elseif($item->status_raw === 'perlu_perbaikan')
+                                        Pengajuan <span class="font-bold">{{ $item->nama }}</span> perlu perbaikan sebelum bisa diproses lebih lanjut.
+                                    @elseif($item->status_raw === 'diterima')
+                                        Anda telah menyetujui pengajuan magang untuk <span class="font-bold">{{ $item->nama }}</span>.
+                                    @elseif($item->status_raw === 'ditolak')
                                         Anda telah menolak pengajuan magang dari <span class="font-bold">{{ $item->nama }}</span>.
                                     @else
                                         Pembaruan status untuk <span class="font-bold">{{ $item->nama }}</span>: menjadi {{ $item->status }}.
@@ -160,7 +170,7 @@
                             </div>
                             
                             {{-- Tanda titik biru untuk pesan baru --}}
-                            @if($item->status == 'Diterima')
+                            @if($item->status_raw === 'disposisi')
                                 <div class="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
                             @endif
                         </div>

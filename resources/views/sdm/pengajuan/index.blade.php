@@ -46,12 +46,6 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url('/sdm/review-pengajuan') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
-                        <i class="fa-solid fa-users w-6 text-center"></i>
-                        <span class="ml-2 text-sm">Review Pengajuan</span>
-                    </a>
-                </li>
-                <li>
                     <a href="{{ url('/sdm/riwayat-review') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
                         <i class="fa-solid fa-clock-rotate-left w-6 text-center"></i>
                         <span class="ml-2 text-sm">Riwayat Review</span>
@@ -79,6 +73,11 @@
                     <a href="{{ url('/sdm/profil') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
                         <i class="fa-solid fa-user w-6 text-center"></i>
                         <span class="ml-2 text-sm">Profil</span>
+                    </a>
+                </li>
+                <li class="mt-2 border-t border-gray-100 pt-2">
+                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 font-medium transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-6 text-center"></i><span class="ml-2 text-sm">Logout</span>
                     </a>
                 </li>
             </ul>
@@ -116,19 +115,19 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
                 <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-orange-400 p-6 flex flex-col items-center justify-center text-center">
                     <h6 class="text-[11px] font-bold text-orange-500 uppercase tracking-wide mb-2">Menunggu</h6>
-                    <span class="text-4xl font-bold text-gray-800">{{ \App\Models\Pengajuan::where('status', 'Menunggu')->count() }}</span>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countMasuk }}</span>
                 </div>
                 <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-purple-400 p-6 flex flex-col items-center justify-center text-center">
                     <h6 class="text-[11px] font-bold text-purple-500 uppercase tracking-wide mb-2">Review</h6>
-                    <span class="text-4xl font-bold text-gray-800">{{ \App\Models\Pengajuan::where('status', 'Review')->count() }}</span>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countReview }}</span>
                 </div>
                 <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-green-400 p-6 flex flex-col items-center justify-center text-center">
                     <h6 class="text-[11px] font-bold text-green-500 uppercase tracking-wide mb-2">Diterima</h6>
-                    <span class="text-4xl font-bold text-gray-800">{{ \App\Models\Pengajuan::where('status', 'Diterima')->count() }}</span>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countDiterima }}</span>
                 </div>
                 <div class="bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border-b-[6px] border-red-400 p-6 flex flex-col items-center justify-center text-center">
                     <h6 class="text-[11px] font-bold text-red-500 uppercase tracking-wide mb-2">Ditolak</h6>
-                    <span class="text-4xl font-bold text-gray-800">{{ \App\Models\Pengajuan::where('status', 'Ditolak')->count() }}</span>
+                    <span class="text-4xl font-bold text-gray-800">{{ $countDitolak }}</span>
                 </div>
             </div>
 
@@ -136,6 +135,10 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8 p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h5 class="text-lg font-bold text-gray-800">Daftar Pengajuan</h5>
+                    <form method="GET" action="{{ url()->current() }}" class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama/NIM/universitas..." class="bg-gray-50 border border-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 pl-9 p-2">
+                    </form>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -174,29 +177,13 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 text-center whitespace-nowrap">
-    <form action="{{ url('/sdm/pengajuan/'.$item->id.'/update-status') }}" method="POST" class="flex gap-1 justify-center">
-        @csrf
-        
-        {{-- Tombol Menunggu --}}
-        <button type="submit" name="status" value="Menunggu" class="bg-orange-400 hover:bg-orange-500 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-colors">
-            Menunggu
-        </button>
-        
-        {{-- Tombol Review --}}
-        <button type="submit" name="status" value="Review" class="bg-purple-500 hover:bg-purple-600 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-colors">
-            Review
-        </button>
-
-        {{-- Tombol Diterima (Teruskan ke Unit) --}}
-        <button type="submit" name="status" value="Diterima" class="bg-green-600 hover:bg-green-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-colors">
-            Terima
-        </button>
-
-        {{-- Tombol Ditolak --}}
-        <button type="submit" name="status" value="Ditolak" class="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-colors">
-            Tolak
-        </button>
-    </form>
+    <div class="flex flex-col items-center gap-1.5">
+    {{-- Aksi terima/teruskan/tolak sudah ada di halaman detail (sdm.pengajuan.show), --}}
+    {{-- jadi di tabel ini cukup tombol lihat detail saja. --}}
+    <a href="{{ route('sdm.pengajuan.show', $item->id) }}" class="w-full text-center bg-[#1a3668] hover:bg-blue-900 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-colors">
+        <i class="fa-solid fa-eye mr-1"></i> Lihat Detail
+    </a>
+    </div>
 </td>
                                     </tr>
                                 @endforeach

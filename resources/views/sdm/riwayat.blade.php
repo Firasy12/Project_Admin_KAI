@@ -44,12 +44,6 @@
                         <span class="ml-2 text-sm">Pengajuan Masuk</span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{ url('/sdm/review-pengajuan') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
-                        <i class="fa-solid fa-users w-6 text-center"></i>
-                        <span class="ml-2 text-sm">Review Pengajuan</span>
-                    </a>
-                </li>
                 {{-- MENU AKTIF UNTUK RIWAYAT REVIEW --}}
                 <li>
                     <a href="{{ url('/sdm/riwayat-review') }}" class="flex items-center px-6 py-2.5 text-gray-900 font-bold bg-teal-50/50 border-r-4 border-teal-600">
@@ -79,6 +73,11 @@
                     <a href="{{ url('/sdm/profil') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
                         <i class="fa-solid fa-user w-6 text-center"></i>
                         <span class="ml-2 text-sm">Profil</span>
+                    </a>
+                </li>
+                <li class="mt-2 border-t border-gray-100 pt-2">
+                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 font-medium transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-6 text-center"></i><span class="ml-2 text-sm">Logout</span>
                     </a>
                 </li>
             </ul>
@@ -115,9 +114,10 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h5 class="text-lg font-bold text-gray-800">Riwayat Keputusan</h5>
-                    <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded transition-colors">
-                        <i class="fa-solid fa-filter mr-1"></i> Filter
-                    </button>
+                    <form method="GET" action="{{ url()->current() }}" class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama/NIM/universitas..." class="bg-gray-50 border border-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 pl-9 p-2">
+                    </form>
                 </div>
 
                 <div class="overflow-x-auto">

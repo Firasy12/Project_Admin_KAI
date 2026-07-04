@@ -38,7 +38,7 @@
 
                 <strong>
 
-                    {{ Auth::user()->name ?? 'Admin SDM' }}
+                    {{ session('nama', 'Admin SDM') }}
 
                 </strong>
 
