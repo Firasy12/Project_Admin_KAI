@@ -348,4 +348,22 @@ class SDMController extends Controller
     {
         return view('sdm.profil');
     }
+
+    // Tambahkan method ini di dalam SDMController kamu, Mad!
+public function reviewPengajuan()
+{
+    // 1. Ambil data pengajuan dari database (Sesuaikan dengan nama Model kamu, misal: Pengajuan)
+    // Kita gunakan penangkap data aman jika tabel/model kamu sudah siap
+    $pengajuan = [];
+    if (class_exists(\App\Models\Pengajuan::class)) {
+        // Mengambil data pengajuan yang perlu di-review oleh SDM
+        $pengajuan = \App\Models\Pengajuan::all(); 
+    }
+
+    // 2. Arahkan ke file view review.blade.php milikmu
+    // Karena nama file kamu adalah review.blade.php di dalam folder sdm, panggil 'sdm.review'
+    return view('sdm.review', compact('pengajuan'));
+}
+
+    
 }

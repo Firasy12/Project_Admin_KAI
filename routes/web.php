@@ -108,3 +108,18 @@ Route::prefix('unit')->middleware('backend.auth:unit')->group(function () {
 
 Route::get('/cetak-dokumen/{id}/{jenis}', [MagangController::class, 'cetakDokumen'])
     ->name('cetak.dokumen');
+
+    // Jalur routing untuk melihat detail dokumen mahasiswa
+Route::get('/sdm/dokumen/detail', function () {
+    return view('pengajuan.dokumen-detail'); 
+    // Catatan: sesuaikan 'pengajuan.dokumen-detail' dengan lokasi folder/nama file blade detail yang kamu buat tadi
+});
+
+// Pastikan URL-nya sama persis dengan yang dipanggil di sidebar: /sdm/review-pengajuan
+Route::get('/sdm/review-pengajuan', [App\Http\Controllers\SdmController::class, 'reviewPengajuan']);
+
+// Route untuk menampilkan halaman form input nilai
+Route::get('/unit/monitoring/{id}/kelulusan', [App\Http\Controllers\UnitController::class, 'formKelulusan']);
+
+// Route proses submit nilai, generate PDF, dan otomatis kirim email
+Route::post('/unit/monitoring/{id}/kirim-sertifikat', [App\Http\Controllers\UnitController::class, 'prosesSertifikat']);

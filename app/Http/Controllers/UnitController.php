@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Services\BackendApiService;
 use Illuminate\Http\Request;
+use App\Models\Pengajuan;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
 
 class UnitController extends Controller
 {
@@ -63,13 +66,13 @@ class UnitController extends Controller
         // "Review" di sisi Unit = pengajuan yang sudah diteruskan SDM
         // (disposisi/perlu_perbaikan) dan menunggu keputusan Unit.
         $all = $this->scopedToUnit($this->backend->getEnrichedPengajuan())
-            ->whereIn('status_raw', ['disposisi', 'perlu_perbaikan']);
+            ->whereIn('status_raw', ['disposisi', 'perlu_perbaikan', 'diterima', 'ditolak']); //
 
-        $all = $this->backend->filterBySearch($all, request('search'))->sortByDesc('created_at');
+        $all = $this->backend->filterBySearch($all, request('search'))->sortByDesc('created_at'); //[cite: 1]
 
-        $pengajuan = $this->backend->paginate($all, 10, (int) request('page', 1));
+        $pengajuan = $this->backend->paginate($all, 10, (int) request('page', 1)); //[cite: 1]
 
-        return view('unit.review', compact('pengajuan'));
+        return view('unit.review', compact('pengajuan')); //[cite: 1]
     }
 
     public function riwayatReview()
@@ -246,6 +249,7 @@ class UnitController extends Controller
         if (! $response->successful()) {
             return back()->with('error', 'Gagal memperbarui status di server: '.$response->status());
         }
+        $this->kirimEmailHasilSeleksi($id, $status);
 
         return redirect()->back()->with('success', $pesan);
     }
@@ -269,6 +273,7 @@ class UnitController extends Controller
         if (! $response->successful()) {
             return back()->with('error', 'Gagal memperbarui status di server: '.$response->status());
         }
+        $this->kirimEmailHasilSeleksi($id, $status);
 
         return back()->with('success', 'Status pengajuan berhasil diperbarui.');
     }
@@ -276,9 +281,83 @@ class UnitController extends Controller
     // Fungsi untuk Menyelesaikan Magang
     public function selesaikanMagang($id)
     {
-        // CATATAN: backend belum punya status/field terpisah untuk
-        // "magang selesai" (StatusPengajuan cuma sampai diterima/ditolak).
-        // Kalau butuh ini, perlu tambahan field/endpoint di FastAPI dulu.
         return back()->with('error', 'Backend belum mendukung status "selesai magang". Perlu ditambahkan dulu.');
     }
+
+    // 1. Fungsi menampilkan halaman form nilai (Diselaraskan menggunakan Jaringan API Backend)
+    public function formKelulusan($id)
+    {
+        $all = $this->scopedToUnit($this->backend->getEnrichedPengajuan());
+        $mahasiswa = $all->firstWhere('id', (int) $id);
+
+        if (! $mahasiswa) {
+            abort(404, 'Data mahasiswa tidak ditemukan atau berada di luar unit Anda.');
+        }
+
+        return view('unit.form-kelulusan', compact('mahasiswa'));
+    }
+
+    // 2. Fungsi Eksekusi Nilai + Auto-Send Email Sertifikat
+    public function prosesSertifikat(Request $request, $id)
+    {
+        $all = $this->scopedToUnit($this->backend->getEnrichedPengajuan());
+        $mahasiswa = $all->firstWhere('id', (int) $id);
+
+        if (! $mahasiswa) {
+            abort(404, 'Data mahasiswa gagal divalidasi.');
+        }
+
+        // Tanam nilai secara instan ke objek untuk kebutuhan pencetakan berkas PDF
+        $mahasiswa->nilai_teknis = $request->nilai_teknis;
+        $mahasiswa->nilai_sikap = $request->nilai_sikap;
+        $mahasiswa->status_terkini = 'SELESAI MAGANG';
+
+        // Hubungkan perubahan state akhir ke server API lokal agar sinkron
+        $this->backend->updateStatusPengajuan((int) $id, 'diterima');
+
+        // LOGIKA A: Generate PDF Sertifikat secara instan di memori server
+        $pdf = Pdf::loadView('pdf.sertifikat', compact('mahasiswa'));
+
+        // LOGIKA B: Tembak Email Otomatis langsung ke email pendaftar dengan lampiran PDF
+        $dataEmail = [
+            'nama' => $mahasiswa->nama,
+            'email_tujuan' => $mahasiswa->email ?? 'mahasiswa@kai.id'
+        ];
+
+        Mail::send('emails.kelulusan_notif', $dataEmail, function($message) use ($dataEmail, $pdf) {
+            $message->to($dataEmail['email_tujuan'], $dataEmail['nama'])
+                    ->subject('Selamat! Sertifikat Kelulusan Magang PT KAI Anda Telah Terbit')
+                    ->attachData($pdf->output(), "Sertifikat_Magang_" . $dataEmail['nama'] . ".pdf");
+        });
+
+        return redirect('/unit/monitoring')->with('success', 'Nilai berhasil disimpan dan sertifikat telah dikirim ke email mahasiswa!');
+    }
+
+    // FUNGSI HELPER: Otomatisasi Kirim Email Hasil Seleksi (Terima/Tolak)
+protected function kirimEmailHasilSeleksi($id, $status)
+{
+    // Ambil data mahasiswa dari API Backend agar dapet email & namanya
+    $all = $this->scopedToUnit($this->backend->getEnrichedPengajuan());
+    $mahasiswa = $all->firstWhere('id', (int) $id);
+
+    if ($mahasiswa && isset($mahasiswa->email)) {
+        $dataEmail = [
+            'nama' => $mahasiswa->nama,
+            'status' => $status, // 'diterima' atau 'ditolak'
+            'unit' => 'Unit Sistem Informasi'
+        ];
+
+        // Tentukan subjek email berdasarkan status hasil seleksi
+        $subject = $status === 'diterima' 
+            ? 'Selamat! Pengajuan Magang Anda di PT KAI Diterima' 
+            : 'Informasi Hasil Pengajuan Magang PT KAI';
+
+        // Tembak email menggunakan template blade khusus 'emails.seleksi_notif'
+        Mail::send('emails.seleksi_notif', $dataEmail, function($message) use ($mahasiswa, $subject) {
+            $message->to($mahasiswa->email, $mahasiswa->nama)
+                    ->subject($subject);
+        });
+    }
 }
+
+} // <-- KURUNG KURAWAL PENUTUP UTAMA CLASS SEKARANG SUDAH AMAN ADA DI SINI!

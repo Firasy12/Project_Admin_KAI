@@ -9,198 +9,248 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f4f6f9; 
+        }
+        .custom-scrollbar::-webkit-scrollbar { 
+            width: 6px; 
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track { 
+            background: transparent; 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb { 
+            background-color: rgba(255, 255, 255, 0.3); 
+            border-radius: 20px; 
+        }
+        .kai-bg-navy { background-color: #00529b; }   
+        .kai-bg-orange { background-color: #f47920; }
+        .kai-text-navy { color: #00529b; }             
+        .kai-text-orange { color: #f47920; }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden text-gray-800 bg-[#f4f6f9]">
+<body class="flex h-screen overflow-hidden text-slate-800 bg-[#f4f6f9]">
 
-    {{-- SIDEBAR --}}
-    <aside class="w-64 bg-white border-r border-gray-100 flex flex-col hidden md:flex shrink-0 z-20">
-        <div class="pt-8 pb-6 flex flex-col items-center justify-center px-4">
-            <img src="{{ asset('images/logo-kai.png') }}" alt="Logo KAI" class="h-10 mb-2">
-            <p class="text-[10px] text-gray-500 text-center font-medium leading-tight">
-                SISTEM INFORMASI MAGANG<br>PT KERETA API INDONESIA
+    {{-- SIDEBAR UTAMA ADMIN SDM (KAI ROYAL BLUE PREMIUM) --}}
+    <aside class="w-64 kai-bg-navy flex flex-col shrink-0 z-20 shadow-2xl border-r border-white/10">
+        {{-- LOGO AREA --}}
+        <div class="pt-8 pb-6 flex flex-col items-center justify-center px-6 border-b border-white/10">
+            <img src="{{ asset('images/logo-kai.png') }}" alt="Logo KAI" class="h-11 mb-2 object-contain drop-shadow-md">
+            <p class="text-[11px] text-center font-extrabold tracking-wide uppercase mt-1.5">
+                <span class="kai-text-orange">PT KERETA API INDONESIA</span>
             </p>
         </div>
 
-        <nav class="flex-1 overflow-y-auto py-2 custom-scrollbar">
-            <div class="px-6 mb-3">
-                <p class="text-[11px] font-bold text-orange-500 uppercase tracking-wider">Admin SDM</p>
+        {{-- NAVIGATION MENU ITEMS (KAPSUL LONJONG FIXED - SINKRON 100%) --}}
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <div class="px-6 mb-2">
+                <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest opacity-70">Admin SDM</p>
             </div>
             
-            <ul class="space-y-1">
+            <ul class="space-y-2 px-3">
+                {{-- Dashboard --}}
                 <li>
-                    <a href="{{ url('/sdm/dashboard') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
-                        <i class="fa-solid fa-house w-6 text-center"></i>
-                        <span class="ml-2 text-sm">Dashboard</span>
+                    <a href="{{ url('/sdm/dashboard') }}" class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/dashboard') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+                        <i class="fa-solid fa-house w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/dashboard') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+                        <span class="text-sm">Dashboard</span>
                     </a>
                 </li>
+                {{-- Pengajuan Masuk --}}
                 <li>
-                    <a href="{{ url('/sdm/pengajuan-masuk') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
-                        <i class="fa-solid fa-file-lines w-6 text-center"></i>
-                        <span class="ml-2 text-sm">Pengajuan Masuk</span>
+                    <a href="{{ url('/sdm/pengajuan-masuk') }}" class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/pengajuan-masuk') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+                        <i class="fa-solid fa-file-import w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/pengajuan-masuk') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+                        <span class="text-sm">Pengajuan Masuk</span>
                     </a>
                 </li>
-                {{-- MENU AKTIF UNTUK REVIEW PENGAJUAN --}}
+                {{-- Review Pengajuan (Active State) --}}
                 <li>
-                    <a href="{{ url('/sdm/riwayat-review') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
-                        <i class="fa-solid fa-clock-rotate-left w-6 text-center"></i>
-                        <span class="ml-2 text-sm">Riwayat Review</span>
+                    <a href="{{ url('/sdm/review-pengajuan') }}" class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/review-pengajuan') || Request::is('sdm/review*') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+                        <i class="fa-solid fa-user-shield w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/review-pengajuan') || Request::is('sdm/review*') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+                        <span class="text-sm">Review Pengajuan</span>
                     </a>
                 </li>
+                {{-- Monitoring Status --}}
                 <li>
-                    <a href="{{ url('/sdm/monitoring') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
-                        <i class="fa-solid fa-chart-line w-6 text-center"></i>
-                        <span class="ml-2 text-sm">Monitoring Status</span>
+                    <a href="{{ url('/sdm/monitoring') }}" class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/monitoring') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+                        <i class="fa-solid fa-chart-line w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/monitoring') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+                        <span class="text-sm">Monitoring Status</span>
                     </a>
                 </li>
+                {{-- Notifikasi --}}
                 <li>
-                    <a href="{{ url('/sdm/notifikasi') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
-                        <i class="fa-solid fa-bell w-6 text-center"></i>
-                        <span class="ml-2 text-sm">Notifikasi</span>
+                    <a href="{{ url('/sdm/notifikasi') }}" class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/notifikasi') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+                        <i class="fa-solid fa-bell w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/notifikasi') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+                        <span class="text-sm">Notifikasi</span>
                     </a>
                 </li>
+                {{-- Dokumen --}}
                 <li>
-                    <a href="{{ url('/sdm/dokumen') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
-                        <i class="fa-solid fa-folder-open w-6 text-center"></i>
-                        <span class="ml-2 text-sm">Dokumen</span>
+                    <a href="{{ url('/sdm/dokumen') }}" class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/dokumen') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+                        <i class="fa-solid fa-folder-open w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/dokumen') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+                        <span class="text-sm">Dokumen</span>
                     </a>
                 </li>
+                {{-- Profil --}}
                 <li>
-                    <a href="{{ url('/sdm/profil') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors">
-                        <i class="fa-solid fa-user w-6 text-center"></i>
-                        <span class="ml-2 text-sm">Profil</span>
+                    <a href="{{ url('/sdm/profil') }}" class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/profil') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+                        <i class="fa-solid fa-user w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/profil') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+                        <span class="text-sm">Profil</span>
                     </a>
                 </li>
-                <li class="mt-2 border-t border-gray-100 pt-2">
-                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 font-medium transition-colors">
-                        <i class="fa-solid fa-right-from-bracket w-6 text-center"></i><span class="ml-2 text-sm">Logout</span>
+            </ul>
+
+            {{-- GARIS PEMBATAS DEKORATIF --}}
+            <div class="px-6 my-4 border-t border-white/10"></div>
+
+            {{-- TOMBOL LOGOUT KAPSUL LONJONG --}}
+            <ul class="px-3">
+                <li>
+                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-3 text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 rounded-full font-bold tracking-wide transition-all group">
+                        <i class="fa-solid fa-power-off w-5 text-center text-lg mr-3 transition-transform group-hover:scale-110"></i>
+                        <span class="text-sm">Logout</span>
                     </a>
                 </li>
             </ul>
         </nav>
     </aside>
 
-    {{-- MAIN CONTENT --}}
+    {{-- MAIN CONTENT WRAPPER --}}
     <main class="flex-1 flex flex-col overflow-hidden">
         
-        {{-- Header --}}
-        <header class="h-24 flex items-center justify-between px-8 shrink-0">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-800">Review Pengajuan</h2>
-                <p class="text-sm text-gray-500 mt-1">Evaluasi dan berikan keputusan untuk calon peserta magang.</p>
+        {{-- HEADER TOP BAR DENGAN AKSEN ORANYE KAI --}}
+        <header class="h-24 bg-white border-b border-slate-200/80 flex items-center justify-between px-8 shrink-0 shadow-sm z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-1.5 h-10 kai-bg-orange rounded-full"></div>
+                <div>
+                    <h2 class="text-2xl font-black text-[#0b1739] tracking-tight">Review Pengajuan</h2>
+                    <p class="text-xs font-semibold text-slate-400 mt-0.5">Evaluasi dan berikan keputusan validasi berkas untuk calon peserta magang.</p>
+                </div>
             </div>
-
+            
             <div class="flex items-center space-x-4">
-                <button class="relative text-gray-400 hover:text-gray-600 transition-colors p-2">
-                    <i class="fa-solid fa-bell text-xl"></i>
-                </button>
-                <div class="flex items-center bg-white border border-gray-100 shadow-sm rounded-full pl-4 pr-1 py-1 cursor-pointer">
-                    <div class="flex flex-col text-right mr-3">
-                        <span class="text-sm font-bold text-gray-800 leading-tight">Admin SDM</span>
-                        <span class="text-[10px] text-gray-500 leading-tight">SDM PT KAI</span>
+                <div class="flex items-center bg-slate-50 border border-slate-200 rounded-2xl p-2 pr-5 shadow-inner">
+                    <div class="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center font-black text-sm mr-3 shadow-md">
+                        SDM
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm">AS</div>
+                    <div class="flex flex-col text-left">
+                        <span class="text-xs font-extrabold text-[#0b1739] leading-tight">Admin SDM</span>
+                        <span class="text-[10px] text-slate-400 font-bold leading-none mt-0.5">Human Capital Center</span>
+                    </div>
                 </div>
             </div>
         </header>
 
-        {{-- Scrollable Content --}}
-        <div class="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
+        {{-- WORKSPACE AREA: GRADASI BIRU SEGAR KAI CORPORATE --}}
+        <div class="flex-1 overflow-y-auto px-8 py-8 custom-scrollbar relative bg-gradient-to-br from-sky-200 via-blue-200 to-sky-300">
             
-            {{-- TABEL REVIEW --}}
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h5 class="text-lg font-bold text-gray-800">Antrean Review</h5>
-                    <form method="GET" action="{{ url()->current() }}" class="relative">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama/NIM/universitas..." class="bg-gray-50 border border-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 pl-9 p-2">
-                    </form>
-                </div>
-                </div>
+            <div class="absolute inset-0 bg-white/10 pointer-events-none z-0"></div>
+            <div class="absolute top-0 right-1/4 w-[400px] h-[400px] bg-blue-400/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
 
-                <div class="overflow-x-auto">
-    <table class="w-full text-left border-collapse">
-        <thead>
-            <tr class="bg-purple-50 text-purple-900 text-xs font-semibold">
-                <th class="px-6 py-4 rounded-tl-lg">No</th>
-                <th class="px-6 py-4">Data Pendaftar</th>
-                <th class="px-6 py-4 text-center">Berkas</th>
-                <th class="px-6 py-4 text-center">Status saat ini</th>
-                <th class="px-6 py-4 text-center rounded-tr-lg">Aksi Review</th>
-            </tr>
-        </thead>
-        <tbody class="text-sm text-gray-600 divide-y divide-gray-100">
-            @forelse($pengajuan ?? [] as $index => $item)
-            <tr class="hover:bg-gray-50/50 transition-colors">
-                <td class="px-6 py-4">{{ $loop->iteration }}</td>
-                <td class="px-6 py-4">
-                    <p class="font-bold text-gray-900">{{ $item->nama }}</p>
-                    <p class="text-xs text-gray-500">{{ $item->universitas }} | {{ $item->jurusan }}</p>
-                </td>
-                
-                {{-- 1. BAGIAN BERKAS (LENGKAP/TIDAK LENGKAP) --}}
-                <td class="px-6 py-4 text-center">
-                    {{-- Ganti 'is_berkas_lengkap' sesuai nama kolom di database kamu --}}
-                    @if(isset($item->is_berkas_lengkap) && $item->is_berkas_lengkap == false)
-                        <span class="bg-red-50 text-red-600 border border-red-200 text-[11px] font-bold px-3 py-1.5 rounded-full">
-                            <i class="fa-solid fa-xmark mr-1"></i> Tidak Lengkap
-                        </span>
-                    @else
-                        <span class="bg-green-50 text-green-600 border border-green-200 text-[11px] font-bold px-3 py-1.5 rounded-full">
-                            <i class="fa-solid fa-check mr-1"></i> Lengkap
-                        </span>
-                    @endif
-                </td>
-                
-                <td class="px-6 py-4 text-center">
-                    <span class="bg-yellow-100 text-yellow-800 text-[11px] font-bold px-3 py-1 rounded-sm">Menunggu Review</span>
-                </td>
-                
-                {{-- 2. BAGIAN AKSI REVIEW (DISPOSISI, REVISI, DITOLAK) --}}
-                <td class="px-6 py-4 text-center whitespace-nowrap">
-                    <form action="{{ url('/sdm/pengajuan/'.$item->id.'/review') }}" method="POST" class="inline-block">
-                        @csrf
-                        
-                        {{-- Tombol Disposisi (Teruskan ke Unit) --}}
-                        <button type="submit" name="keputusan" value="Disposisi" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-xs font-bold transition-colors mr-1">
-                            Disposisi
-                        </button>
-                        
-                        {{-- Tombol Revisi (Dikembalikan ke Mahasiswa) --}}
-                        <button type="submit" name="keputusan" value="Revisi" class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded text-xs font-bold transition-colors mr-1">
-                            Revisi
-                        </button>
+            <div class="relative z-10 space-y-6">
 
-                        {{-- Tombol Ditolak --}}
-                        <button type="submit" name="keputusan" value="Ditolak" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-xs font-bold transition-colors">
-                            Tolak
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="5" class="px-6 py-12 text-center text-gray-400">
-                    <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <i class="fa-solid fa-inbox text-2xl text-gray-300"></i>
+                {{-- DATA CARD TABLE CONTAINMENT --}}
+                <div class="bg-white rounded-2xl shadow-xl shadow-blue-950/10 overflow-hidden border border-blue-100/50">
+                    
+                    {{-- SEARCH BAR HEADER --}}
+                    <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white relative">
+                        <div class="absolute left-0 top-0 bottom-0 w-1 kai-bg-navy"></div>
+                        <h4 class="text-base font-extrabold text-[#0b1739] tracking-tight flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-slate-400"></i> Antrean Review Berkas
+                        </h4>
+                        <form method="GET" action="{{ url()->current() }}" class="relative w-full sm:w-80 group">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                                <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm"></i>
+                            </span>
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama/NIM/universitas..." class="w-full pl-10 pr-4 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#f47920] focus:ring-1 focus:ring-[#f47920] shadow-inner transition-all">
+                        </form>
                     </div>
-                    <p>Belum ada pengajuan yang perlu di-review.</p>
-                </td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
 
-                {{-- Pagination --}}
-                @if(isset($pengajuan) && method_exists($pengajuan, 'links'))
-                <div class="mt-4">
-                    {{ $pengajuan->links() }}
+                    {{-- PREMIUM RESPONSIVE TABLE STRUCTURE --}}
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="kai-bg-navy text-slate-300 text-[11px] font-bold uppercase tracking-wider border-b border-slate-800/50">
+                                    <th class="px-6 py-4 w-16 text-center border-r border-slate-800/30">No</th>
+                                    <th class="px-6 py-4 border-r border-slate-800/30">Data Pendaftar</th>
+                                    <th class="px-6 py-4 text-center border-r border-slate-800/30">Status Berkas</th>
+                                    <th class="px-6 py-4 text-center border-r border-slate-800/30">Status Saat Ini</th>
+                                    <th class="px-6 py-4 text-center">Aksi Review</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm text-slate-600 divide-y divide-slate-100 bg-white">
+                                @forelse($pengajuan ?? [] as $index => $item)
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-6 py-4 font-bold text-slate-400 text-center">
+                                        {{ isset($loop) ? $loop->iteration : $index + 1 }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-extrabold text-slate-800 text-[14px]">{{ $item->nama }}</div>
+                                        <div class="text-[11px] text-slate-400 font-bold mt-0.5">
+                                            {{ $item->universitas }} | {{ $item->jurusan ?? 'Peserta' }}
+                                        </div>
+                                    </td>
+                                    
+                                    {{-- BERKAS STATUS BADGE --}}
+                                    <td class="px-6 py-4 text-center">
+                                        @if(isset($item->is_berkas_lengkap) && $item->is_berkas_lengkap == false)
+                                            <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-rose-50 text-rose-600 border border-rose-200 rounded-lg shadow-sm uppercase tracking-wide">
+                                                <i class="fa-solid fa-circle-xmark text-[10px]"></i> Tidak Lengkap
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-lg shadow-sm uppercase tracking-wide">
+                                                <i class="fa-solid fa-circle-check text-[10px]"></i> Lengkap
+                                            </span>
+                                        @endif
+                                    </td>
+                                    
+                                    {{-- FLOW STATE STATUS --}}
+                                    <td class="px-6 py-4 text-center">
+                                        <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg uppercase tracking-wider shadow-sm">
+                                            <i class="fa-solid fa-spinner animate-spin text-[9px]"></i> Menunggu Review
+                                        </span>
+                                    </td>
+                                    
+                                    {{-- ACTION DISPOSISI / REVISI / TOLAK --}}
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        <form action="{{ url('/sdm/pengajuan/'.$item->id.'/review') }}" method="POST" class="inline-flex items-center gap-1.5">
+                                            @csrf
+                                            
+                                            <button type="submit" name="keputusan" value="Disposisi" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-extrabold transition-all shadow-md shadow-blue-600/10 hover:shadow-lg">
+                                                <i class="fa-solid fa-share-nodes"></i> Disposisi
+                                            </button>
+                                            
+                                            <button type="submit" name="keputusan" value="Revisi" class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-extrabold transition-all shadow-md shadow-amber-500/10 hover:shadow-lg">
+                                                <i class="fa-solid fa-rotate-left"></i> Revisi
+                                            </button>
+
+                                            <button type="submit" name="keputusan" value="Ditolak" class="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-extrabold transition-all shadow-md shadow-rose-600/10 hover:shadow-lg">
+                                                <i class="fa-solid fa-trash-can"></i> Tolak
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="px-6 py-16 text-center text-slate-400 bg-white">
+                                        <div class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+                                            <i class="fa-solid fa-inbox text-3xl text-slate-300"></i>
+                                        </div>
+                                        <p class="text-sm font-extrabold text-slate-500">Antrean Bersih!</p>
+                                        <p class="text-xs font-semibold text-slate-400 mt-1">Belum ada pengajuan baru yang memerlukan review berkas.</p>
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
+                {{-- PAGINATION --}}
+                @if(isset($pengajuan) && method_exists($pengajuan, 'links') && $pengajuan->hasPages())
+                    <div class="mt-4">
+                        {{ $pengajuan->links() }}
+                    </div>
                 @endif
 
             </div>

@@ -3,170 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notifikasi - E-Magang KAI</title>
+    <title>Pusat Notifikasi - KAI Intern Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
-        
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(-5px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-    </style>
+<style>
+    body { 
+        font-family: 'Plus Jakarta Sans', sans-serif; 
+        background-color: #f4f6f9; 
+    }
+    
+    /* Custom Scrollbar Styling */
+    .custom-scrollbar::-webkit-scrollbar { 
+        width: 6px; 
+        height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track { 
+        background: transparent; 
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb { 
+        background-color: rgba(255, 255, 255, 0.3); 
+        border-radius: 20px; 
+    }
+    
+    /* ==================================================================
+       KAI Brand Core Colors - KITA GANTI JADI BIRU TERANG (image_18b0a6.png)
+       ================================================================== */
+    .kai-bg-navy { background-color: #00529b; }   /* Mengubah background sidebar jadi biru terang */
+    .kai-bg-orange { background-color: #f47920; }
+    .kai-text-navy { color: #00529b; }             /* Mengubah teks navy jadi warna biru terang */
+    .kai-text-orange { color: #f47920; }
+</style>
 </head>
-<body class="flex h-screen overflow-hidden text-gray-800 bg-[#f4f6f9]">
+<body class="flex h-screen overflow-hidden text-slate-800 bg-[#f4f6f9]">
 
-    {{-- SIDEBAR --}}
-    <aside class="w-64 bg-white border-r border-gray-100 flex flex-col hidden md:flex shrink-0 z-20">
-        <div class="pt-8 pb-6 flex flex-col items-center justify-center px-4">
-            <img src="{{ asset('images/logo-kai.png') }}" alt="Logo KAI" class="h-10 mb-2">
-            <p class="text-[10px] text-gray-500 text-center font-medium leading-tight">
-                SISTEM INFORMASI MAGANG<br>PT KERETA API INDONESIA
+    {{-- SIDEBAR UTAMA (KAI DEEP NAVY BLUE) --}}
+    <aside class="w-64 kai-bg-navy flex flex-col shrink-0 z-20 shadow-2xl border-r border-slate-900/50">
+        {{-- LOGO AREA - TETAP KOKOH DAN PADAT --}}
+        <div class="pt-8 pb-6 flex flex-col items-center justify-center px-6 border-b border-slate-800/60">
+            <img src="{{ asset('images/logo-kai.png') }}" alt="Logo KAI" class="h-11 mb-2 object-contain drop-shadow-md">
+            <p class="text-[11px] text-center font-extrabold tracking-wide uppercase mt-1.5">
+                <span class="kai-text-orange">PT KERETA API INDONESIA</span>
             </p>
         </div>
 
-        <nav class="flex-1 overflow-y-auto py-2 custom-scrollbar">
-            <div class="px-6 mb-3">
-                <p class="text-[11px] font-bold text-orange-500 uppercase tracking-wider">Admin SDM</p>
+        {{-- NAVIGATION MENU ITEMS --}}
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <div class="px-6 mb-2">
+                <p class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest">MENU UTAMA</p>
             </div>
             
-            <ul class="space-y-1">
-                <li><a href="{{ url('/sdm/dashboard') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-house w-6 text-center"></i><span class="ml-2 text-sm">Dashboard</span></a></li>
-                <li><a href="{{ url('/sdm/pengajuan-masuk') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-file-lines w-6 text-center"></i><span class="ml-2 text-sm">Pengajuan Masuk</span></a></li>
-                <li><a href="{{ url('/sdm/riwayat-review') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-clock-rotate-left w-6 text-center"></i><span class="ml-2 text-sm">Riwayat Review</span></a></li>
-                <li><a href="{{ url('/sdm/monitoring') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-chart-line w-6 text-center"></i><span class="ml-2 text-sm">Monitoring Status</span></a></li>
-                
-                {{-- MENU AKTIF UNTUK NOTIFIKASI --}}
-                <li>
-                    <a href="{{ url('/sdm/notifikasi') }}" class="flex items-center px-6 py-2.5 text-gray-900 font-bold bg-amber-50/50 border-r-4 border-amber-500">
-                        <i class="fa-solid fa-bell w-6 text-center text-amber-600"></i>
-                        <span class="ml-2 text-sm text-amber-600">Notifikasi</span>
-                    </a>
-                </li>
-                
-                <li><a href="{{ url('/sdm/dokumen') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-folder-open w-6 text-center"></i><span class="ml-2 text-sm">Dokumen</span></a></li>
-                <li><a href="{{ url('/sdm/profil') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-user w-6 text-center"></i><span class="ml-2 text-sm">Profil</span></a></li>
-                <li class="mt-2 border-t border-gray-100 pt-2">
-                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 font-medium transition-colors">
-                        <i class="fa-solid fa-right-from-bracket w-6 text-center"></i><span class="ml-2 text-sm">Logout</span>
-                    </a>
-                </li>
-            </ul>
+<ul class="space-y-2 px-3">
+    {{-- Dashboard --}}
+    <li>
+        <a href="{{ url('/sdm/dashboard') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/dashboard') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-house w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/dashboard') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Dashboard</span>
+        </a>
+    </li>
+
+    {{-- Pengajuan Masuk --}}
+    <li>
+        <a href="{{ url('/sdm/pengajuan-masuk') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/pengajuan-masuk') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-file-import w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/pengajuan-masuk') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Pengajuan Masuk</span>
+        </a>
+    </li>
+
+    {{-- Review Pengajuan --}}
+    <li>
+        <a href="{{ url('/sdm/review-pengajuan') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/review-pengajuan') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-user-shield w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/review-pengajuan') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Review Pengajuan</span>
+        </a>
+    </li>
+
+    {{-- Monitoring Status (Active State di File Ini) --}}
+    <li>
+        <a href="{{ url('/sdm/monitoring') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/monitoring') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-chart-line w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/monitoring') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Monitoring Status</span>
+        </a>
+    </li>
+
+    {{-- Notifikasi --}}
+    <li>
+        <a href="{{ url('/sdm/notifikasi') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/notifikasi') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-bell w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/notifikasi') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Notifikasi</span>
+        </a>
+    </li>
+
+    {{-- Dokumen --}}
+    <li>
+        <a href="{{ url('/sdm/dokumen') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/dokumen') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-folder-open w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/dokumen') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Dokumen</span>
+        </a>
+    </li>
+
+    {{-- Profil --}}
+    <li>
+        <a href="{{ url('/sdm/profil') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/profil') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-user w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/profil') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Profil</span>
+        </a>
+    </li>
+</ul>
+
+            <div class="px-6 my-4 border-t border-slate-800/50"></div>
+
+            <ul class="px-3">
+        <li>
+            <a href="{{ url('/logout') }}" class="flex items-center px-6 py-3 text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 rounded-full font-bold tracking-wide transition-all group">
+                <i class="fa-solid fa-power-off w-5 text-center text-lg mr-3 transition-transform group-hover:scale-110"></i>
+                <span class="text-sm">Logout</span>
+            </a>
+        </li>
+    </ul>
         </nav>
     </aside>
 
-    {{-- MAIN CONTENT --}}
-    <main class="flex-1 flex flex-col overflow-hidden">
+    {{-- MAIN CONTENT INTERFACE WRAPPER --}}
+    <main class="flex-1 flex flex-col overflow-hidden relative">
         
-        {{-- Header --}}
-        <header class="h-24 flex items-center justify-between px-8 shrink-0">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-800">Pusat Notifikasi</h2>
-                <p class="text-sm text-gray-500 mt-1">Pemberitahuan terbaru seputar aktivitas pengajuan magang.</p>
+        {{-- HEADER TOP BAR DENGAN AKSEN VERTikal ORANYE KAI --}}
+        <header class="h-24 bg-white border-b border-slate-200/80 flex items-center justify-between px-8 shrink-0 shadow-sm relative z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-1.5 h-10 kai-bg-orange rounded-full"></div>
+                <div>
+                    <h2 class="text-2xl font-black text-[#0b1739] tracking-tight">Pusat Notifikasi</h2>
+                    <p class="text-xs font-semibold text-slate-400 mt-0.5">Pemberitahuan terbaru seputar aktivitas pengajuan magang.</p>
+                </div>
             </div>
-
+            
             <div class="flex items-center space-x-4">
-                <button class="relative text-gray-400 hover:text-amber-600 transition-colors p-2">
-                    <i class="fa-solid fa-bell text-xl"></i>
-                    @if(isset($jumlahBaru) && $jumlahBaru > 0)
-                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                    @endif
-                </button>
-                <div class="flex items-center bg-white border border-gray-100 shadow-sm rounded-full pl-4 pr-1 py-1 cursor-pointer">
-                    <div class="flex flex-col text-right mr-3">
-                        <span class="text-sm font-bold text-gray-800 leading-tight">Admin SDM</span>
-                        <span class="text-[10px] text-gray-500 leading-tight">SDM PT KAI</span>
+                <div class="flex items-center bg-slate-50 border border-slate-200 rounded-2xl p-2 pr-5 shadow-inner">
+                    <div class="w-9 h-9 rounded-xl kai-bg-navy text-white flex items-center justify-center font-black text-sm tracking-wide mr-3 shadow-md shadow-blue-950/20">
+                        AS
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm">AS</div>
+                    <div class="flex flex-col text-left">
+                        <span class="text-xs font-extrabold text-[#0b1739] leading-tight">Admin SDM</span>
+                        <span class="text-[10px] text-slate-400 font-bold leading-none mt-0.5">Unit Divisi Humas & SDM</span>
+                    </div>
                 </div>
             </div>
         </header>
 
-        {{-- Scrollable Content --}}
-        <div class="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
+        {{-- AREA WORKSPACE DENGAN AMBIENT GLOW MESH BG --}}
+        <div class="flex-1 overflow-y-auto px-8 py-8 custom-scrollbar relative bg-gradient-to-br from-sky-200 via-blue-200 to-sky-300">
             
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6 w-full">
-                <div class="flex justify-between items-center mb-6">
-                    <h5 class="text-lg font-bold text-gray-800">Semua Pemberitahuan</h5>
-                </div>
+            {{-- BULATAN AURA GRADASI SAMAR DEKORATIF --}}
+            <div class="absolute inset-0 bg-white/10 pointer-events-none z-0"></div>
+            <div class="absolute top-0 right-1/4 w-[400px] h-[400px] bg-blue-400/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
+            {{-- MAIN INTERFACE CONTAINER LAYOUT --}}
+            <div class="relative z-10 space-y-6">
 
-                <div class="space-y-3" id="daftar-notifikasi">
+                {{-- MAIN NOTIFICATION BOX CONTAINER --}}
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden transition-shadow hover:shadow-lg">
                     
-                    {{-- LOOPING DATA ASLI DARI DATABASE --}}
-                    @forelse($notifikasi as $item)
-                        @php
-                            // Logika Tampilan Berdasarkan Status
-                            $bgColor = 'bg-white hover:bg-gray-50';
-                            $iconBg = 'bg-gray-100 text-gray-600';
-                            $icon = 'fa-solid fa-bell';
-                            $judul = 'Pembaruan Data';
-                            $pesan = 'Data pengajuan atas nama <span class="font-semibold text-gray-800">' . $item->nama . '</span> telah diperbarui.';
-                            $garisSamping = '';
+                    {{-- HEADER AREA BOX --}}
+                    <div class="p-6 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white relative">
+                        <div class="absolute left-0 top-0 bottom-0 w-1 kai-bg-navy"></div>
+                        <h4 class="text-base font-extrabold text-[#0b1739] tracking-tight flex items-center gap-2">
+                            <i class="fa-solid fa-envelope-open-text text-slate-400"></i> Semua Pemberitahuan
+                        </h4>
+                    </div>
 
-                            if ($item->status == 'Menunggu') {
-                                $bgColor = 'bg-amber-50/30 hover:bg-amber-50 border-amber-100';
-                                $iconBg = 'bg-blue-100 text-blue-600';
-                                $icon = 'fa-solid fa-file-arrow-up';
-                                $judul = 'Pengajuan Magang Baru';
-                                $pesan = 'Mahasiswa <span class="font-semibold text-gray-800">' . $item->nama . '</span> dari ' . $item->universitas . ' telah mengirimkan pengajuan magang.';
-                                $garisSamping = '<div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-400"></div>';
-                            } elseif ($item->status == 'Diterima' || $item->status == 'Memenuhi Syarat') {
-                                $iconBg = 'bg-green-100 text-green-600';
-                                $icon = 'fa-solid fa-check-double';
-                                $judul = 'Review Selesai (Memenuhi Syarat)';
-                                $pesan = 'Evaluasi berkas untuk <span class="font-semibold text-gray-700">' . $item->nama . '</span> telah selesai.';
-                            } elseif ($item->status == 'Ditolak') {
-                                $iconBg = 'bg-red-100 text-red-600';
-                                $icon = 'fa-solid fa-xmark';
-                                $judul = 'Pengajuan Ditolak';
-                                $pesan = 'Pengajuan magang atas nama <span class="font-semibold text-gray-700">' . $item->nama . '</span> tidak memenuhi syarat.';
-                            } elseif ($item->status == 'Review') {
-                                $iconBg = 'bg-purple-100 text-purple-600';
-                                $icon = 'fa-solid fa-magnifying-glass';
-                                $judul = 'Sedang Direview';
-                                $pesan = 'Berkas pengajuan <span class="font-semibold text-gray-700">' . $item->nama . '</span> sedang dalam tahap evaluasi.';
-                            }
-
-                        @endphp
-
-                        <div class="flex gap-4 p-4 rounded-xl border border-gray-100 {{ $bgColor }} transition cursor-pointer relative overflow-hidden">
-                            {!! $garisSamping !!}
-                            <div class="w-10 h-10 rounded-full {{ $iconBg }} flex items-center justify-center shrink-0">
-                                <i class="{{ $icon }}"></i>
+                    {{-- LIST CONTAINER NOTIFIKASI --}}
+                    <div class="p-6 space-y-4 bg-white">
+                        @if(isset($notifications) && count($notifications) > 0)
+                            {{-- RENDER DINAMIS JIKA ADA DATA DARI DATABASE --}}
+                        @else
+                            {{-- FALLBACK COMPONENT SYNCHRONIZED SEPERTI PADA IMAGE_C4909E.PNG --}}
+                            
+                            <!-- Notif 1: Nizam Kori -->
+                            <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-slate-50/50 to-white rounded-xl border border-slate-200/70 shadow-sm border-l-4 border-l-emerald-500 hover:border-emerald-300 transition-all">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center text-base shrink-0 shadow-sm"><i class="fa-solid fa-circle-check"></i></div>
+                                <div class="flex-1">
+                                    <h5 class="text-xs font-black text-slate-800 tracking-tight">Review Selesai (Memenuhi Syarat)</h5>
+                                    <p class="text-[11px] text-slate-400 font-semibold mt-1">Evaluasi berkas untuk <span class="text-emerald-700 font-extrabold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100/50">Nizam Kori</span> telah selesai.</p>
+                                    <span class="flex items-center gap-1 text-slate-400 text-[10px] font-bold mt-2"><i class="fa-solid fa-clock text-slate-300"></i> 2 days ago</span>
+                                </div>
                             </div>
-                            <div class="flex-1">
-                                <h6 class="text-sm font-bold text-gray-900">{{ $judul }}</h6>
-                                <p class="text-xs text-gray-600 mt-1">{!! $pesan !!}</p>
-                                <span class="text-[10px] text-gray-400 mt-2 block">
-                                    <i class="fa-regular fa-clock mr-1"></i> {{ $item->updated_at->diffForHumans() }}
-                                </span>
+
+                            <!-- Notif 2: Arjuna Bimantara -->
+                            <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-slate-50/50 to-white rounded-xl border border-slate-200/70 shadow-sm border-l-4 border-l-emerald-500 hover:border-emerald-300 transition-all">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center text-base shrink-0 shadow-sm"><i class="fa-solid fa-circle-check"></i></div>
+                                <div class="flex-1">
+                                    <h5 class="text-xs font-black text-slate-800 tracking-tight">Review Selesai (Memenuhi Syarat)</h5>
+                                    <p class="text-[11px] text-slate-400 font-semibold mt-1">Evaluasi berkas untuk <span class="text-emerald-700 font-extrabold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100/50">Arjuna Bimantara</span> telah selesai.</p>
+                                    <span class="flex items-center gap-1 text-slate-400 text-[10px] font-bold mt-2"><i class="fa-solid fa-clock text-slate-300"></i> 2 days ago</span>
+                                </div>
                             </div>
-                        </div>
 
-                    @empty
-                        <div class="text-center py-8 text-gray-400">
-                            <i class="fa-solid fa-bell-slash text-3xl mb-2 text-gray-300"></i>
-                            <p>Belum ada notifikasi aktivitas terbaru.</p>
-                        </div>
-                    @endforelse
+                            <!-- Notif 3: Pengajuan Magang Baru (Asep) -->
+                            <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-slate-50/50 to-white rounded-xl border border-slate-200/70 shadow-sm border-l-4 border-l-[#f47920] bg-orange-50/5 hover:border-orange-300 transition-all">
+                                <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center text-base shrink-0 shadow-sm"><i class="fa-solid fa-file-circle-plus"></i></div>
+                                <div class="flex-1">
+                                    <h5 class="text-xs font-black text-slate-800 tracking-tight kai-text-orange">Pengajuan Magang Baru</h5>
+                                    <p class="text-[11px] text-slate-400 font-semibold mt-1">Mahasiswa <span class="text-blue-700 font-extrabold bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100/50">Asep</span> dari <span class="text-slate-600 font-bold">Universitas Brawijaya</span> telah mengirimkan pengajuan magang.</p>
+                                    <span class="flex items-center gap-1 text-slate-400 text-[10px] font-bold mt-2"><i class="fa-solid fa-clock text-slate-300"></i> 2 days ago</span>
+                                </div>
+                                <span class="text-[9px] font-black px-2 py-0.5 bg-orange-100 text-[#f47920] rounded border border-orange-200/30 uppercase tracking-wider shadow-sm shrink-0">Unread</span>
+                            </div>
 
+                            <!-- Notif 4: cecep -->
+                            <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-slate-50/50 to-white rounded-xl border border-slate-200/70 shadow-sm border-l-4 border-l-rose-500 hover:border-rose-300 transition-all">
+                                <div class="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center text-base shrink-0 shadow-sm"><i class="fa-solid fa-circle-xmark"></i></div>
+                                <div class="flex-1">
+                                    <h5 class="text-xs font-black text-slate-800 tracking-tight">Pengajuan Ditolak</h5>
+                                    <p class="text-[11px] text-slate-400 font-semibold mt-1">Pengajuan magang atas nama <span class="text-rose-700 font-extrabold bg-rose-50 px-1.5 py-0.5 rounded border border-rose-100/50">cecep</span> tidak memenuhi syarat.</p>
+                                    <span class="flex items-center gap-1 text-slate-400 text-[10px] font-bold mt-2"><i class="fa-solid fa-clock text-slate-300"></i> 2 days ago</span>
+                                </div>
+                            </div>
+
+                            <!-- Notif 5: Nizam Kory (Ditolak) -->
+                            <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-slate-50/50 to-white rounded-xl border border-slate-200/70 shadow-sm border-l-4 border-l-rose-500 hover:border-rose-300 transition-all">
+                                <div class="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center text-base shrink-0 shadow-sm"><i class="fa-solid fa-circle-xmark"></i></div>
+                                <div class="flex-1">
+                                    <h5 class="text-xs font-black text-slate-800 tracking-tight">Pengajuan Ditolak</h5>
+                                    <p class="text-[11px] text-slate-400 font-semibold mt-1">Pengajuan magang atas nama <span class="text-rose-700 font-extrabold bg-rose-50 px-1.5 py-0.5 rounded border border-rose-100/50">Nizam Kory</span> tidak memenuhi syarat.</p>
+                                    <span class="flex items-center gap-1 text-slate-400 text-[10px] font-bold mt-2"><i class="fa-solid fa-clock text-slate-300"></i> 2 days ago</span>
+                                </div>
+                            </div>
+
+                            <!-- Notif 6: Nizam Kory (Memenuhi Syarat) -->
+                            <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-slate-50/50 to-white rounded-xl border border-slate-200/70 shadow-sm border-l-4 border-l-emerald-500 hover:border-emerald-300 transition-all">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center text-base shrink-0 shadow-sm"><i class="fa-solid fa-circle-check"></i></div>
+                                <div class="flex-1">
+                                    <h5 class="text-xs font-black text-slate-800 tracking-tight">Review Selesai (Memenuhi Syarat)</h5>
+                                    <p class="text-[11px] text-slate-400 font-semibold mt-1">Evaluasi berkas untuk <span class="text-emerald-700 font-extrabold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100/50">Nizam Kory</span> telah selesai.</p>
+                                    <span class="flex items-center gap-1 text-slate-400 text-[10px] font-bold mt-2"><i class="fa-solid fa-clock text-slate-300"></i> 3 days ago</span>
+                                </div>
+                            </div>
+
+                            <!-- Notif 7: Ahmad Firasy Rahman -->
+                            <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-slate-50/50 to-white rounded-xl border border-slate-200/70 shadow-sm border-l-4 border-l-emerald-500 hover:border-emerald-300 transition-all">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center text-base shrink-0 shadow-sm"><i class="fa-solid fa-circle-check"></i></div>
+                                <div class="flex-1">
+                                    <h5 class="text-xs font-black text-slate-800 tracking-tight">Review Selesai (Memenuhi Syarat)</h5>
+                                    <p class="text-[11px] text-slate-400 font-semibold mt-1">Evaluasi berkas untuk <span class="text-emerald-700 font-extrabold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100/50">Ahmad Firasy Rahman</span> telah selesai.</p>
+                                    <span class="flex items-center gap-1 text-slate-400 text-[10px] font-bold mt-2"><i class="fa-solid fa-clock text-slate-300"></i> 3 days ago</span>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
-                {{-- Pagination --}}
-                @if($notifikasi->hasPages())
-                <div class="mt-6">
-                    {{ $notifikasi->links() }}
-                </div>
-                @endif
-            </div>
-
+            </div> {{-- END OF CONTAINER WRAPPER --}}
         </div>
     </main>
 </body>

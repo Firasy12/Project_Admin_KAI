@@ -3,160 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Pengajuan - E-Magang KAI</title>
+    <title>Detail Pengajuan Masuk - KAI Intern Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
-    </style>
+    
+<style>
+    body { 
+        font-family: 'Plus Jakarta Sans', sans-serif; 
+        background-color: #f4f6f9; 
+    }
+    
+    /* Custom Scrollbar Styling */
+    .custom-scrollbar::-webkit-scrollbar { 
+        width: 6px; 
+        height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track { 
+        background: transparent; 
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb { 
+        background-color: rgba(255, 255, 255, 0.3); 
+        border-radius: 20px; 
+    }
+    
+    /* KAI Brand Core Colors - ROYAL CORPORATE BLUE */
+    .kai-bg-navy { background-color: #00529b; }   
+    .kai-bg-orange { background-color: #f47920; }
+    .kai-text-navy { color: #00529b; }             
+    .kai-text-orange { color: #f47920; }
+</style>
 </head>
-<body class="flex h-screen overflow-hidden text-gray-800 bg-[#f4f6f9]">
+<body class="flex h-screen overflow-hidden text-slate-800">
 
-    {{-- SIDEBAR --}}
-    <aside class="w-64 bg-white border-r border-gray-100 flex flex-col hidden md:flex shrink-0 z-20">
-        <div class="pt-8 pb-6 flex flex-col items-center justify-center px-4">
-            <img src="{{ asset('images/logo-kai.png') }}" alt="Logo KAI" class="h-10 mb-2">
-            <p class="text-[10px] text-gray-500 text-center font-medium leading-tight">
-                SISTEM INFORMASI MAGANG<br>PT KERETA API INDONESIA
+    {{-- SIDEBAR UTAMA (KAI ROYAL BLUE) --}}
+    <aside class="w-64 kai-bg-navy flex flex-col shrink-0 z-20 shadow-2xl border-r border-white/10">
+        {{-- LOGO AREA --}}
+        <div class="pt-8 pb-6 flex flex-col items-center justify-center px-6 border-b border-white/10">
+            <img src="{{ asset('images/logo-kai.png') }}" alt="Logo KAI" class="h-11 mb-2 object-contain drop-shadow-md">
+            <p class="text-[11px] text-center font-extrabold tracking-wide uppercase mt-1.5">
+                <span class="kai-text-orange">PT KERETA API INDONESIA</span>
             </p>
         </div>
-        <nav class="flex-1 overflow-y-auto py-2 custom-scrollbar">
-            <div class="px-6 mb-3">
-                <p class="text-[11px] font-bold text-orange-500 uppercase tracking-wider">Admin SDM</p>
+
+        {{-- NAVIGATION MENU ITEMS --}}
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <div class="px-6 mb-2">
+                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest opacity-70">MENU UTAMA</p>
             </div>
-            <ul class="space-y-1">
-                <li><a href="{{ url('/sdm/dashboard') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-house w-6 text-center"></i><span class="ml-2 text-sm">Dashboard</span></a></li>
-                <li><a href="{{ url('/sdm/pengajuan-masuk') }}" class="flex items-center px-6 py-2.5 text-gray-900 font-bold bg-blue-50/50 border-r-4 border-blue-600"><i class="fa-solid fa-file-lines w-6 text-center"></i><span class="ml-2 text-sm">Pengajuan Masuk</span></a></li>
-                <li><a href="{{ url('/sdm/riwayat-review') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-clock-rotate-left w-6 text-center"></i><span class="ml-2 text-sm">Riwayat Review</span></a></li>
-                <li><a href="{{ url('/sdm/monitoring') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-chart-line w-6 text-center"></i><span class="ml-2 text-sm">Monitoring Status</span></a></li>
-                <li><a href="{{ url('/sdm/notifikasi') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-bell w-6 text-center"></i><span class="ml-2 text-sm">Notifikasi</span></a></li>
-                <li><a href="{{ url('/sdm/dokumen') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-folder-open w-6 text-center"></i><span class="ml-2 text-sm">Dokumen</span></a></li>
-                <li><a href="{{ url('/sdm/profil') }}" class="flex items-center px-6 py-2.5 text-gray-500 hover:text-gray-900 font-medium transition-colors"><i class="fa-solid fa-user w-6 text-center"></i><span class="ml-2 text-sm">Profil</span></a></li>
-                <li class="mt-2 border-t border-gray-100 pt-2">
-                    <a href="{{ url('/logout') }}" class="flex items-center px-6 py-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 font-medium transition-colors">
-                        <i class="fa-solid fa-right-from-bracket w-6 text-center"></i><span class="ml-2 text-sm">Logout</span>
-                    </a>
-                </li>
-            </ul>
+            
+<ul class="space-y-2 px-3">
+    {{-- Dashboard --}}
+    <li>
+        <a href="{{ url('/sdm/dashboard') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/dashboard') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-house w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/dashboard') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Dashboard</span>
+        </a>
+    </li>
+
+    {{-- Pengajuan Masuk --}}
+    <li>
+        <a href="{{ url('/sdm/pengajuan-masuk') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/pengajuan-masuk') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-file-import w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/pengajuan-masuk') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Pengajuan Masuk</span>
+        </a>
+    </li>
+
+    {{-- Review Pengajuan --}}
+    <li>
+        <a href="{{ url('/sdm/review-pengajuan') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/review-pengajuan') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-user-shield w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/review-pengajuan') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Review Pengajuan</span>
+        </a>
+    </li>
+
+    {{-- Monitoring Status --}}
+    <li>
+        <a href="{{ url('/sdm/monitoring') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/monitoring') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-chart-line w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/monitoring') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Monitoring Status</span>
+        </a>
+    </li>
+
+    {{-- Notifikasi --}}
+    <li>
+        <a href="{{ url('/sdm/notifikasi') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/notifikasi') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-bell w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/notifikasi') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Notifikasi</span>
+        </a>
+    </li>
+
+    {{-- Dokumen --}}
+    <li>
+        <a href="{{ url('/sdm/dokumen') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/dokumen') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-folder-open w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/dokumen') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Dokumen</span>
+        </a>
+    </li>
+
+    {{-- Profil --}}
+    <li>
+        <a href="{{ url('/sdm/profil') }}" 
+           class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/profil') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+            <i class="fa-solid fa-user w-5 text-center text-base mr-3 transition-colors {{ Request::is('sdm/profil') ? 'text-white' : 'text-slate-400 group-hover:text-[#f47920]' }}"></i>
+            <span class="text-sm">Profil</span>
+        </a>
+    </li>
+</ul>
+
+            <div class="px-6 my-4 border-t border-white/10"></div>
+
+            <ul class="px-3">
+        <li>
+            <a href="{{ url('/logout') }}" class="flex items-center px-6 py-3 text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 rounded-full font-bold tracking-wide transition-all group">
+                <i class="fa-solid fa-power-off w-5 text-center text-lg mr-3 transition-transform group-hover:scale-110"></i>
+                <span class="text-sm">Logout</span>
+            </a>
+        </li>
+    </ul>
         </nav>
     </aside>
 
-    {{-- MAIN CONTENT --}}
+    {{-- MAIN CONTENT WORKSPACE --}}
     <main class="flex-1 flex flex-col overflow-hidden">
-        <header class="h-24 flex items-center justify-between px-8 shrink-0">
-            <div>
-                <a href="{{ url()->previous() }}" class="text-xs text-gray-400 hover:text-gray-700 mb-1 inline-flex items-center">
-                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+        
+        {{-- HEADER TOP BAR DENGAN TOMBOL KEMBALI PREMIUM --}}
+        <header class="h-24 bg-white border-b border-slate-200/80 flex items-center justify-between px-8 shrink-0 shadow-sm z-10">
+            <div class="flex items-center gap-4">
+                {{-- Tombol Kembali Kotak Premium --}}
+                <a href="{{ url('/sdm/pengajuan-masuk') }}" class="w-10 h-10 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center text-slate-500 hover:kai-text-orange hover:border-orange-200 transition-all shadow-sm" title="Kembali ke Daftar">
+                    <i class="fa-solid fa-arrow-left"></i>
                 </a>
-                <h2 class="text-2xl font-bold text-gray-800">Detail Pengajuan Magang</h2>
-                <p class="text-sm text-gray-500 mt-1">Informasi lengkap dan berkas pendaftar.</p>
+                <div>
+                    <h2 class="text-2xl font-black text-[#0b1739] tracking-tight">Detail Pengajuan Masuk</h2>
+                    <p class="text-xs font-semibold text-slate-400 mt-0.5">Informasi lengkap biodata pendaftar beserta berkas dokumen persyaratan administrasi</p>
+                </div>
+            </div>
+            
+            {{-- USER PROFILE INFO --}}
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center bg-slate-50 border border-slate-200 rounded-2xl p-2 pr-5 shadow-inner">
+                    <div class="w-9 h-9 rounded-xl kai-bg-navy text-white flex items-center justify-center font-black text-sm tracking-wide mr-3 shadow-md shadow-blue-950/20">
+                        AS
+                    </div>
+                    <div class="flex flex-col text-left">
+                        <span class="text-xs font-extrabold text-[#0b1739] leading-tight">Admin SDM</span>
+                        <span class="text-[10px] text-slate-400 font-bold leading-none mt-0.5">Unit Divisi Humas & SDM</span>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
-
-            @if(session('success'))
-                <div class="mb-4 bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-lg">{{ session('success') }}</div>
-            @endif
-            @if(session('error'))
-                <div class="mb-4 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg">{{ session('error') }}</div>
-            @endif
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                {{-- Biodata --}}
-                <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h5 class="text-lg font-bold text-gray-800">Biodata Mahasiswa</h5>
-                        <span class="text-xs font-semibold px-3 py-1 rounded-full
-                            @if($pengajuan->status === 'Diterima') bg-green-50 text-green-700
-                            @elseif($pengajuan->status === 'Ditolak') bg-red-50 text-red-700
-                            @elseif($pengajuan->status === 'Review') bg-purple-50 text-purple-700
-                            @else bg-orange-50 text-orange-700
-                            @endif
-                        ">{{ $pengajuan->status }}</span>
-                    </div>
-
-                    <table class="w-full text-sm">
-                        <tr class="border-b border-gray-50"><td class="py-2 text-gray-500 w-40">Nama</td><td class="py-2 font-semibold text-gray-800">{{ $pengajuan->nama }}</td></tr>
-                        <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">NIM</td><td class="py-2">{{ $pengajuan->nim }}</td></tr>
-                        <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Email</td><td class="py-2">{{ $pengajuan->email }}</td></tr>
-                        <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">No. HP</td><td class="py-2">{{ $pengajuan->no_hp }}</td></tr>
-                        <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Universitas</td><td class="py-2">{{ $pengajuan->universitas }}</td></tr>
-                        <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Jurusan / Prodi</td><td class="py-2">{{ $pengajuan->jurusan }}</td></tr>
-                        <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Unit Tujuan</td><td class="py-2">{{ $pengajuan->unit_tujuan }}</td></tr>
-                        <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Tanggal Pengajuan</td><td class="py-2">{{ $pengajuan->tanggal_pengajuan }}</td></tr>
-                        @if($pengajuan->motivasi)
-                        <tr class="border-b border-gray-50"><td class="py-2 text-gray-500 align-top">Motivasi</td><td class="py-2">{{ $pengajuan->motivasi }}</td></tr>
-                        @endif
-                        @if($pengajuan->catatan_sdm)
-                        <tr><td class="py-2 text-gray-500 align-top">Catatan SDM</td><td class="py-2">{{ $pengajuan->catatan_sdm }}</td></tr>
-                        @endif
-                    </table>
-                </div>
-
-                {{-- Aksi --}}
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 h-fit">
-                    <h5 class="text-lg font-bold text-gray-800 mb-4">Aksi SDM</h5>
-                    <div class="space-y-2">
-                        <form method="POST" action="{{ route('sdm.pengajuan.aksi', [$pengajuan->id, 'terima']) }}" onsubmit="return confirm('Berkas lengkap dan diteruskan ke Unit?')">
-                            @csrf
-                            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors">
-                                <i class="fa-solid fa-paper-plane mr-1"></i> Teruskan ke Unit
-                            </button>
-                        </form>
-                        <form method="POST" action="{{ route('sdm.pengajuan.aksi', [$pengajuan->id, 'revisi']) }}" onsubmit="return confirm('Minta revisi berkas ke mahasiswa ini?')">
-                            @csrf
-                            <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors">
-                                <i class="fa-solid fa-rotate-left mr-1"></i> Minta Revisi
-                            </button>
-                        </form>
-                        <form method="POST" action="{{ route('sdm.pengajuan.aksi', [$pengajuan->id, 'tolak']) }}" onsubmit="return confirm('Tolak pengajuan ini?')">
-                            @csrf
-                            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors">
-                                <i class="fa-solid fa-xmark mr-1"></i> Tolak
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Berkas --}}
-            <div class="mt-6 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h5 class="text-lg font-bold text-gray-800">Berkas Persyaratan</h5>
-                    <a href="{{ route('sdm.dokumen.show', $pengajuan->id) }}" class="text-xs font-semibold text-cyan-700 hover:text-cyan-900">
-                        Lihat halaman dokumen lengkap <i class="fa-solid fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    @forelse($berkas as $b)
-                        <div class="border border-gray-100 rounded-lg p-4 flex items-start justify-between">
-                            <div>
-                                <p class="text-sm font-semibold text-gray-800">{{ $b->nama_berkas }}</p>
-                                @if($b->status === 'uploaded')
-                                    <span class="text-[11px] text-green-600"><i class="fa-solid fa-circle-check mr-1"></i>Sudah diunggah</span>
-                                @else
-                                    <span class="text-[11px] text-gray-400"><i class="fa-solid fa-circle-exclamation mr-1"></i>Belum diunggah</span>
-                                @endif
-                            </div>
-                            @if($b->download_url)
-                                <a href="{{ $b->download_url }}" target="_blank" class="text-cyan-600 hover:text-cyan-800 p-2 rounded-lg hover:bg-cyan-50 transition-colors" title="Unduh berkas">
-                                    <i class="fa-solid fa-cloud-arrow-down"></i>
-                                </a>
-                            @endif
+        {{-- AREA SCROLLABLE CONTENT - KITA BERI WARNA BACKGROUND GRADASI BIRU MUDA FRESH --}}
+        <div class="flex-1 overflow-y-auto px-8 py-8 custom-scrollbar relative bg-gradient-to-br from-sky-200 via-blue-200 to-sky-300">
+            
+            {{-- GLOW AMBIENT EFFECTS --}}
+            <div class="absolute inset-0 bg-white/10 pointer-events-none z-0"></div>
+            <div class="absolute top-0 right-1/4 w-[400px] h-[400px] bg-blue-400/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
+            
+            {{-- BOX CONTAINER UTAMA AGAR SEJAJAR DAN TERLIHAT MENYATU DENGAN SELA BIRU MUDA --}}
+            <div class="relative z-10 space-y-6">
+                
+                {{-- ROW KARTU BIODATA & PANEL KEPUTUSAN --}}
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    
+                    {{-- KARTU DATA BIODATA (2/3 Kolom) --}}
+                    <div class="bg-white rounded-2xl border border-slate-200/50 p-6 shadow-xl shadow-blue-950/10 lg:col-span-2 relative overflow-hidden transition-shadow hover:shadow-2xl">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-4 mb-4">
+                            <h3 class="text-sm font-extrabold text-[#0b1739] uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-id-card kai-text-orange"></i> Biodata Mahasiswa
+                            </h3>
+                            <span class="inline-flex text-[11px] font-extrabold px-3 py-1 bg-amber-50 text-amber-600 border border-amber-200 rounded-lg uppercase tracking-wider">
+                                {{ $item->status ?? 'Menunggu' }}
+                            </span>
                         </div>
-                    @empty
-                        <p class="text-sm text-gray-400 italic">Belum ada data jenis berkas dari server.</p>
-                    @endforelse
-                </div>
-            </div>
 
+                        {{-- DETAIL GRID LIST DATA --}}
+                        <div class="divide-y divide-slate-100 text-sm">
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Nama</span><span class="col-span-2 font-extrabold text-slate-800 text-[15px]">{{ $item->nama ?? 'Asep' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">NIM</span><span class="col-span-2 font-bold text-slate-700 tracking-wide">{{ $item->nim ?? '7383938493' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Email</span><span class="col-span-2 font-medium text-slate-600">{{ $item->email ?? 'ggaminganjay@gmail.com' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">No. HP</span><span class="col-span-2 font-medium text-slate-600">{{ $item->no_hp ?? '08967283746' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Universitas</span><span class="col-span-2 font-bold text-slate-700">{{ $item->universitas ?? 'Universitas Brawijaya' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Jurusan / Prodi</span><span class="col-span-2 font-medium text-slate-600">{{ $item->jurusan ?? 'Informatika' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Unit Tujuan</span><span class="col-span-2 font-extrabold text-blue-700 bg-blue-50 px-3 py-1 rounded-xl w-fit text-xs border border-blue-100">{{ $item->unit_tujuan ?? 'Unit Sarana' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Tanggal Pengajuan</span><span class="col-span-2 font-medium text-slate-500"><i class="fa-solid fa-calendar text-slate-300 mr-1"></i> {{ $item->tanggal_pengajuan ?? '03 Jul 2026' }}</span></div>
+                            <div class="py-4 grid grid-cols-3"><span class="text-slate-400 font-bold">Motivasi</span><span class="col-span-2 text-xs font-semibold text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-200/60 leading-relaxed shadow-inner">{{ $item->motivasi ?? 'Gabuut' }}</span></div>
+                        </div>
+                    </div>
+
+                    {{-- PANEL AKSI SDM KAI IDENTITY (1/3 Kolom) --}}
+                    <div class="bg-white rounded-2xl border border-slate-200/50 p-6 shadow-xl shadow-blue-950/10 flex flex-col gap-4 transition-shadow hover:shadow-2xl">
+                        <h3 class="text-sm font-extrabold text-[#0b1739] uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-gavel kai-text-orange"></i> Aksi Keputusan SDM
+                        </h3>
+
+                        <form action="{{ isset($item) ? url('/sdm/pengajuan/'.$item->id.'/update-status') : '#' }}" method="POST" class="flex flex-col gap-3">
+                            @csrf
+                            
+                            <!-- Teruskan ke Unit (Emerald Solid) -->
+                            <button type="submit" name="status" value="Diterima" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md shadow-emerald-900/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider">
+                                <i class="fa-solid fa-paper-plane"></i> Teruskan ke Unit
+                            </button>
+                            
+                            <!-- Minta Revisi (KAI Orange Style) -->
+                            <button type="submit" name="status" value="Review" class="w-full kai-bg-orange hover:bg-orange-600 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md shadow-orange-900/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider">
+                                <i class="fa-solid fa-rotate-left"></i> Minta Revisi Berkas
+                            </button>
+                            
+                            <!-- Tolak (Rose Solid) -->
+                            <button type="submit" name="status" value="Ditolak" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md shadow-rose-900/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider">
+                                <i class="fa-solid fa-ban"></i> Tolak Pengajuan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                {{-- GRID DOKUMEN PERSYARATAN --}}
+                <div class="bg-white rounded-2xl border border-slate-200/50 p-6 shadow-xl shadow-blue-950/10 transition-shadow hover:shadow-2xl">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-4 mb-4">
+                        <h3 class="text-sm font-extrabold text-[#0b1739] uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-folder-open kai-text-orange"></i> Berkas Dokumen Persyaratan
+                        </h3>
+                    </div>
+
+                    {{-- LOOPING COMPONENT DOKUMEN BADGES --}}
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @php
+                            $daftar_berkas = [
+                                'Surat Pengantar dari Kampus', 'Proposal Magang', 'Foto 3x4',
+                                'KTM (Kartu Tanda Mahasiswa)', 'Transkrip Nilai', 'CV (Curriculum Vitae)'
+                            ];
+                        @endphp
+
+                        @foreach($daftar_berkas as $berkas)
+                        <div class="p-4 bg-slate-50/60 rounded-xl border border-slate-200/70 flex justify-between items-center hover:bg-slate-100 hover:border-slate-300 transition-all group">
+                            <div class="flex flex-col gap-1 pr-2">
+                                <span class="text-xs font-extrabold text-slate-800 tracking-tight leading-tight">{{ $berkas }}</span>
+                                <span class="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
+                                    <i class="fa-solid fa-circle-check"></i> Sudah diunggah
+                                </span>
+                            </div>
+                            {{-- Tombol Download Aksen Navy --}}
+                            <a href="#" class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center hover:kai-bg-navy hover:text-white hover:border-transparent transition-all shadow-sm shrink-0" title="Download File">
+                                <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+                            </a>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+
+            </div> {{-- END OF BOX CONTAINER --}}
         </div>
     </main>
 </body>
