@@ -101,13 +101,19 @@ class UnitController extends Controller
 
     public function monitoring()
     {
-        // Monitoring harus menampilkan seluruh alur pengajuan milik unit,
-        // bukan hanya yang sudah final diterima. Ini mengikuti pola halaman
-        // monitoring di SDM agar status progres tetap terlihat sinkron.
-        $all = $this->scopedToUnit($this->backend->getEnrichedPengajuan());
-        $all = $this->backend->filterBySearch($all, request('search'))->sortByDesc('created_at');
+        // Monitoring hanya untuk mahasiswa yang sudah diterima Unit.
+        $all = $this->scopedToUnit($this->backend->getEnrichedPengajuan())
+            ->where('status_raw', 'diterima');
 
-        $pengajuan = $this->backend->paginate($all, 10, (int) request('page', 1));
+        $all = $this->backend
+            ->filterBySearch($all, request('search'))
+            ->sortBy('tanggal_mulai');
+
+        $pengajuan = $this->backend->paginate(
+            $all,
+            10,
+            (int) request('page', 1)
+        );
 
         return view('unit.monitoring', compact('pengajuan'));
     }
@@ -324,54 +330,36 @@ class UnitController extends Controller
     }
 
     // 1. Fungsi menampilkan halaman form nilai (Diselaraskan menggunakan Jaringan API Backend)
-    public function formKelulusan($id)
+    public function formSertifikat($id)
     {
-        $all = $this->scopedToUnit($this->backend->getEnrichedPengajuan());
+        $all = $this->scopedToUnit(
+            $this->backend->getEnrichedPengajuan()
+        );
+
         $mahasiswa = $all->firstWhere('id', (int) $id);
 
         if (!$mahasiswa) {
-            abort(404, 'Data mahasiswa tidak ditemukan atau berada di luar unit Anda.');
+            abort(404);
         }
 
-        return view('unit.form-kelulusan', compact('mahasiswa'));
+        return view('unit.form-sertifikat', compact('mahasiswa'));
     }
 
-    // 2. Fungsi Eksekusi Nilai + Auto-Send Email Sertifikat
-    public function prosesSertifikat(Request $request, $id)
+    public function terbitkanSertifikat(Request $request, $id)
     {
         $all = $this->scopedToUnit($this->backend->getEnrichedPengajuan());
+
         $mahasiswa = $all->firstWhere('id', (int) $id);
 
         if (!$mahasiswa) {
-            abort(404, 'Data mahasiswa gagal divalidasi.');
+            abort(404);
         }
 
-        // Tanam nilai secara instan ke objek untuk kebutuhan pencetakan berkas PDF
-        $mahasiswa->nilai_teknis = $request->nilai_teknis;
-        $mahasiswa->nilai_sikap = $request->nilai_sikap;
-        $mahasiswa->status_terkini = 'SELESAI MAGANG';
+        $pdf = Pdf::loadView('pdf.sertifikat', compact('mahasiswa'))
+            ->setPaper('A4', 'landscape');
 
-        // Hubungkan perubahan state akhir ke server API lokal agar sinkron
-        $this->backend->updateStatusPengajuan((int) $id, 'diterima');
-
-        // LOGIKA A: Generate PDF Sertifikat secara instan di memori server
-        $pdf = Pdf::loadView('pdf.sertifikat', compact('mahasiswa'));
-
-        // LOGIKA B: Tembak Email Otomatis langsung ke email pendaftar dengan lampiran PDF
-        $dataEmail = [
-            'nama' => $mahasiswa->nama,
-            'email_tujuan' => $mahasiswa->email ?? 'mahasiswa@kai.id'
-        ];
-
-        Mail::send('emails.kelulusan_notif', $dataEmail, function ($message) use ($dataEmail, $pdf) {
-            $message->to($dataEmail['email_tujuan'], $dataEmail['nama'])
-                ->subject('Selamat! Sertifikat Kelulusan Magang PT KAI Anda Telah Terbit')
-                ->attachData($pdf->output(), "Sertifikat_Magang_" . $dataEmail['nama'] . ".pdf");
-        });
-
-        return redirect('/unit/monitoring')->with('success', 'Nilai berhasil disimpan dan sertifikat telah dikirim ke email mahasiswa!');
+        return $pdf->stream('sertifikat.pdf');
     }
-
     // FUNGSI HELPER: Otomatisasi Kirim Email Hasil Seleksi (Terima/Tolak)
     protected function kirimEmailHasilSeleksi($id, $status)
     {

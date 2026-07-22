@@ -201,25 +201,18 @@
                                             {{ is_object($item->unit_tujuan) ? ($item->unit_tujuan->nama ?? 'Unit Sistem Informasi') : ($item->unit_tujuan ?? 'Unit Sistem Informasi') }}
                                         </td>
                                         
-                                        {{-- 4. COL STATUS TERKINI --}}
-                                        <td class="px-6 py-4 text-center whitespace-nowrap border-r border-slate-100">
-                                            @if(($item->status_raw ?? '') == 'diterima')
-                                                <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg shadow-sm uppercase tracking-wide">
-                                                    <i class="fa-solid fa-circle-check text-[10px]"></i> Disetujui Unit
-                                                </span>
-                                            @elseif(($item->status_raw ?? '') == 'selesai')
-                                                <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-lg shadow-sm uppercase tracking-wide">
-                                                    <i class="fa-solid fa-graduation-cap text-[10px]"></i> Selesai Magang
-                                                </span>
-                                            @elseif(($item->status_raw ?? '') == 'ditolak')
-                                                <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-rose-50 text-rose-600 border border-rose-200 rounded-lg shadow-sm uppercase tracking-wide">
-                                                    <i class="fa-solid fa-circle-xmark text-[10px]"></i> Ditolak
-                                                </span>
-                                            @else
-                                                <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-slate-50 text-slate-500 border border-slate-200 rounded-lg shadow-sm uppercase tracking-wide">
-                                                    {{ strtoupper($item->status_raw ?? 'Pending') }}
-                                                </span>
-                                            @endif
+                                        <td class="px-6 py-4 text-center border-r border-slate-100">
+                                            <span class="inline-flex items-center gap-1
+                                                bg-blue-50 text-blue-700
+                                                border border-blue-200
+                                                rounded-lg
+                                                px-3 py-1
+                                                text-xs
+                                                font-bold">
+
+                                                <i class="fa-solid fa-circle-check"></i>
+                                                DITERIMA
+                                            </span>
                                         </td>
                                         
                                         {{-- 5. COL PROGRES MAGANG (LOGIKA TERKUNCI JIKA DITOLAK) --}}
@@ -229,12 +222,8 @@
                                                 $end = \Carbon\Carbon::parse($item->tanggal_selesai ?? now()->addWeeks(4));
                                                 $now = \Carbon\Carbon::now();
 
-                                                // CEK KONDISI UTAMA: JIKA DITOLAK, PAKSA 0% DAN BAR MATI
-                                                if (($item->status_raw ?? '') == 'ditolak') {
-                                                    $percentage = 0;
-                                                    $textStatus = 'Akses Non-Aktif';
-                                                    $barColor = 'bg-slate-200';
-                                                } elseif ($now->lessThan($start)) {
+                                                // CEK KONDISI UTAMA
+                                                if ($now->lessThan($start)) {
                                                     $percentage = 0;
                                                     $textStatus = 'Belum Mulai';
                                                     $barColor = 'bg-slate-400';
@@ -270,15 +259,16 @@
                                         </td>
 
                                         {{-- 6. COL AKSI KELULUSAN --}}
-                                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                                            @if(($item->status_raw ?? '') == 'diterima')
-                                                <a href="{{ url('/unit/monitoring/'.$item->id.'/kelulusan') }}" 
-                                                   class="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-extrabold rounded-xl shadow-md transition-all">
-                                                    <i class="fa-solid fa-certificate"></i> Kelulusan & Sertifikat
-                                                </a>
-                                            @else
-                                                <span class="text-xs font-semibold text-slate-400 italic">Tidak ada aksi</span>
-                                            @endif
+                                        <<td class="px-6 py-4 text-center">
+                                            <a href="{{ url('/unit/monitoring/'.$item->id.'/sertifikat') }}"
+                                            class="inline-flex items-center gap-2 px-4 py-2
+                                            bg-gradient-to-r from-amber-500 to-orange-500
+                                            hover:from-amber-600 hover:to-orange-600
+                                            text-white text-xs font-bold rounded-xl">
+
+                                                <i class="fa-solid fa-award"></i>
+                                                Penerbitan Sertifikat
+                                            </a>
                                         </td>
                                     </tr>
                                 @empty

@@ -179,7 +179,7 @@
             </div>
             <div>
                 <p class="text-[10px] font-black text-slate-400 whitespace-nowrap uppercase tracking-wider">Pengajuan Masuk</p>
-                <h3 class="text-2xl font-black text-[#0b1739] mt-0.5 tracking-tight">{{ $jumlah_masuk ?? 1 }}</h3>
+                <h3 class="text-2xl font-black text-[#0b1739] mt-0.5 tracking-tight">{{ $countMasuk ?? 0 }}</h3>
             </div>
         </div>
         <span class="text-[10px] font-black px-2.5 py-1 bg-blue-100 text-blue-700 border border-blue-200 rounded-lg shadow-sm uppercase tracking-wide relative z-10 transition-colors group-hover:bg-blue-600 group-hover:text-white group-hover:border-transparent">Baru</span>
@@ -195,7 +195,7 @@
             </div>
             <div>
                 <p class="text-[10px] font-black text-slate-400 whitespace-nowrap uppercase tracking-wider">Sedang Review</p>
-                <h3 class="text-2xl font-black text-[#0b1739] mt-0.5 tracking-tight">{{ $jumlah_review ?? 1 }}</h3>
+                <h3 class="text-2xl font-black text-[#0b1739] mt-0.5 tracking-tight">{{ $countReview ?? 0 }}</h3>
             </div>
         </div>
         <span class="text-[10px] font-black px-2.5 py-1 bg-purple-100 text-purple-700 border border-purple-200 rounded-lg shadow-sm uppercase tracking-wide relative z-10 transition-colors group-hover:bg-purple-600 group-hover:text-white group-hover:border-transparent">Proses</span>
@@ -211,7 +211,7 @@
             </div>
             <div>
                 <p class="text-[10px] font-black text-slate-400 whitespace-nowrap uppercase tracking-wider">Diterima</p>
-                <h3 class="text-2xl font-black text-[#0b1739] mt-0.5 tracking-tight">{{ $jumlah_diterima ?? 6 }}</h3>
+                <h3 class="text-2xl font-black text-[#0b1739] mt-0.5 tracking-tight">{{ $countDiterima ?? 0 }}</h3>
             </div>
         </div>
         <span class="text-[10px] font-black px-2.5 py-1 bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg shadow-sm uppercase tracking-wide relative z-10 transition-colors group-hover:bg-emerald-600 group-hover:text-white group-hover:border-transparent">Lolos</span>
@@ -227,7 +227,7 @@
             </div>
             <div>
                 <p class="text-[10px] font-black text-slate-400 whitespace-nowrap uppercase tracking-wider">Ditolak</p>
-                <h3 class="text-2xl font-black text-[#0b1739] mt-0.5 tracking-tight">{{ $jumlah_ditolak ?? 2 }}</h3>
+                <h3 class="text-2xl font-black text-[#0b1739] mt-0.5 tracking-tight">{{ $countDitolak ?? 0 }}</h3>
             </div>
         </div>
         <span class="text-[10px] font-black px-2.5 py-1 bg-rose-100 text-rose-700 border border-rose-200 rounded-lg shadow-sm uppercase tracking-wide relative z-10 transition-colors group-hover:bg-rose-600 group-hover:text-white group-hover:border-transparent">Gagal</span>

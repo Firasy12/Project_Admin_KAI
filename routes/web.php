@@ -131,5 +131,5 @@ Route::get('/sdm/review-pengajuan', [SDMController::class, 'reviewPengajuan'])->
 // Route untuk menampilkan halaman form input nilai
 Route::get('/unit/monitoring/{id}/kelulusan', [App\Http\Controllers\UnitController::class, 'formKelulusan']);
 
-// Route proses submit nilai, generate PDF, dan otomatis kirim email
-Route::post('/unit/monitoring/{id}/kirim-sertifikat', [App\Http\Controllers\UnitController::class, 'prosesSertifikat']);
+Route::get('/unit/monitoring/{id}/sertifikat', [UnitController::class, 'formSertifikat']);
+Route::post('/unit/monitoring/{id}/sertifikat', [UnitController::class, 'terbitkanSertifikat']);

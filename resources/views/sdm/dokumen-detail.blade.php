@@ -122,13 +122,12 @@
 
                 {{-- Dokumen --}}
                 <li>
-                    <a href="{{ route('sdm.dokumen.show', $item->id) }}"
-                        class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-4 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl hover:kai-bg-navy hover:text-white hover:border-transparent transition-all shadow-sm">
-                        <i class="fa-solid fa-eye"></i>
-                        Lihat Dokumen
+                    <a href="{{ url('/sdm/dokumen') }}"
+                        class="flex items-center px-6 py-3 transition-all duration-200 {{ Request::is('sdm/dokumen*') ? 'text-white bg-gradient-to-r from-[#f47920] to-[#e0650d] font-bold rounded-full shadow-lg shadow-orange-900/30' : 'text-slate-300 hover:text-white hover:bg-[#f47920]/15 font-medium rounded-full group' }}">
+                        <i class="fa-solid fa-folder-open w-5 text-center text-base mr-3"></i>
+                        <span class="text-sm">Dokumen</span>
                     </a>
                 </li>
-
                 {{-- Profil --}}
                 <li>
                     <a href="{{ url('/sdm/profil') }}"
