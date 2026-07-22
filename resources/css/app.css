@@ -562,3 +562,40 @@ body {
         gap: 12px;
     }
 }
+
+/* =====================================
+   KAI THEME
+===================================== */
+
+.kai-bg-navy{
+    background:#081a3a;
+}
+
+.kai-bg-dark{
+    background:#06142d;
+}
+
+.kai-text-orange{
+    color:#f47920;
+}
+
+.kai-border{
+    border-color:rgba(255,255,255,.08);
+}
+
+.custom-scrollbar::-webkit-scrollbar{
+    width:6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track{
+    background:transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb{
+    background:#334155;
+    border-radius:9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover{
+    background:#475569;
+}

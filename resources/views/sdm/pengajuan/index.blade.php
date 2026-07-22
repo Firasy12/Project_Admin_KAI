@@ -316,35 +316,13 @@
                                     </tr>
                                     @endforeach
                                 @else
-                                    {{-- LAYOUT BARIS DETIL MOCKUP (ASEP) BERDASARKAN image_c3ab1e.png --}}
-                                    <tr class="hover:bg-orange-50/20 even:bg-slate-50/40 transition-all duration-150 border-l-4 border-transparent hover:border-l-[#f47920]">
-                                        <td class="px-6 py-4 font-bold text-slate-400">1</td>
-                                        <td class="px-6 py-4">
-                                            <div class="font-extrabold text-slate-800 text-[14px]">Asep</div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="text-xs text-slate-600 font-bold flex items-center gap-1.5">
-                                                <div class="w-4 h-4 rounded-md bg-slate-100 flex items-center justify-center text-[9px] text-slate-400"><i class="fa-solid fa-building-columns"></i></div>
-                                                Universitas Brawijaya
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-16 text-center text-slate-400 bg-white">
+                                            <div class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+                                                <i class="fa-solid fa-inbox text-3xl text-slate-300"></i>
                                             </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span class="px-2.5 py-1 bg-slate-50 border border-slate-200/80 text-slate-600 rounded-lg text-xs font-bold">Informatika</span>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-xl bg-orange-50 text-[#f47920] border border-orange-100 shadow-sm">
-                                                <span class="w-1.5 h-1.5 rounded-full kai-bg-orange animate-pulse"></span>Unit Sarana
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-center">
-                                            <span class="inline-flex text-[11px] font-extrabold px-3 py-1 rounded-lg border bg-amber-50 text-amber-600 border-amber-200/60 uppercase tracking-wider shadow-sm">
-                                                Menunggu
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                                            <a href="#" class="kai-bg-navy hover:kai-bg-orange text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-md shadow-blue-950/10 inline-flex items-center gap-1.5 group">
-                                                <i class="fa-solid fa-eye text-[11px] group-hover:scale-110 transition-transform"></i> Lihat Detail
-                                            </a>
+                                            <p class="text-sm font-extrabold text-slate-500">Antrean Bersih!</p>
+                                            <p class="text-xs font-semibold text-slate-400 mt-1">Belum ada pengajuan magang baru yang masuk.</p>
                                         </td>
                                     </tr>
                                 @endif

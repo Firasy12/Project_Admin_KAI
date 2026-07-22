@@ -18,7 +18,7 @@ class UnitController extends Controller
     {
         return $collection->when(
             session('unit_id'),
-            fn ($c) => $c->where('unit_id', session('unit_id'))
+            fn($c) => $c->where('unit_id', session('unit_id'))
         );
     }
 
@@ -38,13 +38,17 @@ class UnitController extends Controller
         $jumlah_masuk = $pengajuan_baru->count();
 
         $countDiterima = $all->where('status_raw', 'diterima')->count();
-        $countDitolak  = $all->where('status_raw', 'ditolak')->count();
-        $countSelesai  = $all->where('status_raw', 'diterima')
-            ->filter(fn ($p) => $p->tanggal_selesai && \Carbon\Carbon::parse($p->tanggal_selesai)->isPast())
+        $countDitolak = $all->where('status_raw', 'ditolak')->count();
+        $countSelesai = $all->where('status_raw', 'diterima')
+            ->filter(fn($p) => $p->tanggal_selesai && \Carbon\Carbon::parse($p->tanggal_selesai)->isPast())
             ->count();
 
         return view('unit.dashboard', compact(
-            'pengajuan_baru', 'jumlah_masuk', 'countDiterima', 'countDitolak', 'countSelesai'
+            'pengajuan_baru',
+            'jumlah_masuk',
+            'countDiterima',
+            'countDitolak',
+            'countSelesai'
         ));
     }
 
@@ -71,6 +75,14 @@ class UnitController extends Controller
         $all = $this->backend->filterBySearch($all, request('search'))->sortByDesc('created_at'); //[cite: 1]
 
         $pengajuan = $this->backend->paginate($all, 10, (int) request('page', 1)); //[cite: 1]
+
+        // Kolom "Dokumen" sebelumnya selalu tampil badge statis "Lengkap"
+        // walau berkas belum lengkap. Sekarang dicek beneran ke backend.
+        foreach ($pengajuan as $item) {
+            $berkas = $this->backend->getBerkasDetail($item->id);
+            $item->is_berkas_lengkap = $berkas->where('is_required', true)
+                ->every(fn($b) => $b->status === 'uploaded');
+        }
 
         return view('unit.review', compact('pengajuan')); //[cite: 1]
     }
@@ -123,7 +135,7 @@ class UnitController extends Controller
 
         foreach ($dokumen as $item) {
             $berkas = $this->backend->getBerkasDetail($item->id);
-            $proposal = $berkas->first(fn ($b) => str_contains(strtolower($b->nama_berkas), 'proposal'));
+            $proposal = $berkas->first(fn($b) => str_contains(strtolower($b->nama_berkas), 'proposal'));
 
             $item->proposal_url = $proposal->download_url ?? null;
             $item->proposal_status = $proposal->status ?? 'belum_upload';
@@ -136,7 +148,7 @@ class UnitController extends Controller
     {
         $response = $this->backend->getPengajuanDetail((int) $id);
 
-        if (! $response->successful()) {
+        if (!$response->successful()) {
             abort(404);
         }
 
@@ -167,7 +179,7 @@ class UnitController extends Controller
     {
         $response = $this->backend->getPengajuanDetail((int) $id);
 
-        if (! $response->successful()) {
+        if (!$response->successful()) {
             abort(404);
         }
 
@@ -177,17 +189,17 @@ class UnitController extends Controller
             abort(403);
         }
 
-        $berkas = $this->backend->getBerkasDetail((int) $id)->filter(fn ($b) => $b->download_url);
+        $berkas = $this->backend->getBerkasDetail((int) $id)->filter(fn($b) => $b->download_url);
 
         if ($berkas->isEmpty()) {
             return back()->with('error', 'Belum ada berkas yang diunggah untuk pengajuan ini.');
         }
 
-        if (! class_exists(\ZipArchive::class)) {
+        if (!class_exists(\ZipArchive::class)) {
             return back()->with('error', 'Fitur unduh semua butuh ekstensi PHP "zip" yang belum aktif di server. Aktifkan dulu ext-zip di php.ini.');
         }
 
-        $zipPath = storage_path('app/berkas-pengajuan-unit-'.$id.'-'.time().'.zip');
+        $zipPath = storage_path('app/berkas-pengajuan-unit-' . $id . '-' . time() . '.zip');
 
         $zip = new \ZipArchive();
         $zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
@@ -202,7 +214,7 @@ class UnitController extends Controller
 
                 if ($response->successful()) {
                     $ext = pathinfo(parse_url($b->file_path, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION) ?: 'pdf';
-                    $filename = \Illuminate\Support\Str::slug($b->nama_berkas).'.'.$ext;
+                    $filename = \Illuminate\Support\Str::slug($b->nama_berkas) . '.' . $ext;
                     $zip->addFromString($filename, $response->body());
                     $adaFileBerhasil = true;
                 }
@@ -213,13 +225,40 @@ class UnitController extends Controller
 
         $zip->close();
 
-        if (! $adaFileBerhasil) {
+        if (!$adaFileBerhasil) {
             @unlink($zipPath);
 
             return back()->with('error', 'Gagal mengambil berkas dari server backend.');
         }
 
-        return response()->download($zipPath, 'berkas-pengajuan-'.$id.'.zip')->deleteFileAfterSend(true);
+        return response()->download($zipPath, 'berkas-pengajuan-' . $id . '.zip')->deleteFileAfterSend(true);
+    }
+
+    public function exportPdf()
+    {
+        $data = $this->backend->getFullPendaftarData(request('status'), session('unit_id'));
+        $data = $this->backend->filterBySearch($data, request('search'));
+
+        $pdf = Pdf::loadView('pdf.pendaftar-export', [
+            'data' => $data,
+            'judul' => 'Data Lengkap Pendaftar Magang - Unit',
+            'dicetak_oleh' => 'Admin Unit',
+        ])->setPaper('a4', 'landscape');
+
+        return response($pdf->output(), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="data-pendaftar-unit.pdf"');
+    }
+
+    public function exportExcel()
+    {
+        $data = $this->backend->getFullPendaftarData(request('status'), session('unit_id'));
+        $data = $this->backend->filterBySearch($data, request('search'));
+
+        return response()
+            ->view('exports.pendaftar-excel', ['data' => $data])
+            ->header('Content-Type', 'application/vnd.ms-excel; charset=UTF-8')
+            ->header('Content-Disposition', 'attachment; filename="data-pendaftar-unit-' . now()->format('Y-m-d') . '.xls"');
     }
 
     public function profil()
@@ -236,7 +275,7 @@ class UnitController extends Controller
             default => null,
         };
 
-        if (! $status) {
+        if (!$status) {
             return back()->with('error', 'Keputusan tidak dikenali.');
         }
 
@@ -246,8 +285,8 @@ class UnitController extends Controller
 
         $response = $this->backend->updateStatusPengajuan((int) $id, $status);
 
-        if (! $response->successful()) {
-            return back()->with('error', 'Gagal memperbarui status di server: '.$response->status());
+        if (!$response->successful()) {
+            return back()->with('error', 'Gagal memperbarui status di server: ' . $response->status());
         }
         $this->kirimEmailHasilSeleksi($id, $status);
 
@@ -264,14 +303,14 @@ class UnitController extends Controller
             default => null,
         };
 
-        if (! $status) {
-            return back()->with('error', 'Status tidak dikenali: '.$request->input('status'));
+        if (!$status) {
+            return back()->with('error', 'Status tidak dikenali: ' . $request->input('status'));
         }
 
         $response = $this->backend->updateStatusPengajuan((int) $id, $status);
 
-        if (! $response->successful()) {
-            return back()->with('error', 'Gagal memperbarui status di server: '.$response->status());
+        if (!$response->successful()) {
+            return back()->with('error', 'Gagal memperbarui status di server: ' . $response->status());
         }
         $this->kirimEmailHasilSeleksi($id, $status);
 
@@ -290,7 +329,7 @@ class UnitController extends Controller
         $all = $this->scopedToUnit($this->backend->getEnrichedPengajuan());
         $mahasiswa = $all->firstWhere('id', (int) $id);
 
-        if (! $mahasiswa) {
+        if (!$mahasiswa) {
             abort(404, 'Data mahasiswa tidak ditemukan atau berada di luar unit Anda.');
         }
 
@@ -303,7 +342,7 @@ class UnitController extends Controller
         $all = $this->scopedToUnit($this->backend->getEnrichedPengajuan());
         $mahasiswa = $all->firstWhere('id', (int) $id);
 
-        if (! $mahasiswa) {
+        if (!$mahasiswa) {
             abort(404, 'Data mahasiswa gagal divalidasi.');
         }
 
@@ -324,40 +363,40 @@ class UnitController extends Controller
             'email_tujuan' => $mahasiswa->email ?? 'mahasiswa@kai.id'
         ];
 
-        Mail::send('emails.kelulusan_notif', $dataEmail, function($message) use ($dataEmail, $pdf) {
+        Mail::send('emails.kelulusan_notif', $dataEmail, function ($message) use ($dataEmail, $pdf) {
             $message->to($dataEmail['email_tujuan'], $dataEmail['nama'])
-                    ->subject('Selamat! Sertifikat Kelulusan Magang PT KAI Anda Telah Terbit')
-                    ->attachData($pdf->output(), "Sertifikat_Magang_" . $dataEmail['nama'] . ".pdf");
+                ->subject('Selamat! Sertifikat Kelulusan Magang PT KAI Anda Telah Terbit')
+                ->attachData($pdf->output(), "Sertifikat_Magang_" . $dataEmail['nama'] . ".pdf");
         });
 
         return redirect('/unit/monitoring')->with('success', 'Nilai berhasil disimpan dan sertifikat telah dikirim ke email mahasiswa!');
     }
 
     // FUNGSI HELPER: Otomatisasi Kirim Email Hasil Seleksi (Terima/Tolak)
-protected function kirimEmailHasilSeleksi($id, $status)
-{
-    // Ambil data mahasiswa dari API Backend agar dapet email & namanya
-    $all = $this->scopedToUnit($this->backend->getEnrichedPengajuan());
-    $mahasiswa = $all->firstWhere('id', (int) $id);
+    protected function kirimEmailHasilSeleksi($id, $status)
+    {
+        // Ambil data mahasiswa dari API Backend agar dapet email & namanya
+        $all = $this->scopedToUnit($this->backend->getEnrichedPengajuan());
+        $mahasiswa = $all->firstWhere('id', (int) $id);
 
-    if ($mahasiswa && isset($mahasiswa->email)) {
-        $dataEmail = [
-            'nama' => $mahasiswa->nama,
-            'status' => $status, // 'diterima' atau 'ditolak'
-            'unit' => 'Unit Sistem Informasi'
-        ];
+        if ($mahasiswa && isset($mahasiswa->email)) {
+            $dataEmail = [
+                'nama' => $mahasiswa->nama,
+                'status' => $status, // 'diterima' atau 'ditolak'
+                'unit' => 'Unit Sistem Informasi'
+            ];
 
-        // Tentukan subjek email berdasarkan status hasil seleksi
-        $subject = $status === 'diterima' 
-            ? 'Selamat! Pengajuan Magang Anda di PT KAI Diterima' 
-            : 'Informasi Hasil Pengajuan Magang PT KAI';
+            // Tentukan subjek email berdasarkan status hasil seleksi
+            $subject = $status === 'diterima'
+                ? 'Selamat! Pengajuan Magang Anda di PT KAI Diterima'
+                : 'Informasi Hasil Pengajuan Magang PT KAI';
 
-        // Tembak email menggunakan template blade khusus 'emails.seleksi_notif'
-        Mail::send('emails.seleksi_notif', $dataEmail, function($message) use ($mahasiswa, $subject) {
-            $message->to($mahasiswa->email, $mahasiswa->nama)
+            // Tembak email menggunakan template blade khusus 'emails.seleksi_notif'
+            Mail::send('emails.seleksi_notif', $dataEmail, function ($message) use ($mahasiswa, $subject) {
+                $message->to($mahasiswa->email, $mahasiswa->nama)
                     ->subject($subject);
-        });
+            });
+        }
     }
-}
 
 } // <-- KURUNG KURAWAL PENUTUP UTAMA CLASS SEKARANG SUDAH AMAN ADA DI SINI!

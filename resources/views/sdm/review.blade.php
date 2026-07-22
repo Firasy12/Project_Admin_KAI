@@ -206,9 +206,15 @@
                                     
                                     {{-- FLOW STATE STATUS --}}
                                     <td class="px-6 py-4 text-center">
-                                        <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg uppercase tracking-wider shadow-sm">
-                                            <i class="fa-solid fa-spinner animate-spin text-[9px]"></i> Menunggu Review
-                                        </span>
+                                        @if(($item->status_raw ?? '') === 'perlu_perbaikan')
+                                            <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-3 py-1 bg-orange-50 text-orange-700 border border-orange-200 rounded-lg uppercase tracking-wider shadow-sm">
+                                                <i class="fa-solid fa-rotate-left text-[9px]"></i> Perlu Revisi
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg uppercase tracking-wider shadow-sm">
+                                                <i class="fa-solid fa-spinner animate-spin text-[9px]"></i> Menunggu Review
+                                            </span>
+                                        @endif
                                     </td>
                                     
                                     {{-- ACTION DISPOSISI / REVISI / TOLAK --}}
@@ -216,15 +222,15 @@
                                         <form action="{{ url('/sdm/pengajuan/'.$item->id.'/review') }}" method="POST" class="inline-flex items-center gap-1.5">
                                             @csrf
                                             
-                                            <button type="submit" name="keputusan" value="Disposisi" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-extrabold transition-all shadow-md shadow-blue-600/10 hover:shadow-lg">
+                                            <button type="submit" name="status" value="Teruskan" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-extrabold transition-all shadow-md shadow-blue-600/10 hover:shadow-lg">
                                                 <i class="fa-solid fa-share-nodes"></i> Disposisi
                                             </button>
                                             
-                                            <button type="submit" name="keputusan" value="Revisi" class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-extrabold transition-all shadow-md shadow-amber-500/10 hover:shadow-lg">
+                                            <button type="submit" name="status" value="Revisi" class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-extrabold transition-all shadow-md shadow-amber-500/10 hover:shadow-lg">
                                                 <i class="fa-solid fa-rotate-left"></i> Revisi
                                             </button>
 
-                                            <button type="submit" name="keputusan" value="Ditolak" class="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-extrabold transition-all shadow-md shadow-rose-600/10 hover:shadow-lg">
+                                            <button type="submit" name="status" value="Ditolak" class="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-extrabold transition-all shadow-md shadow-rose-600/10 hover:shadow-lg">
                                                 <i class="fa-solid fa-trash-can"></i> Tolak
                                             </button>
                                         </form>

@@ -257,6 +257,15 @@ class BackendApiService
     }
 
     /* =========================================================
+     |  KUOTA
+     |========================================================= */
+
+    public function getKuota(int $skip = 0, int $limit = 100): Response
+    {
+        return $this->get('/kuota/', ['skip' => $skip, 'limit' => $limit]);
+    }
+
+    /* =========================================================
      |  MAHASISWA / PENDAFTARAN
      |========================================================= */
 
@@ -328,6 +337,29 @@ class BackendApiService
 
         $mahasiswaById = collect($mahasiswaResp->successful() ? $mahasiswaResp->json() : [])->keyBy('id');
 
+        // Fallback: kalau endpoint list /pendaftaran/ diblok untuk role ini
+        // (403/401) tapi endpoint detail /pendaftaran/{id} ternyata masih
+        // diizinkan, ambil satu-satu per mahasiswa_id yang muncul di
+        // pengajuanResp supaya nama/NIM/universitas tidak selalu '-'.
+        if (! $mahasiswaResp->successful()) {
+            $mahasiswaIds = collect($pengajuanResp->json())->pluck('mahasiswa_id')->unique()->filter();
+
+            foreach ($mahasiswaIds as $mid) {
+                $single = $this->getMahasiswa((int) $mid);
+
+                if ($single->successful()) {
+                    $mahasiswaById->put($mid, $single->json());
+                }
+            }
+
+            if ($mahasiswaById->isNotEmpty()) {
+                \Illuminate\Support\Facades\Log::info('Enrich pengajuan pakai fallback per-id /pendaftaran/{id} berhasil', [
+                    'jumlah_mahasiswa_ketemu' => $mahasiswaById->count(),
+                    'role' => Session::get('role'),
+                ]);
+            }
+        }
+
         $unitResp = $this->getUnits();
 
         if (! $unitResp->successful()) {
@@ -372,6 +404,83 @@ class BackendApiService
     }
 
     /**
+     * Data lengkap pendaftar untuk kebutuhan export (PDF/Excel).
+     * Beda dengan getEnrichedPengajuan() yang cuma ambil sebagian field
+     * mahasiswa (nama/nim/email/universitas/jurusan) buat ditampilkan di
+     * tabel -- fungsi ini ambil SEMUA field dari MahasiswaResponse
+     * (tempat lahir, agama, alamat lengkap, fakultas, IPK, dst) supaya
+     * hasil export benar-benar lengkap, bukan cuma ringkasan dashboard.
+     */
+    public function getFullPendaftarData(?string $status = null, ?int $unitId = null): Collection
+    {
+        $pengajuanResp = $this->getPengajuan($status, 0, 1000);
+
+        if (! $pengajuanResp->successful()) {
+            return collect();
+        }
+
+        $mahasiswaResp = $this->getAllMahasiswa(0, 1000);
+        $mahasiswaById = collect($mahasiswaResp->successful() ? $mahasiswaResp->json() : [])->keyBy('id');
+
+        // Fallback per-id kalau list mahasiswa diblok role tertentu (sama
+        // seperti di getEnrichedPengajuan()).
+        if (! $mahasiswaResp->successful()) {
+            $ids = collect($pengajuanResp->json())->pluck('mahasiswa_id')->unique()->filter();
+
+            foreach ($ids as $mid) {
+                $single = $this->getMahasiswa((int) $mid);
+
+                if ($single->successful()) {
+                    $mahasiswaById->put($mid, $single->json());
+                }
+            }
+        }
+
+        $unitById = collect($this->getUnits()->json() ?? [])->keyBy('id');
+
+        return collect($pengajuanResp->json())
+            ->when($unitId, fn ($c) => $c->where('unit_id', $unitId))
+            ->map(function (array $p) use ($mahasiswaById, $unitById) {
+                $mhs = $mahasiswaById->get($p['mahasiswa_id'], []);
+                $unit = $p['unit_id'] ? $unitById->get($p['unit_id']) : null;
+
+                return (object) [
+                    'id' => $p['id'],
+                    'nama' => $mhs['nama'] ?? '-',
+                    'email' => $mhs['email'] ?? '-',
+                    'nim' => $mhs['nim'] ?? '-',
+                    'no_hp' => $mhs['no_hp'] ?? '-',
+                    'tempat_lahir' => $mhs['tempat_lahir'] ?? '-',
+                    'tgl_lahir' => $mhs['tgl_lahir'] ?? null,
+                    'jenis_kelamin' => $mhs['jenis_kelamin'] ?? '-',
+                    'agama' => $mhs['agama'] ?? '-',
+                    'alamat' => $mhs['alamat'] ?? '-',
+                    'kota_nama' => $mhs['kota_nama'] ?? '-',
+                    'provinsi_nama' => $mhs['provinsi_nama'] ?? '-',
+                    'kode_pos' => $mhs['kode_pos'] ?? '-',
+                    'universitas' => $mhs['universitas'] ?? '-',
+                    'fakultas' => $mhs['fakultas'] ?? '-',
+                    'prodi' => $mhs['prodi'] ?? '-',
+                    'jenjang' => $mhs['jenjang'] ?? '-',
+                    'semester' => $mhs['semester'] ?? '-',
+                    'ipk' => $mhs['ipk'] ?? '-',
+                    'sks' => $mhs['sks'] ?? '-',
+                    'alamat_kampus' => $mhs['alamat_kampus'] ?? '-',
+                    'unit_tujuan' => $unit['nama_unit'] ?? 'Belum Ditentukan',
+                    'status' => $this->toLegacyStatus($p['status']),
+                    'status_raw' => $p['status'],
+                    'tanggal_mulai' => $p['tanggal_mulai'] ?? null,
+                    'tanggal_selesai' => $p['tanggal_selesai'] ?? null,
+                    'motivasi' => $p['motivasi'] ?? '-',
+                    'harapan' => $p['harapan'] ?? '-',
+                    'created_at' => Carbon::parse($p['created_at']),
+                ];
+            })
+            ->sortByDesc('created_at')
+            ->values();
+    }
+
+    /**
      * Helper untuk bikin LengthAwarePaginator dari Collection biasa,
      * karena backend belum mengembalikan total count / meta pagination.
      */
@@ -391,7 +500,7 @@ class BackendApiService
         $needle = strtolower($search);
 
         return $items->filter(function ($item) use ($needle) {
-            foreach (['nama', 'nim', 'universitas', 'jurusan'] as $field) {
+            foreach (['nama', 'nim', 'universitas', 'jurusan', 'prodi'] as $field) {
                 if (str_contains(strtolower((string) ($item->{$field} ?? '')), $needle)) {
                     return true;
                 }

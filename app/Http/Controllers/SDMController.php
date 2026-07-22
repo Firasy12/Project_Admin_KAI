@@ -29,9 +29,22 @@ class SDMController extends Controller
         $pengajuan = $all->sortByDesc('created_at')->values();
         $aktivitasTerbaru = $pengajuan->take(5);
 
+        // Persentase utilisasi kuota: total kuota aktif dari semua unit
+        // dibandingkan jumlah mahasiswa yang sudah diterima (status diterima).
+        $kuotaResp = $this->backend->getKuota();
+        $kuotaList = $kuotaResp->successful() ? collect($kuotaResp->json()) : collect();
+        $totalKuota = $kuotaList->where('is_active', true)->sum('jumlah_kuota');
+        $kuotaTerisi = $countDiterima;
+        $persentaseKuota = $totalKuota > 0 ? min(100, round(($kuotaTerisi / $totalKuota) * 100)) : 0;
+
+        // Log histori aktivitas: turunkan dari aktivitas terbaru yang sama
+        // (dibuat/diupdate paling akhir), bukan lagi teks statis.
+        $logAktivitas = $all->sortByDesc('updated_at')->take(4)->values();
+
         return view('sdm.dashboard', compact(
             'countMasuk', 'countReview', 'countDiterima',
-            'countDitolak', 'countSelesai', 'pengajuan', 'aktivitasTerbaru'
+            'countDitolak', 'countSelesai', 'pengajuan', 'aktivitasTerbaru',
+            'persentaseKuota', 'totalKuota', 'kuotaTerisi', 'logAktivitas'
         ));
     }
 
@@ -189,6 +202,31 @@ class SDMController extends Controller
         return back()->with('error', 'Pengajuan dibuat lewat form pendaftaran mahasiswa, bukan dari sini.');
     }
 
+    public function exportPdf()
+    {
+        $data = $this->backend->getFullPendaftarData(request('status'));
+        $data = $this->backend->filterBySearch($data, request('search'));
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.pendaftar-export', [
+            'data' => $data,
+            'judul' => 'Data Lengkap Pendaftar Magang',
+            'dicetak_oleh' => 'Admin SDM',
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->download('data-pendaftar-magang-'.now()->format('Y-m-d').'.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $data = $this->backend->getFullPendaftarData(request('status'));
+        $data = $this->backend->filterBySearch($data, request('search'));
+
+        return response()
+            ->view('exports.pendaftar-excel', ['data' => $data])
+            ->header('Content-Type', 'application/vnd.ms-excel; charset=UTF-8')
+            ->header('Content-Disposition', 'attachment; filename="data-pendaftar-magang-'.now()->format('Y-m-d').'.xls"');
+    }
+
     public function pengajuanMasuk()
     {
         $all = $this->backend->getEnrichedPengajuan();
@@ -228,9 +266,16 @@ class SDMController extends Controller
         $all = $this->backend->getEnrichedPengajuan();
         $all = $this->backend->filterBySearch($all, request('search'))->sortByDesc('created_at');
 
-        $monitoring = $this->backend->paginate($all, 10, (int) request('page', 1));
+        // View sdm.monitoring merender berdasarkan variabel `$monitoring_data`
+        // (bukan `$monitoring`), jadi disamakan di sini supaya data asli dari
+        // backend benar-benar tampil, bukan selalu jatuh ke baris mockup.
+        $monitoring_data = $this->backend->paginate($all, 10, (int) request('page', 1));
 
-        return view('sdm.monitoring', compact('monitoring'));
+        foreach ($monitoring_data as $item) {
+            $item->updated_diff = $item->updated_at?->diffForHumans();
+        }
+
+        return view('sdm.monitoring', compact('monitoring_data'));
     }
 
     public function notifikasi()
@@ -349,21 +394,29 @@ class SDMController extends Controller
         return view('sdm.profil');
     }
 
-    // Tambahkan method ini di dalam SDMController kamu, Mad!
-public function reviewPengajuan()
-{
-    // 1. Ambil data pengajuan dari database (Sesuaikan dengan nama Model kamu, misal: Pengajuan)
-    // Kita gunakan penangkap data aman jika tabel/model kamu sudah siap
-    $pengajuan = [];
-    if (class_exists(\App\Models\Pengajuan::class)) {
-        // Mengambil data pengajuan yang perlu di-review oleh SDM
-        $pengajuan = \App\Models\Pengajuan::all(); 
-    }
+    // Halaman "Review Pengajuan" SDM. Sebelumnya query ke \App\Models\Pengajuan
+    // (tabel lokal Laravel, kosong/tidak sinkron) -- disamakan sekarang dengan
+    // semua halaman SDM lain: ambil lewat BackendApiService ke FastAPI.
+    public function reviewPengajuan()
+    {
+        // Yang perlu direview SDM = belum diteruskan/diputuskan sama sekali
+        // (menunggu_verifikasi) atau baru direvisi mahasiswa (perlu_perbaikan).
+        $all = $this->backend->getEnrichedPengajuan()
+            ->whereIn('status_raw', ['menunggu_verifikasi', 'perlu_perbaikan']);
 
-    // 2. Arahkan ke file view review.blade.php milikmu
-    // Karena nama file kamu adalah review.blade.php di dalam folder sdm, panggil 'sdm.review'
-    return view('sdm.review', compact('pengajuan'));
-}
+        $all = $this->backend->filterBySearch($all, request('search'))->sortByDesc('created_at');
+
+        $pengajuan = $this->backend->paginate($all, 10, (int) request('page', 1));
+
+        // Cek kelengkapan berkas wajib per baris untuk badge "Lengkap/Tidak Lengkap".
+        foreach ($pengajuan as $item) {
+            $berkas = $this->backend->getBerkasDetail($item->id);
+            $item->is_berkas_lengkap = $berkas->where('is_required', true)
+                ->every(fn ($b) => $b->status === 'uploaded');
+        }
+
+        return view('sdm.review', compact('pengajuan'));
+    }
 
     
 }

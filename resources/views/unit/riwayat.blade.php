@@ -208,7 +208,7 @@
                                             {{ is_object($item->unit_tujuan) ? ($item->unit_tujuan->nama ?? 'Unit Sistem Informasi') : ($item->unit_tujuan ?? 'Unit Sistem Informasi') }}
                                         </td>
                                         <td class="px-6 py-4 text-center">
-                                            @if($item->status_raw === 'diterima' || $item->status === 'Disetujui Unit')
+                                            @if($item->status_raw === 'diterima')
                                                 <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-lg shadow-sm uppercase tracking-wide">
                                                     <i class="fa-solid fa-circle-check text-[10px]"></i> Disetujui Unit
                                                 </span>
@@ -221,101 +221,13 @@
                                     </tr>
                                     @endforeach
                                 @else
-                                    {{-- MOCKUP KARTU SINKRONISASI COCOK DENGAN image_24152f.png JIKA DATABASE LAGI KOSONG --}}
-                                    <!-- Row 1 -->
-                                    <tr class="hover:bg-slate-50/80 transition-colors">
-                                        <td class="px-6 py-4 font-extrabold text-slate-800 text-[14px]">Arjuna Bimantara</td>
-                                        <td class="px-6 py-4 font-bold text-slate-500">Universitas Peabumulih</td>
-                                        <td class="px-6 py-4 font-medium text-slate-600">Informatika</td>
-                                        <td class="px-6 py-4 font-bold text-slate-600">Unit Sistem Informasi</td>
-                                        <td class="px-6 py-4 text-center">
-                                            <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-lg shadow-sm">
-                                                <i class="fa-solid fa-circle-check"></i> Disetujui Unit
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <!-- Row 2 -->
-                                    <tr class="hover:bg-slate-50/80 transition-colors">
-                                        <td class="px-6 py-4 font-extrabold text-slate-800 text-[14px]">Nizam Kori</td>
-                                        <td class="px-6 py-4 font-bold text-slate-500">Universitas Prabumulih</td>
-                                        <td class="px-6 py-4 font-medium text-slate-600">Informatika</td>
-                                        <td class="px-6 py-4 font-bold text-slate-600">Unit Sistem Informasi</td>
-                                        <td class="px-6 py-4 text-center">
-                                            <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-lg shadow-sm">
-                                                <i class="fa-solid fa-circle-check"></i> Disetujui Unit
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <!-- Row 3 -->
-                                    <tr class="hover:bg-slate-50/80 transition-colors">
-                                        <td class="px-6 py-4 font-extrabold text-slate-800 text-[14px]">Nizam Kory</td>
-                                        <td class="px-6 py-4 font-bold text-slate-500">Unpra</td>
-                                        <td class="px-6 py-4 font-medium text-slate-600">Informatika</td>
-                                        <td class="px-6 py-4 font-bold text-slate-600">Unit Sistem Informasi</td>
-                                        <td class="px-6 py-4 text-center">
-                                            <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-rose-50 text-rose-600 border border-rose-200 rounded-lg shadow-sm">
-                                                <i class="fa-solid fa-circle-xmark"></i> Ditolak Unit
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <!-- Row 4 -->
-                                    <tr class="hover:bg-slate-50/80 transition-colors">
-                                        <td class="px-6 py-4 font-extrabold text-slate-800 text-[14px]">cecep</td>
-                                        <td class="px-6 py-4 font-bold text-slate-500">Universitas Sriwijaya</td>
-                                        <td class="px-6 py-4 font-medium text-slate-600">Sistem Komputer</td>
-                                        <td class="px-6 py-4 font-bold text-slate-600">Unit Sistem Informasi</td>
-                                        <td class="px-6 py-4 text-center">
-                                            <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-rose-50 text-rose-600 border border-rose-200 rounded-lg shadow-sm">
-                                                <i class="fa-solid fa-circle-xmark"></i> Ditolak Unit
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <!-- Row 5 -->
-                                    <tr class="hover:bg-slate-50/80 transition-colors">
-                                        <td class="px-6 py-4 font-extrabold text-slate-800 text-[14px]">Nizam Kory</td>
-                                        <td class="px-6 py-4 font-bold text-slate-500">Unpra</td>
-                                        <td class="px-6 py-4 font-medium text-slate-600">Informatika</td>
-                                        <td class="px-6 py-4 font-bold text-slate-600">Unit Sistem Informasi</td>
-                                        <td class="px-6 py-4 text-center">
-                                            <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-lg shadow-sm">
-                                                <i class="fa-solid fa-circle-check"></i> Disetujui Unit
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <!-- Row 6 -->
-                                    <tr class="hover:bg-slate-50/80 transition-colors">
-                                        <td class="px-6 py-4 font-extrabold text-slate-800 text-[14px]">Ahmad Firasy Rahman</td>
-                                        <td class="px-6 py-4 font-bold text-slate-500">Universitas Srijaya</td>
-                                        <td class="px-6 py-4 font-medium text-slate-600">Sistem Komputer</td>
-                                        <td class="px-6 py-4 font-bold text-slate-600">Unit Sistem Informasi</td>
-                                        <td class="px-6 py-4 text-center">
-                                            <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-lg shadow-sm">
-                                                <i class="fa-solid fa-circle-check"></i> Disetujui Unit
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <!-- Row 7 -->
-                                    <tr class="hover:bg-slate-50/80 transition-colors">
-                                        <td class="px-6 py-4 font-extrabold text-slate-800 text-[14px]">Arjuna Bimantara</td>
-                                        <td class="px-6 py-4 font-bold text-slate-500">Universitas Prabumulih</td>
-                                        <td class="px-6 py-4 font-medium text-slate-600">Informatika</td>
-                                        <td class="px-6 py-4 font-bold text-slate-600">Unit Sistem Informasi</td>
-                                        <td class="px-6 py-4 text-center">
-                                            <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-lg shadow-sm">
-                                                <i class="fa-solid fa-circle-check"></i> Disetujui Unit
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <!-- Row 8 -->
-                                    <tr class="hover:bg-slate-50/80 transition-colors">
-                                        <td class="px-6 py-4 font-extrabold text-slate-800 text-[14px]">Iyann</td>
-                                        <td class="px-6 py-4 font-bold text-slate-500">Universitas Peabumulih</td>
-                                        <td class="px-6 py-4 font-medium text-slate-600">Informatika</td>
-                                        <td class="px-6 py-4 font-bold text-slate-600">Unit Sistem Informasi</td>
-                                        <td class="px-6 py-4 text-center">
-                                            <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-lg shadow-sm">
-                                                <i class="fa-solid fa-circle-check"></i> Disetujui Unit
-                                            </span>
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-16 text-center text-slate-400 bg-white">
+                                            <div class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+                                                <i class="fa-solid fa-clock-rotate-left text-3xl text-slate-300"></i>
+                                            </div>
+                                            <p class="text-sm font-extrabold text-slate-500">Belum Ada Riwayat</p>
+                                            <p class="text-xs font-semibold text-slate-400 mt-1">Belum ada pengajuan yang sudah diputuskan di unit ini.</p>
                                         </td>
                                     </tr>
                                 @endif

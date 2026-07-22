@@ -167,6 +167,19 @@
             {{-- MAIN INTERFACE CONTAINER LAYOUT --}}
             <div class="relative z-10 space-y-6">
 
+                {{-- KOTAK PERINGATAN JIKA ADA PENGAJUAN BARU YANG BELUM DIPROSES SDM --}}
+                @if(isset($jumlahBaru) && $jumlahBaru > 0)
+                <div class="bg-rose-50 border border-rose-100 rounded-2xl p-4 flex items-start gap-4 shadow-xl shadow-blue-950/5 border-l-4 border-l-rose-500">
+                    <div class="w-10 h-10 rounded-xl bg-rose-100/80 flex-shrink-0 flex items-center justify-center shadow-sm">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-extrabold text-rose-800 text-sm">Tindakan Diperlukan!</h4>
+                        <p class="text-xs text-rose-600 font-semibold mt-1 leading-relaxed">Ada <b>{{ $jumlahBaru }} pengajuan magang baru</b> yang menunggu diverifikasi. Silakan cek di menu <a href="{{ url('/sdm/pengajuan-masuk') }}" class="underline font-black hover:text-rose-800">Pengajuan Masuk</a>.</p>
+                    </div>
+                </div>
+                @endif
+
                 {{-- MAIN NOTIFICATION BOX CONTAINER --}}
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden transition-shadow hover:shadow-lg">
                     

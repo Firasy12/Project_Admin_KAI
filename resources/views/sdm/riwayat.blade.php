@@ -199,8 +199,8 @@
                                 </tr>
                             </thead>
                             <tbody class="text-sm text-slate-600 divide-y divide-slate-100 bg-white">
-                                @if(isset($riwayat_data) && count($riwayat_data) > 0)
-                                    @foreach($riwayat_data as $index => $item)
+                                @if(isset($riwayat) && count($riwayat) > 0)
+                                    @foreach($riwayat as $index => $item)
                                     <tr class="hover:bg-orange-50/20 even:bg-slate-50/40 transition-all duration-150 border-l-4 border-transparent hover:border-l-[#f47920]">
                                         <td class="px-6 py-4 font-bold text-slate-400">{{ $index + 1 }}</td>
                                         <td class="px-6 py-4">
@@ -211,22 +211,18 @@
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 text-xs font-bold text-slate-500 whitespace-nowrap">
-                                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar text-slate-300 text-sm"></i>{{ $item->reviewed_at }}</span>
+                                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar text-slate-300 text-sm"></i>{{ $item->updated_at ? $item->updated_at->translatedFormat('d M Y - H:i') : '-' }}</span>
                                         </td>
                                         <td class="px-6 py-4 text-center">
                                             @php
-                                                $keputusanLower = strtolower($item->keputusan ?? 'memenuhi syarat');
-                                                $badgeClasses = match($keputusanLower) {
-                                                    'ditolak', 'tidak memenuhi syarat' => 'bg-rose-50 text-rose-600 border-rose-200/60',
-                                                    default => 'bg-emerald-50 text-emerald-600 border-emerald-200/60'
-                                                };
-                                                $icon = match($keputusanLower) {
-                                                    'ditolak', 'tidak memenuhi syarat' => 'fa-solid fa-circle-xmark',
-                                                    default => 'fa-solid fa-circle-check'
-                                                };
+                                                $keputusanLower = strtolower($item->status_raw ?? '');
+                                                $badgeClasses = $keputusanLower === 'ditolak'
+                                                    ? 'bg-rose-50 text-rose-600 border-rose-200/60'
+                                                    : 'bg-emerald-50 text-emerald-600 border-emerald-200/60';
+                                                $icon = $keputusanLower === 'ditolak' ? 'fa-solid fa-circle-xmark' : 'fa-solid fa-circle-check';
                                             @endphp
                                             <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-3 py-1 rounded-lg border {{ $badgeClasses }} uppercase tracking-wider shadow-sm">
-                                                <i class="{{ $icon }}"></i> {{ $item->keputusan ?? 'Memenuhi Syarat' }}
+                                                <i class="{{ $icon }}"></i> {{ $item->status }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 text-center whitespace-nowrap">
@@ -237,51 +233,15 @@
                                     </tr>
                                     @endforeach
                                 @else
-                                    {{-- ARRAY STATIC FALLBACK DETIL DI-SYNCHRONIZE DARI IMAGE_C3AFA2.PNG --}}
-                                    @php
-                                        $mockups = [
-                                            ['nama' => 'Arjuna Bimantara', 'univ' => 'Universitas Prabumulih - Informatika', 'tgl' => '03 Jul 2026 - 15:24', 'status' => 'Memenuhi Syarat'],
-                                            ['nama' => 'Nizam Kori', 'univ' => 'Universitas Prabumulih - Informatika', 'tgl' => '03 Jul 2026 - 15:24', 'status' => 'Memenuhi Syarat'],
-                                            ['nama' => 'Nizam Kory', 'univ' => 'Unpra - Informatika', 'tgl' => '03 Jul 2026 - 14:37', 'status' => 'Ditolak'],
-                                            ['nama' => 'cecep', 'univ' => 'Universitas Sriwijaya - Sistem Komputer', 'tgl' => '03 Jul 2026 - 14:37', 'status' => 'Ditolak'],
-                                            ['nama' => 'Nizam Kory', 'univ' => 'Unpra - Informatika', 'tgl' => '02 Jul 2026 - 20:05', 'status' => 'Memenuhi Syarat'],
-                                            ['nama' => 'Ahmad Firasy Rahman', 'univ' => 'Universitas Sriwijaya - Sistem Komputer', 'tgl' => '02 Jul 2026 - 19:04', 'status' => 'Memenuhi Syarat'],
-                                            ['nama' => 'Arjuna Bimantara', 'univ' => 'Universitas Prabumulih - Informatika', 'tgl' => '02 Jul 2026 - 18:38', 'status' => 'Memenuhi Syarat'],
-                                            ['nama' => 'Iyann', 'univ' => 'Universitas Prabumulih - Informatika', 'tgl' => '02 Jul 2026 - 16:49', 'status' => 'Memenuhi Syarat'],
-                                        ];
-                                    @endphp
-
-                                    @foreach($mockups as $idx => $mock)
-                                    <tr class="hover:bg-orange-50/20 even:bg-slate-50/40 transition-all duration-150 border-l-4 border-transparent hover:border-l-[#f47920]">
-                                        <td class="px-6 py-4 font-bold text-slate-400">{{ $idx + 1 }}</td>
-                                        <td class="px-6 py-4">
-                                            <div class="font-extrabold text-slate-800 text-[14px]">{{ $mock['nama'] }}</div>
-                                            <div class="text-xs text-slate-400 font-bold mt-1 flex items-center gap-1.5">
-                                                <div class="w-4 h-4 rounded-md bg-slate-100 flex items-center justify-center text-[9px] text-slate-400"><i class="fa-solid fa-building-columns"></i></div>
-                                                {{ $mock['univ'] }}
+                                    <tr>
+                                        <td colspan="4" class="px-6 py-16 text-center text-slate-400 bg-white">
+                                            <div class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+                                                <i class="fa-solid fa-clock-rotate-left text-3xl text-slate-300"></i>
                                             </div>
-                                        </td>
-                                        <td class="px-6 py-4 text-xs font-bold text-slate-500 whitespace-nowrap">
-                                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar text-slate-300 text-sm"></i>{{ $mock['tgl'] }}</span>
-                                        </td>
-                                        <td class="px-6 py-4 text-center">
-                                            @if($mock['status'] == 'Memenuhi Syarat')
-                                                <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-3 py-1 rounded-lg border bg-emerald-50 text-emerald-600 border-emerald-200/60 uppercase tracking-wider shadow-sm">
-                                                    <i class="fa-solid fa-circle-check"></i> Memenuhi Syarat
-                                                </span>
-                                            @else
-                                                <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-3 py-1 rounded-lg border bg-rose-50 text-rose-600 border-rose-200/60 uppercase tracking-wider shadow-sm">
-                                                    <i class="fa-solid fa-circle-xmark"></i> Ditolak
-                                                </span>
-                                            @endif
-                                        </td>
-                                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                                            <a href="#" class="text-xs font-bold text-blue-600 hover:kai-text-orange hover:underline inline-flex items-center gap-1 group">
-                                                Lihat Berkas <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
-                                            </a>
+                                            <p class="text-sm font-extrabold text-slate-500">Belum Ada Riwayat</p>
+                                            <p class="text-xs font-semibold text-slate-400 mt-1">Belum ada pengajuan yang sudah diputuskan.</p>
                                         </td>
                                     </tr>
-                                    @endforeach
                                 @endif
                             </tbody>
                         </table>

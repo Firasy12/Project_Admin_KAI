@@ -181,13 +181,25 @@
                             <p class="text-xs font-semibold text-slate-400 mt-0.5">Lacak tahapan berkas aktif dan alokasi unit tujuan</p>
                         </div>
                         
-                        {{-- SEARCH BAR --}}
-                        <form action="" method="GET" class="relative w-full sm:w-80 group">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-                                <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm group-focus-within:kai-text-orange transition-colors"></i>
-                            </span>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama/NIM/universitas..." class="w-full pl-10 pr-4 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#f47920] focus:ring-1 focus:ring-[#f47920] placeholder-slate-400 shadow-inner transition-all">
-                        </form>
+                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                            {{-- SEARCH BAR --}}
+                            <form action="" method="GET" class="relative w-full sm:w-72 group">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                                    <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm group-focus-within:kai-text-orange transition-colors"></i>
+                                </span>
+                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama/NIM/universitas..." class="w-full pl-10 pr-4 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#f47920] focus:ring-1 focus:ring-[#f47920] placeholder-slate-400 shadow-inner transition-all">
+                            </form>
+
+                            {{-- EXPORT PDF / EXCEL: ikut bawa filter pencarian yang lagi aktif --}}
+                            <a href="{{ url('/sdm/export/pdf').(request('search') ? '?search='.urlencode(request('search')) : '') }}"
+                               class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-extrabold rounded-xl shadow-sm transition-all whitespace-nowrap">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </a>
+                            <a href="{{ url('/sdm/export/excel').(request('search') ? '?search='.urlencode(request('search')) : '') }}"
+                               class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-extrabold rounded-xl shadow-sm transition-all whitespace-nowrap">
+                                <i class="fa-solid fa-file-excel"></i> Excel
+                            </a>
+                        </div>
                     </div>
 
                     {{-- STYLED CORPORATE DEEP NAVY TABLE --}}
@@ -245,66 +257,80 @@
                                     </tr>
                                     @endforeach
                                 @else
-                                    {{-- ARRAY STATIC FALLBACK DETIL DI-SYNCHRONIZE DARI IMAGE_C3BB23.PNG --}}
-                                    @php
-                                        $mockups = [
-                                            ['nama' => 'Nizam Kori', 'univ' => 'Universitas Prabumulih', 'unit' => 'Unit Sistem Informasi', 'status' => 'Memenuhi Syarat', 'time' => '2 days ago'],
-                                            ['nama' => 'Arjuna Bimantara', 'univ' => 'Universitas Prabumulih', 'unit' => 'Unit Sistem Informasi', 'status' => 'Memenuhi Syarat', 'time' => '2 days ago'],
-                                            ['nama' => 'Asep', 'univ' => 'Universitas Brawijaya', 'unit' => 'Unit Sarana', 'status' => 'Menunggu', 'time' => '2 days ago'],
-                                            ['nama' => 'cecep', 'univ' => 'Universitas Sriwijaya', 'unit' => 'Unit Sistem Informasi', 'status' => 'Ditolak', 'time' => '2 days ago'],
-                                            ['nama' => 'Nizam Kory', 'univ' => 'Unpra', 'unit' => 'Unit Sistem Informasi', 'status' => 'Ditolak', 'time' => '2 days ago'],
-                                            ['nama' => 'Nizam Kory', 'univ' => 'Unpra', 'unit' => 'Unit Sistem Informasi', 'status' => 'Memenuhi Syarat', 'time' => '3 days ago'],
-                                            ['nama' => 'Ahmad Firasy Rahman', 'univ' => 'Universitas Sriwijaya', 'unit' => 'Unit Sistem Informasi', 'status' => 'Memenuhi Syarat', 'time' => '3 days ago'],
-                                            ['nama' => 'Iyann', 'univ' => 'Universitas Prabumulih', 'unit' => 'Unit Keuangan', 'status' => 'Review', 'time' => '3 days ago'],
-                                            ['nama' => 'Iyann', 'univ' => 'Universitas Prabumulih', 'unit' => 'Unit Sistem Informasi', 'status' => 'Memenuhi Syarat', 'time' => '3 days ago'],
-                                            ['nama' => 'Arjuna Bimantara', 'univ' => 'Universitas Prabumulih', 'unit' => 'Unit Sistem Informasi', 'status' => 'Memenuhi Syarat', 'time' => '3 days ago'],
-                                        ];
-                                    @endphp
-
-                                    @foreach($mockups as $idx => $mock)
-                                    <tr class="hover:bg-slate-100/60 even:bg-slate-50/40 transition-all duration-150 border-b border-slate-100">
-                                        <td class="px-6 py-4 font-bold text-slate-400">{{ $idx + 1 }}</td>
-                                        <td class="px-6 py-4">
-                                            <div class="font-extrabold text-slate-800 text-[14px]">{{ $mock['nama'] }}</div>
-                                            <div class="text-xs text-slate-400 font-bold mt-1 flex items-center gap-1.5">
-                                                <div class="w-4 h-4 rounded-md bg-slate-100 flex items-center justify-center text-[9px] text-slate-400"><i class="fa-solid fa-building-columns"></i></div>
-                                                {{ $mock['univ'] }}
+                                    <tr>
+                                        <td colspan="4" class="px-6 py-16 text-center text-slate-400 bg-white">
+                                            <div class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+                                                <i class="fa-solid fa-chart-line text-3xl text-slate-300"></i>
                                             </div>
-                                        </td>
-                                        <td class="px-6 py-4 font-bold text-slate-600">
-                                            <span class="inline-flex items-center text-xs font-bold text-slate-700 bg-slate-100/80 px-2.5 py-1 rounded-lg border border-slate-200/50">
-                                                <i class="fa-solid fa-briefcase text-slate-300 text-xs mr-1.5"></i> {{ $mock['unit'] }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-center">
-                                            @if($mock['status'] == 'Memenuhi Syarat')
-                                                <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-3 py-1 rounded-lg border bg-emerald-50 text-emerald-600 border-emerald-200/60 uppercase tracking-wider shadow-sm">
-                                                    <i class="fa-solid fa-circle-check"></i> Memenuhi Syarat
-                                                </span>
-                                            @elseif($mock['status'] == 'Ditolak')
-                                                <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-3 py-1 rounded-lg border bg-rose-50 text-rose-600 border-rose-200/60 uppercase tracking-wider shadow-sm">
-                                                    <i class="fa-solid fa-circle-xmark"></i> Ditolak
-                                                </span>
-                                            @elseif($mock['status'] == 'Review')
-                                                <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-3 py-1 rounded-lg border bg-purple-50 text-purple-600 border-purple-200/60 uppercase tracking-wider shadow-sm">
-                                                    <i class="fa-solid fa-magnifying-glass"></i> Review
-                                                </span>
-                                            @else
-                                                <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-3 py-1 rounded-lg border bg-amber-50 text-amber-600 border-amber-200/60 uppercase tracking-wider shadow-sm">
-                                                    <i class="fa-solid fa-spinner animate-spin"></i> Menunggu
-                                                </span>
-                                            @endif
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-xs font-bold text-slate-400 whitespace-nowrap">
-                                            <span class="flex items-center justify-center gap-1.5 text-slate-500"><i class="fa-solid fa-clock text-slate-300 text-sm"></i>{{ $mock['time'] }}</span>
+                                            <p class="text-sm font-extrabold text-slate-500">Belum Ada Data Monitoring</p>
+                                            <p class="text-xs font-semibold text-slate-400 mt-1">Belum ada pengajuan yang bisa dimonitor saat ini.</p>
                                         </td>
                                     </tr>
-                                    @endforeach
                                 @endif
                             </tbody>
                         </table>
                     </div>
                 </div>
+
+            @if(isset($monitoring_data) && method_exists($monitoring_data, 'links') && $monitoring_data->hasPages())
+                <div class="mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+
+                    <div class="text-sm text-slate-500 font-medium">
+                        Menampilkan
+                        <span class="font-bold text-[#0b1739]">{{ $monitoring_data->firstItem() }}</span>
+                        -
+                        <span class="font-bold text-[#0b1739]">{{ $monitoring_data->lastItem() }}</span>
+                        dari
+                        <span class="font-bold text-[#0b1739]">{{ $monitoring_data->total() }}</span>
+                        data
+                    </div>
+
+                    <div class="flex items-center gap-2">
+
+                        {{-- Previous --}}
+                        @if ($monitoring_data->onFirstPage())
+                            <span class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                        @else
+                            <a href="{{ $monitoring_data->previousPageUrl() }}"
+                            class="w-10 h-10 flex items-center justify-center rounded-xl border border-blue-200 bg-white text-[#00529b] hover:bg-blue-50 transition">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </a>
+                        @endif
+
+                        {{-- Nomor Halaman --}}
+                        @foreach ($monitoring_data->getUrlRange(1, $monitoring_data->lastPage()) as $page => $url)
+
+                            @if($page == $monitoring_data->currentPage())
+                                <span class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#00529b] text-white font-bold shadow-md">
+                                    {{ $page }}
+                                </span>
+                            @else
+                                <a href="{{ $url }}"
+                                class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-blue-50 hover:border-blue-300 transition">
+                                    {{ $page }}
+                                </a>
+                            @endif
+
+                        @endforeach
+
+                        {{-- Next --}}
+                        @if ($monitoring_data->hasMorePages())
+                            <a href="{{ $monitoring_data->nextPageUrl() }}"
+                            class="w-10 h-10 flex items-center justify-center rounded-xl border border-blue-200 bg-white text-[#00529b] hover:bg-blue-50 transition">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </a>
+                        @else
+                            <span class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        @endif
+
+                    </div>
+
+                </div>
+            @endif
 
             </div> {{-- END OF CONTAINER WRAPPER --}}
         </div>

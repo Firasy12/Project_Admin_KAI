@@ -58,6 +58,8 @@ Route::prefix('sdm')->middleware('backend.auth:sdm')->group(function () {
     Route::get('/pengajuan-masuk', [SDMController::class, 'pengajuanMasuk'])->name('sdm.pengajuan');
     Route::get('/riwayat-review', [SDMController::class, 'riwayatReview'])->name('sdm.riwayat');
     Route::get('/monitoring', [SDMController::class, 'monitoring'])->name('sdm.monitoring');
+    Route::get('/export/pdf', [SDMController::class, 'exportPdf'])->name('sdm.export.pdf');
+    Route::get('/export/excel', [SDMController::class, 'exportExcel'])->name('sdm.export.excel');
     Route::get('/notifikasi', [SDMController::class, 'notifikasi'])->name('sdm.notifikasi');
     Route::get('/dokumen', [SDMController::class, 'dokumen'])->name('sdm.dokumen');
     Route::get('/profil', [SDMController::class, 'profil'])->name('sdm.profil');
@@ -70,6 +72,9 @@ Route::prefix('sdm')->middleware('backend.auth:sdm')->group(function () {
     Route::post('/pengajuan/{id}/aksi/{aksi}', [SDMController::class, 'aksiCepat'])->name('sdm.pengajuan.aksi');
     // Tombol quick-status di tabel "Pengajuan Masuk"
     Route::post('/pengajuan/{id}/update-status', [SDMController::class, 'aksiCepatLegacy'])->name('sdm.pengajuan.update-status');
+    // Tombol Disposisi/Revisi/Tolak di halaman "Review Pengajuan" (sdm/review.blade.php).
+    // Route ini sebelumnya tidak ada sama sekali padahal form-nya sudah post ke sini.
+    Route::post('/pengajuan/{id}/review', [SDMController::class, 'aksiCepatLegacy'])->name('sdm.pengajuan.review');
     Route::get('/dokumen/{id}/unduh-semua', [SDMController::class, 'dokumenUnduhSemua'])->name('sdm.dokumen.unduh-semua');
     Route::get('/dokumen/{id}', [SDMController::class, 'dokumenShow'])->name('sdm.dokumen.show');
     Route::get('/pengajuan/{id}', [SDMController::class, 'show'])->name('sdm.pengajuan.show');
@@ -87,6 +92,8 @@ Route::prefix('unit')->middleware('backend.auth:unit')->group(function () {
     Route::get('/review-pengajuan', [UnitController::class, 'reviewPengajuan'])->name('unit.review');
     Route::get('/riwayat-review', [UnitController::class, 'riwayatReview'])->name('unit.riwayat');
     Route::get('/monitoring', [UnitController::class, 'monitoring'])->name('unit.monitoring');
+    Route::get('/export/pdf', [UnitController::class, 'exportPdf'])->name('unit.export.pdf');
+    Route::get('/export/excel', [UnitController::class, 'exportExcel'])->name('unit.export.excel');
     Route::get('/notifikasi', [UnitController::class, 'notifikasi'])->name('unit.notifikasi');
     Route::get('/dokumen', [UnitController::class, 'dokumen'])->name('unit.dokumen');
     Route::get('/dokumen/{id}', [UnitController::class, 'dokumenShow'])->name('unit.dokumen.show');
@@ -116,7 +123,10 @@ Route::get('/sdm/dokumen/detail', function () {
 });
 
 // Pastikan URL-nya sama persis dengan yang dipanggil di sidebar: /sdm/review-pengajuan
-Route::get('/sdm/review-pengajuan', [App\Http\Controllers\SdmController::class, 'reviewPengajuan']);
+// CATATAN: sebelumnya "SdmController" (huruf kecil) -- beda dengan nama class
+// aslinya "SDMController". Di server Linux (case-sensitive) ini bikin fatal
+// error "Class not found" begitu route ini diakses.
+Route::get('/sdm/review-pengajuan', [SDMController::class, 'reviewPengajuan'])->name('sdm.review');
 
 // Route untuk menampilkan halaman form input nilai
 Route::get('/unit/monitoring/{id}/kelulusan', [App\Http\Controllers\UnitController::class, 'formKelulusan']);

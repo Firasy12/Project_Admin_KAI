@@ -152,12 +152,23 @@
                         <h4 class="text-base font-extrabold text-[#0b1739] tracking-tight flex items-center gap-2">
                             <i class="fa-solid fa-chart-line text-slate-400"></i> Progres Pengajuan
                         </h4>
-                        <form method="GET" action="{{ url()->current() }}" class="relative w-full sm:w-80 group">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-                                <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm"></i>
-                            </span>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama/NIM/universitas..." class="w-full pl-10 pr-4 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#f47920] focus:ring-1 focus:ring-[#f47920] shadow-inner transition-all">
-                        </form>
+                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                            <form method="GET" action="{{ url()->current() }}" class="relative w-full sm:w-72 group">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                                    <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm"></i>
+                                </span>
+                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama/NIM/universitas..." class="w-full pl-10 pr-4 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#f47920] focus:ring-1 focus:ring-[#f47920] shadow-inner transition-all">
+                            </form>
+
+                            <a href="{{ url('/unit/export/pdf').(request('search') ? '?search='.urlencode(request('search')) : '') }}"
+                               class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-extrabold rounded-xl shadow-sm transition-all whitespace-nowrap">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </a>
+                            <a href="{{ url('/unit/export/excel').(request('search') ? '?search='.urlencode(request('search')) : '') }}"
+                               class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-extrabold rounded-xl shadow-sm transition-all whitespace-nowrap">
+                                <i class="fa-solid fa-file-excel"></i> Excel
+                            </a>
+                        </div>
                     </div>
 
                     {{-- TABLE CONTENT --}}
@@ -287,12 +298,65 @@
                 </div>
 
                 {{-- PAGINATION --}}
-                @if(isset($pengajuan) && method_exists($pengajuan, 'links') && $pengajuan->hasPages())
-                    <div class="mt-4">
-                        {{ $pengajuan->links() }}
-                    </div>
-                @endif
+               @if(isset($pengajuan) && method_exists($pengajuan, 'links') && $pengajuan->hasPages())
+                <div class="mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
 
+                    <div class="text-sm text-slate-500 font-medium">
+                        Menampilkan
+                        <span class="font-bold text-[#0b1739]">{{ $pengajuan->firstItem() }}</span>
+                        -
+                        <span class="font-bold text-[#0b1739]">{{ $pengajuan->lastItem() }}</span>
+                        dari
+                        <span class="font-bold text-[#0b1739]">{{ $pengajuan->total() }}</span>
+                        data
+                    </div>
+
+                    <div class="flex items-center gap-2">
+
+                        {{-- Previous --}}
+                        @if ($pengajuan->onFirstPage())
+                            <span class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                        @else
+                            <a href="{{ $pengajuan->previousPageUrl() }}"
+                            class="w-10 h-10 flex items-center justify-center rounded-xl border border-blue-200 bg-white text-[#00529b] hover:bg-blue-50 transition">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </a>
+                        @endif
+
+                        {{-- Nomor Halaman --}}
+                        @foreach ($pengajuan->getUrlRange(1, $pengajuan->lastPage()) as $page => $url)
+
+                            @if($page == $pengajuan->currentPage())
+                                <span class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#00529b] text-white font-bold shadow-md">
+                                    {{ $page }}
+                                </span>
+                            @else
+                                <a href="{{ $url }}"
+                                class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-blue-50 hover:border-blue-300 transition">
+                                    {{ $page }}
+                                </a>
+                            @endif
+
+                        @endforeach
+
+                        {{-- Next --}}
+                        @if ($pengajuan->hasMorePages())
+                            <a href="{{ $pengajuan->nextPageUrl() }}"
+                            class="w-10 h-10 flex items-center justify-center rounded-xl border border-blue-200 bg-white text-[#00529b] hover:bg-blue-50 transition">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </a>
+                        @else
+                            <span class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        @endif
+
+                    </div>
+
+                </div>
+                @endif
             </div>
         </div>
     </main>

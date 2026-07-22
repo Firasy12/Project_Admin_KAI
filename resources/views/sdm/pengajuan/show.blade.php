@@ -180,21 +180,21 @@
                                 <i class="fa-solid fa-id-card kai-text-orange"></i> Biodata Mahasiswa
                             </h3>
                             <span class="inline-flex text-[11px] font-extrabold px-3 py-1 bg-amber-50 text-amber-600 border border-amber-200 rounded-lg uppercase tracking-wider">
-                                {{ $item->status ?? 'Menunggu' }}
+                                {{ $pengajuan->status ?? 'Menunggu' }}
                             </span>
                         </div>
 
                         {{-- DETAIL GRID LIST DATA --}}
                         <div class="divide-y divide-slate-100 text-sm">
-                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Nama</span><span class="col-span-2 font-extrabold text-slate-800 text-[15px]">{{ $item->nama ?? 'Asep' }}</span></div>
-                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">NIM</span><span class="col-span-2 font-bold text-slate-700 tracking-wide">{{ $item->nim ?? '7383938493' }}</span></div>
-                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Email</span><span class="col-span-2 font-medium text-slate-600">{{ $item->email ?? 'ggaminganjay@gmail.com' }}</span></div>
-                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">No. HP</span><span class="col-span-2 font-medium text-slate-600">{{ $item->no_hp ?? '08967283746' }}</span></div>
-                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Universitas</span><span class="col-span-2 font-bold text-slate-700">{{ $item->universitas ?? 'Universitas Brawijaya' }}</span></div>
-                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Jurusan / Prodi</span><span class="col-span-2 font-medium text-slate-600">{{ $item->jurusan ?? 'Informatika' }}</span></div>
-                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Unit Tujuan</span><span class="col-span-2 font-extrabold text-blue-700 bg-blue-50 px-3 py-1 rounded-xl w-fit text-xs border border-blue-100">{{ $item->unit_tujuan ?? 'Unit Sarana' }}</span></div>
-                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Tanggal Pengajuan</span><span class="col-span-2 font-medium text-slate-500"><i class="fa-solid fa-calendar text-slate-300 mr-1"></i> {{ $item->tanggal_pengajuan ?? '03 Jul 2026' }}</span></div>
-                            <div class="py-4 grid grid-cols-3"><span class="text-slate-400 font-bold">Motivasi</span><span class="col-span-2 text-xs font-semibold text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-200/60 leading-relaxed shadow-inner">{{ $item->motivasi ?? 'Gabuut' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Nama</span><span class="col-span-2 font-extrabold text-slate-800 text-[15px]">{{ $pengajuan->nama ?? '-' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">NIM</span><span class="col-span-2 font-bold text-slate-700 tracking-wide">{{ $pengajuan->nim ?? '-' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Email</span><span class="col-span-2 font-medium text-slate-600">{{ $pengajuan->email ?? '-' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">No. HP</span><span class="col-span-2 font-medium text-slate-600">{{ $pengajuan->no_hp ?? '-' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Universitas</span><span class="col-span-2 font-bold text-slate-700">{{ $pengajuan->universitas ?? '-' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Jurusan / Prodi</span><span class="col-span-2 font-medium text-slate-600">{{ $pengajuan->jurusan ?? '-' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Unit Tujuan</span><span class="col-span-2 font-extrabold text-blue-700 bg-blue-50 px-3 py-1 rounded-xl w-fit text-xs border border-blue-100">{{ $pengajuan->unit_tujuan ?? 'Belum Ditentukan' }}</span></div>
+                            <div class="py-3 grid grid-cols-3"><span class="text-slate-400 font-bold">Tanggal Pengajuan</span><span class="col-span-2 font-medium text-slate-500"><i class="fa-solid fa-calendar text-slate-300 mr-1"></i> {{ $pengajuan->tanggal_pengajuan ?? '-' }}</span></div>
+                            <div class="py-4 grid grid-cols-3"><span class="text-slate-400 font-bold">Motivasi</span><span class="col-span-2 text-xs font-semibold text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-200/60 leading-relaxed shadow-inner">{{ $pengajuan->motivasi ?? '-' }}</span></div>
                         </div>
                     </div>
 
@@ -204,16 +204,16 @@
                             <i class="fa-solid fa-gavel kai-text-orange"></i> Aksi Keputusan SDM
                         </h3>
 
-                        <form action="{{ isset($item) ? url('/sdm/pengajuan/'.$item->id.'/update-status') : '#' }}" method="POST" class="flex flex-col gap-3">
+                        <form action="{{ isset($pengajuan) ? url('/sdm/pengajuan/'.$pengajuan->id.'/update-status') : '#' }}" method="POST" class="flex flex-col gap-3">
                             @csrf
                             
                             <!-- Teruskan ke Unit (Emerald Solid) -->
-                            <button type="submit" name="status" value="Diterima" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md shadow-emerald-900/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider">
+                            <button type="submit" name="status" value="Teruskan" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md shadow-emerald-900/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider">
                                 <i class="fa-solid fa-paper-plane"></i> Teruskan ke Unit
                             </button>
                             
                             <!-- Minta Revisi (KAI Orange Style) -->
-                            <button type="submit" name="status" value="Review" class="w-full kai-bg-orange hover:bg-orange-600 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md shadow-orange-900/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider">
+                            <button type="submit" name="status" value="Revisi" class="w-full kai-bg-orange hover:bg-orange-600 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md shadow-orange-900/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider">
                                 <i class="fa-solid fa-rotate-left"></i> Minta Revisi Berkas
                             </button>
                             
@@ -233,29 +233,36 @@
                         </h3>
                     </div>
 
-                    {{-- LOOPING COMPONENT DOKUMEN BADGES --}}
+                    {{-- LOOPING COMPONENT DOKUMEN BADGES (data asli dari backend, lihat getBerkasDetail()) --}}
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        @php
-                            $daftar_berkas = [
-                                'Surat Pengantar dari Kampus', 'Proposal Magang', 'Foto 3x4',
-                                'KTM (Kartu Tanda Mahasiswa)', 'Transkrip Nilai', 'CV (Curriculum Vitae)'
-                            ];
-                        @endphp
-
-                        @foreach($daftar_berkas as $berkas)
+                        @forelse(($berkas ?? []) as $b)
                         <div class="p-4 bg-slate-50/60 rounded-xl border border-slate-200/70 flex justify-between items-center hover:bg-slate-100 hover:border-slate-300 transition-all group">
                             <div class="flex flex-col gap-1 pr-2">
-                                <span class="text-xs font-extrabold text-slate-800 tracking-tight leading-tight">{{ $berkas }}</span>
-                                <span class="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
-                                    <i class="fa-solid fa-circle-check"></i> Sudah diunggah
-                                </span>
+                                <span class="text-xs font-extrabold text-slate-800 tracking-tight leading-tight">{{ $b->nama_berkas }}</span>
+                                @if($b->status === 'uploaded' && $b->download_url)
+                                    <span class="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
+                                        <i class="fa-solid fa-circle-check"></i> Sudah diunggah
+                                    </span>
+                                @else
+                                    <span class="text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                                        <i class="fa-solid fa-circle-minus"></i> Belum diunggah
+                                    </span>
+                                @endif
                             </div>
-                            {{-- Tombol Download Aksen Navy --}}
-                            <a href="#" class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center hover:kai-bg-navy hover:text-white hover:border-transparent transition-all shadow-sm shrink-0" title="Download File">
-                                <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
-                            </a>
+                            {{-- Tombol Download Aksen Navy: nonaktif kalau belum ada file --}}
+                            @if($b->download_url)
+                                <a href="{{ $b->download_url }}" target="_blank" rel="noopener" class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center hover:kai-bg-navy hover:text-white hover:border-transparent transition-all shadow-sm shrink-0" title="Download File">
+                                    <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+                                </a>
+                            @else
+                                <span class="w-9 h-9 rounded-lg bg-slate-100 text-slate-300 border border-slate-200 flex items-center justify-center shrink-0 cursor-not-allowed" title="Belum ada file">
+                                    <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+                                </span>
+                            @endif
                         </div>
-                        @endforeach
+                        @empty
+                        <p class="text-xs font-semibold text-slate-400 italic col-span-full">Belum ada data jenis berkas dari backend.</p>
+                        @endforelse
                     </div>
                 </div>
 
