@@ -18,12 +18,12 @@ class SDMController extends Controller
         // CATATAN: enum status di backend cuma:
         // draft, menunggu_verifikasi, perlu_perbaikan, disposisi, diterima, ditolak
         // Mapping di bawah ini asumsi sementara, sesuaikan lagi kalau makna aslinya beda.
-        $countMasuk    = $all->where('status_raw', 'menunggu_verifikasi')->count();
-        $countReview   = $all->whereIn('status_raw', ['perlu_perbaikan', 'disposisi'])->count();
+        $countMasuk = $all->where('status_raw', 'menunggu_verifikasi')->count();
+        $countReview = $all->whereIn('status_raw', ['perlu_perbaikan', 'disposisi'])->count();
         $countDiterima = $all->where('status_raw', 'diterima')->count();
-        $countDitolak  = $all->where('status_raw', 'ditolak')->count();
-        $countSelesai  = $all->where('status_raw', 'diterima')
-            ->filter(fn ($p) => $p->tanggal_selesai && \Carbon\Carbon::parse($p->tanggal_selesai)->isPast())
+        $countDitolak = $all->where('status_raw', 'ditolak')->count();
+        $countSelesai = $all->where('status_raw', 'diterima')
+            ->filter(fn($p) => $p->tanggal_selesai && \Carbon\Carbon::parse($p->tanggal_selesai)->isPast())
             ->count();
 
         $pengajuan = $all->sortByDesc('created_at')->values();
@@ -42,9 +42,17 @@ class SDMController extends Controller
         $logAktivitas = $all->sortByDesc('updated_at')->take(4)->values();
 
         return view('sdm.dashboard', compact(
-            'countMasuk', 'countReview', 'countDiterima',
-            'countDitolak', 'countSelesai', 'pengajuan', 'aktivitasTerbaru',
-            'persentaseKuota', 'totalKuota', 'kuotaTerisi', 'logAktivitas'
+            'countMasuk',
+            'countReview',
+            'countDiterima',
+            'countDitolak',
+            'countSelesai',
+            'pengajuan',
+            'aktivitasTerbaru',
+            'persentaseKuota',
+            'totalKuota',
+            'kuotaTerisi',
+            'logAktivitas'
         ));
     }
 
@@ -52,7 +60,7 @@ class SDMController extends Controller
     {
         $response = $this->backend->getPengajuanDetail((int) $id);
 
-        if (! $response->successful()) {
+        if (!$response->successful()) {
             abort(404);
         }
 
@@ -99,14 +107,18 @@ class SDMController extends Controller
             default => null,
         };
 
-        if (! $status) {
+        if (!$status) {
             return back()->with('error', 'Aksi tidak dikenali.');
         }
 
-        $response = $this->backend->updateStatusPengajuan((int) $id, $status, $request->catatan);
+        $response = $this->backend->updateStatusPengajuan(
+            (int) $id,
+            $status,
+            $request->catatan
+        );
 
-        if (! $response->successful()) {
-            return back()->with('error', 'Gagal memperbarui status di server ('.$response->status().'): '.$response->body());
+        if (!$response->successful()) {
+            return back()->with('error', 'Gagal memperbarui status di server (' . $response->status() . '): ' . $response->body());
         }
 
         return redirect()->route('sdm.pengajuan.show', $id)->with('success', 'Status pengajuan berhasil diperbarui.');
@@ -115,23 +127,38 @@ class SDMController extends Controller
     // Tombol aksi cepat di tabel Pengajuan Masuk: SDM cuma mengecek kelengkapan
     // berkas lalu meneruskan ke Unit, atau menolak. Penerimaan akhir tetap
     // keputusan Unit (lihat UnitController::seleksiUnit).
+
     public function aksiCepatLegacy(Request $request, $id)
     {
+        // Tombol di view (show.blade.php & review.blade.php) mengirim
+        // enum asli backend langsung lewat data-status ("disposisi",
+        // "perlu_perbaikan", "ditolak"), BUKAN label berkapital
+        // ("Teruskan"/"Revisi"/"Ditolak"). Sebelumnya match() di sini
+        // mengecek label berkapital itu -- tidak pernah cocok, jadi
+        // $status selalu null dan request selalu ditolak sebelum sempat
+        // memanggil backend sama sekali (makanya email tidak pernah
+        // terkirim, untuk SEMUA aksi, bukan cuma revisi).
         $status = match ($request->input('status')) {
-            'Teruskan' => 'disposisi',
-            'Revisi' => 'perlu_perbaikan',
-            'Ditolak' => 'ditolak',
+            'disposisi', 'perlu_perbaikan', 'ditolak' => $request->input('status'),
             default => null,
         };
 
-        if (! $status) {
-            return back()->with('error', 'Aksi tidak dikenali: '.$request->input('status'));
+        if (!$status) {
+            return back()->with('error', 'Aksi tidak dikenali: ' . $request->input('status'));
         }
 
-        $response = $this->backend->updateStatusPengajuan((int) $id, $status);
+        try {
+            $response = $this->backend->updateStatusPengajuan(
+                (int) $id,
+                $status,
+                $request->catatan
+            );
+        } catch (\Throwable $e) {
+            return back()->with('error', 'Gagal menghubungi server backend: ' . $e->getMessage());
+        }
 
-        if (! $response->successful()) {
-            return back()->with('error', 'Gagal memperbarui status di server: '.$response->status());
+        if (!$response->successful()) {
+            return back()->with('error', 'Gagal memperbarui status di server (' . $response->status() . '): ' . $response->body());
         }
 
         return back()->with('success', 'Status pengajuan berhasil diperbarui.');
@@ -141,7 +168,7 @@ class SDMController extends Controller
     {
         $response = $this->backend->getPengajuanDetail((int) $id);
 
-        if (! $response->successful()) {
+        if (!$response->successful()) {
             abort(404);
         }
 
@@ -175,8 +202,8 @@ class SDMController extends Controller
 
         $response = $this->backend->updateStatusPengajuan((int) $id, $status, $request->catatan);
 
-        if (! $response->successful()) {
-            return back()->with('error', 'Gagal memperbarui data di server ('.$response->status().'): '.$response->body());
+        if (!$response->successful()) {
+            return back()->with('error', 'Gagal memperbarui data di server (' . $response->status() . '): ' . $response->body());
         }
 
         // CATATAN: backend saat ini cuma punya endpoint untuk ubah status+catatan
@@ -213,7 +240,7 @@ class SDMController extends Controller
             'dicetak_oleh' => 'Admin SDM',
         ])->setPaper('a4', 'landscape');
 
-        return $pdf->download('data-pendaftar-magang-'.now()->format('Y-m-d').'.pdf');
+        return $pdf->download('data-pendaftar-magang-' . now()->format('Y-m-d') . '.pdf');
     }
 
     public function exportExcel()
@@ -224,17 +251,17 @@ class SDMController extends Controller
         return response()
             ->view('exports.pendaftar-excel', ['data' => $data])
             ->header('Content-Type', 'application/vnd.ms-excel; charset=UTF-8')
-            ->header('Content-Disposition', 'attachment; filename="data-pendaftar-magang-'.now()->format('Y-m-d').'.xls"');
+            ->header('Content-Disposition', 'attachment; filename="data-pendaftar-magang-' . now()->format('Y-m-d') . '.xls"');
     }
 
     public function pengajuanMasuk()
     {
         $all = $this->backend->getEnrichedPengajuan();
 
-        $countMasuk    = $all->where('status_raw', 'menunggu_verifikasi')->count();
-        $countReview   = $all->whereIn('status_raw', ['perlu_perbaikan', 'disposisi'])->count();
+        $countMasuk = $all->where('status_raw', 'menunggu_verifikasi')->count();
+        $countReview = $all->whereIn('status_raw', ['perlu_perbaikan', 'disposisi'])->count();
         $countDiterima = $all->where('status_raw', 'diterima')->count();
-        $countDitolak  = $all->where('status_raw', 'ditolak')->count();
+        $countDitolak = $all->where('status_raw', 'ditolak')->count();
 
         // Tabel "Pengajuan Masuk" cuma nampilin yang baru masuk & belum
         // diproses sama sekali. Yang udah diteruskan ke Unit atau ditolak
@@ -245,7 +272,11 @@ class SDMController extends Controller
         $pengajuan = $this->backend->paginate($baru, 10, (int) request('page', 1));
 
         return view('sdm.pengajuan.index', compact(
-            'pengajuan', 'countMasuk', 'countReview', 'countDiterima', 'countDitolak'
+            'pengajuan',
+            'countMasuk',
+            'countReview',
+            'countDiterima',
+            'countDitolak'
         ));
     }
 
@@ -306,7 +337,7 @@ class SDMController extends Controller
         // (biar idak nge-hit backend ratusan kali buat semua data).
         foreach ($dokumen as $item) {
             $berkas = $this->backend->getBerkasDetail($item->id);
-            $proposal = $berkas->first(fn ($b) => str_contains(strtolower($b->nama_berkas), 'proposal'));
+            $proposal = $berkas->first(fn($b) => str_contains(strtolower($b->nama_berkas), 'proposal'));
 
             $item->proposal_url = $proposal->download_url ?? null;
             $item->proposal_status = $proposal->status ?? 'belum_upload';
@@ -320,7 +351,7 @@ class SDMController extends Controller
     {
         $response = $this->backend->getPengajuanDetail((int) $id);
 
-        if (! $response->successful()) {
+        if (!$response->successful()) {
             abort(404);
         }
 
@@ -343,17 +374,17 @@ class SDMController extends Controller
     // Unduh semua berkas yang sudah diupload untuk satu pengajuan, digabung jadi 1 file zip
     public function dokumenUnduhSemua($id)
     {
-        $berkas = $this->backend->getBerkasDetail((int) $id)->filter(fn ($b) => $b->download_url);
+        $berkas = $this->backend->getBerkasDetail((int) $id)->filter(fn($b) => $b->download_url);
 
         if ($berkas->isEmpty()) {
             return back()->with('error', 'Belum ada berkas yang diunggah untuk pengajuan ini.');
         }
 
-        if (! class_exists(\ZipArchive::class)) {
+        if (!class_exists(\ZipArchive::class)) {
             return back()->with('error', 'Fitur unduh semua butuh ekstensi PHP "zip" yang belum aktif di server. Aktifkan dulu ext-zip di php.ini.');
         }
 
-        $zipPath = storage_path('app/berkas-pengajuan-'.$id.'-'.time().'.zip');
+        $zipPath = storage_path('app/berkas-pengajuan-' . $id . '-' . time() . '.zip');
 
         $zip = new \ZipArchive();
         $zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
@@ -368,7 +399,7 @@ class SDMController extends Controller
 
                 if ($response->successful()) {
                     $ext = pathinfo(parse_url($b->file_path, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION) ?: 'pdf';
-                    $filename = \Illuminate\Support\Str::slug($b->nama_berkas).'.'.$ext;
+                    $filename = \Illuminate\Support\Str::slug($b->nama_berkas) . '.' . $ext;
                     $zip->addFromString($filename, $response->body());
                     $adaFileBerhasil = true;
                 }
@@ -380,13 +411,13 @@ class SDMController extends Controller
 
         $zip->close();
 
-        if (! $adaFileBerhasil) {
+        if (!$adaFileBerhasil) {
             @unlink($zipPath);
 
             return back()->with('error', 'Gagal mengambil berkas dari server backend.');
         }
 
-        return response()->download($zipPath, 'berkas-pengajuan-'.$id.'.zip')->deleteFileAfterSend(true);
+        return response()->download($zipPath, 'berkas-pengajuan-' . $id . '.zip')->deleteFileAfterSend(true);
     }
 
     public function profil()
@@ -412,11 +443,11 @@ class SDMController extends Controller
         foreach ($pengajuan as $item) {
             $berkas = $this->backend->getBerkasDetail($item->id);
             $item->is_berkas_lengkap = $berkas->where('is_required', true)
-                ->every(fn ($b) => $b->status === 'uploaded');
+                ->every(fn($b) => $b->status === 'uploaded');
         }
 
         return view('sdm.review', compact('pengajuan'));
     }
 
-    
+
 }

@@ -6,7 +6,6 @@ use App\Services\BackendApiService;
 use Illuminate\Http\Request;
 use App\Models\Pengajuan;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Mail;
 
 class UnitController extends Controller
 {
@@ -20,6 +19,19 @@ class UnitController extends Controller
             session('unit_id'),
             fn($c) => $c->where('unit_id', session('unit_id'))
         );
+    }
+
+    // Progres 100% = tanggal_selesai magangnya sudah lewat. Logikanya sama
+    // persis dengan perhitungan $percentage di unit/monitoring.blade.php,
+    // supaya tombol "Penerbitan Sertifikat" (disable di UI) dan guard di
+    // controller ini selalu sinkron.
+    protected function magangSudahSelesai($mahasiswa): bool
+    {
+        if (empty($mahasiswa->tanggal_selesai)) {
+            return false;
+        }
+
+        return \Carbon\Carbon::parse($mahasiswa->tanggal_selesai)->isPast();
     }
 
     public function dashboard()
@@ -294,7 +306,13 @@ class UnitController extends Controller
         if (!$response->successful()) {
             return back()->with('error', 'Gagal memperbarui status di server: ' . $response->status());
         }
-        $this->kirimEmailHasilSeleksi($id, $status);
+
+        // Email ke mahasiswa (diterima/ditolak) sudah otomatis dikirim oleh
+        // backend FastAPI di endpoint PATCH /pengajuan/{id}/status setiap
+        // kali status berubah -- tidak perlu kirim ulang dari Laravel.
+        // (Sebelumnya ada kirimEmailHasilSeleksi() di sini yang selalu
+        // crash karena view emails.seleksi_notif tidak pernah dibuat,
+        // dan bikin request gagal total meski status sudah terupdate.)
 
         return redirect()->back()->with('success', $pesan);
     }
@@ -318,7 +336,8 @@ class UnitController extends Controller
         if (!$response->successful()) {
             return back()->with('error', 'Gagal memperbarui status di server: ' . $response->status());
         }
-        $this->kirimEmailHasilSeleksi($id, $status);
+
+        // Sama seperti seleksiUnit() -- email sudah otomatis dikirim backend.
 
         return back()->with('success', 'Status pengajuan berhasil diperbarui.');
     }
@@ -342,6 +361,13 @@ class UnitController extends Controller
             abort(404);
         }
 
+        // Guard sisi server: tombolnya sudah di-disable di UI kalau progres
+        // belum 100%, tapi URL-nya tetap bisa diakses langsung kalau di-ketik
+        // manual -- jadi dicek ulang di sini juga.
+        if (!$this->magangSudahSelesai($mahasiswa)) {
+            return back()->with('error', 'Sertifikat baru bisa diterbitkan setelah masa magang mahasiswa ini selesai.');
+        }
+
         return view('unit.form-sertifikat', compact('mahasiswa'));
     }
 
@@ -355,36 +381,15 @@ class UnitController extends Controller
             abort(404);
         }
 
+        if (!$this->magangSudahSelesai($mahasiswa)) {
+            return back()->with('error', 'Sertifikat baru bisa diterbitkan setelah masa magang mahasiswa ini selesai.');
+        }
+
         $pdf = Pdf::loadView('pdf.sertifikat', compact('mahasiswa'))
             ->setPaper('A4', 'landscape');
 
         return $pdf->stream('sertifikat.pdf');
     }
-    // FUNGSI HELPER: Otomatisasi Kirim Email Hasil Seleksi (Terima/Tolak)
-    protected function kirimEmailHasilSeleksi($id, $status)
-    {
-        // Ambil data mahasiswa dari API Backend agar dapet email & namanya
-        $all = $this->scopedToUnit($this->backend->getEnrichedPengajuan());
-        $mahasiswa = $all->firstWhere('id', (int) $id);
 
-        if ($mahasiswa && isset($mahasiswa->email)) {
-            $dataEmail = [
-                'nama' => $mahasiswa->nama,
-                'status' => $status, // 'diterima' atau 'ditolak'
-                'unit' => 'Unit Sistem Informasi'
-            ];
-
-            // Tentukan subjek email berdasarkan status hasil seleksi
-            $subject = $status === 'diterima'
-                ? 'Selamat! Pengajuan Magang Anda di PT KAI Diterima'
-                : 'Informasi Hasil Pengajuan Magang PT KAI';
-
-            // Tembak email menggunakan template blade khusus 'emails.seleksi_notif'
-            Mail::send('emails.seleksi_notif', $dataEmail, function ($message) use ($mahasiswa, $subject) {
-                $message->to($mahasiswa->email, $mahasiswa->nama)
-                    ->subject($subject);
-            });
-        }
-    }
 
 } // <-- KURUNG KURAWAL PENUTUP UTAMA CLASS SEKARANG SUDAH AMAN ADA DI SINI!

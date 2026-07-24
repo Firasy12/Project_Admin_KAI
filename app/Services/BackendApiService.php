@@ -86,6 +86,7 @@ class BackendApiService
     {
         return $this->send('patch', $path, $data, $withAuth);
     }
+    
 
     protected function delete(string $path, bool $withAuth = true): Response
     {
@@ -193,6 +194,7 @@ class BackendApiService
             'catatan' => $catatan,
         ], fn ($v) => $v !== null));
     }
+    
 
     public function getBerkasPengajuan(int $pengajuanId): Response
     {
@@ -522,4 +524,7 @@ class BackendApiService
             ['path' => request()->url(), 'query' => request()->query()]
         );
     }
+    
+    
 }
+

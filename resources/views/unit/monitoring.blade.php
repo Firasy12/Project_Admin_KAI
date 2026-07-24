@@ -143,6 +143,18 @@
 
             <div class="relative z-10 space-y-6">
 
+                @if(session('success'))
+                    <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold px-5 py-3 rounded-xl">
+                        <i class="fa-solid fa-circle-check mr-1"></i> {{ session('success') }}
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="bg-rose-50 border border-rose-200 text-rose-700 text-sm font-semibold px-5 py-3 rounded-xl">
+                        <i class="fa-solid fa-triangle-exclamation mr-1"></i> {{ session('error') }}
+                    </div>
+                @endif
+
                 {{-- DATA TABLE CARD --}}
                 <div class="bg-white rounded-2xl shadow-xl shadow-blue-950/10 overflow-hidden border border-blue-100/50">
                     
@@ -259,16 +271,28 @@
                                         </td>
 
                                         {{-- 6. COL AKSI KELULUSAN --}}
-                                        <<td class="px-6 py-4 text-center">
-                                            <a href="{{ url('/unit/monitoring/'.$item->id.'/sertifikat') }}"
-                                            class="inline-flex items-center gap-2 px-4 py-2
-                                            bg-gradient-to-r from-amber-500 to-orange-500
-                                            hover:from-amber-600 hover:to-orange-600
-                                            text-white text-xs font-bold rounded-xl">
+                                        <td class="px-6 py-4 text-center">
+                                            @if($percentage >= 100)
+                                                <a href="{{ url('/unit/monitoring/'.$item->id.'/sertifikat') }}"
+                                                class="inline-flex items-center gap-2 px-4 py-2
+                                                bg-gradient-to-r from-amber-500 to-orange-500
+                                                hover:from-amber-600 hover:to-orange-600
+                                                text-white text-xs font-bold rounded-xl transition-all">
 
-                                                <i class="fa-solid fa-award"></i>
-                                                Penerbitan Sertifikat
-                                            </a>
+                                                    <i class="fa-solid fa-award"></i>
+                                                    Penerbitan Sertifikat
+                                                </a>
+                                            @else
+                                                <span
+                                                    title="Sertifikat baru bisa diterbitkan setelah masa magang selesai (progres 100%)"
+                                                    class="inline-flex items-center gap-2 px-4 py-2
+                                                    bg-slate-100 text-slate-400 border border-slate-200
+                                                    text-xs font-bold rounded-xl cursor-not-allowed select-none">
+
+                                                    <i class="fa-solid fa-lock"></i>
+                                                    Penerbitan Sertifikat
+                                                </span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty

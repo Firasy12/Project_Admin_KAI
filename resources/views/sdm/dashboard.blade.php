@@ -223,7 +223,8 @@
                                     class="text-[10px] font-black text-slate-400 whitespace-nowrap uppercase tracking-wider">
                                     Pengajuan Masuk</p>
                                 <h3 class="text-2xl font-black text-[#0b1739] mt-0.5 tracking-tight">
-                                    {{ $countMasuk ?? 0 }}</h3>
+                                    {{ $countMasuk ?? 0 }}
+                                </h3>
                             </div>
                         </div>
                         <span
@@ -247,7 +248,8 @@
                                     class="text-[10px] font-black text-slate-400 whitespace-nowrap uppercase tracking-wider">
                                     Sedang Review</p>
                                 <h3 class="text-2xl font-black text-[#0b1739] mt-0.5 tracking-tight">
-                                    {{ $countReview ?? 0 }}</h3>
+                                    {{ $countReview ?? 0 }}
+                                </h3>
                             </div>
                         </div>
                         <span
@@ -271,7 +273,8 @@
                                     class="text-[10px] font-black text-slate-400 whitespace-nowrap uppercase tracking-wider">
                                     Diterima</p>
                                 <h3 class="text-2xl font-black text-[#0b1739] mt-0.5 tracking-tight">
-                                    {{ $countDiterima ?? 0 }}</h3>
+                                    {{ $countDiterima ?? 0 }}
+                                </h3>
                             </div>
                         </div>
                         <span
@@ -295,7 +298,8 @@
                                     class="text-[10px] font-black text-slate-400 whitespace-nowrap uppercase tracking-wider">
                                     Ditolak</p>
                                 <h3 class="text-2xl font-black text-[#0b1739] mt-0.5 tracking-tight">
-                                    {{ $countDitolak ?? 0 }}</h3>
+                                    {{ $countDitolak ?? 0 }}
+                                </h3>
                             </div>
                         </div>
                         <span
@@ -346,7 +350,8 @@
                                                 <div class="text-xs text-slate-400 font-bold mt-1 flex items-center gap-1.5">
                                                     <div
                                                         class="w-4 h-4 rounded-md bg-slate-100 flex items-center justify-center text-[9px] text-slate-400">
-                                                        <i class="fa-solid fa-university"></i></div>
+                                                        <i class="fa-solid fa-university"></i>
+                                                    </div>
                                                     {{ $item->universitas }}
                                                 </div>
                                             </td>
@@ -458,7 +463,8 @@
                                         class="flex items-start gap-3.5 p-3.5 bg-gradient-to-r from-slate-50 to-white rounded-xl border border-slate-200/70 shadow-sm hover:border-blue-200 transition-colors">
                                         <div
                                             class="w-9 h-9 rounded-xl {{ $iconBg }} flex items-center justify-center text-sm shrink-0 shadow-sm">
-                                            <i class="{{ $icon }}"></i></div>
+                                            <i class="{{ $icon }}"></i>
+                                        </div>
                                         <div>
                                             <p class="text-xs font-black text-slate-800">Pembaruan Status Pengajuan</p>
                                             <p class="text-[11px] text-slate-400 font-semibold mt-1 leading-relaxed">
@@ -519,6 +525,31 @@
             </div> {{-- END OF LAYER CONTAINER WRAPPER --}}
         </div>
     </main>
+
+    <script>
+        // Auto-refresh: data di halaman ini (pengajuan masuk, status, dsb)
+        // bisa berubah kapan saja dari aksi SDM/Unit lain atau pendaftar baru,
+        // jadi halaman di-reload berkala biar selalu sinkron tanpa perlu
+        // refresh manual. Dijeda otomatis kalau ada popup SweetAlert lagi
+        // kebuka atau user lagi ngetik di kolom pencarian, supaya nggak
+        // motong aksi yang sedang berjalan.
+        (function () {
+            const REFRESH_INTERVAL_MS = 20000; // 20 detik
+
+            function sedangSibuk() {
+                if (document.querySelector(".swal2-container")) return true;
+                const aktif = document.activeElement;
+                if (aktif && (aktif.tagName === "INPUT" || aktif.tagName === "TEXTAREA")) return true;
+                return false;
+            }
+
+            setInterval(() => {
+                if (!sedangSibuk()) {
+                    window.location.reload();
+                }
+            }, REFRESH_INTERVAL_MS);
+        })();
+    </script>
 </body>
 
 </html>

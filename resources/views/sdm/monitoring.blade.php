@@ -335,5 +335,30 @@
             </div> {{-- END OF CONTAINER WRAPPER --}}
         </div>
     </main>
+
+    <script>
+        // Auto-refresh: data di halaman ini (pengajuan masuk, status, dsb)
+        // bisa berubah kapan saja dari aksi SDM/Unit lain atau pendaftar baru,
+        // jadi halaman di-reload berkala biar selalu sinkron tanpa perlu
+        // refresh manual. Dijeda otomatis kalau ada popup SweetAlert lagi
+        // kebuka atau user lagi ngetik di kolom pencarian, supaya nggak
+        // motong aksi yang sedang berjalan.
+        (function () {
+            const REFRESH_INTERVAL_MS = 20000; // 20 detik
+
+            function sedangSibuk() {
+                if (document.querySelector(".swal2-container")) return true;
+                const aktif = document.activeElement;
+                if (aktif && (aktif.tagName === "INPUT" || aktif.tagName === "TEXTAREA")) return true;
+                return false;
+            }
+
+            setInterval(() => {
+                if (!sedangSibuk()) {
+                    window.location.reload();
+                }
+            }, REFRESH_INTERVAL_MS);
+        })();
+    </script>
 </body>
 </html>
